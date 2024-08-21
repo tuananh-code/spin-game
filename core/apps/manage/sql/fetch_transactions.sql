@@ -1,0 +1,1 @@
+SELECT * FROM `cl_transaction` t WHERE t.`business_id` = <?php echo($data['user_id']); ?> ORDER BY t.`id` DESC LIMIT 50

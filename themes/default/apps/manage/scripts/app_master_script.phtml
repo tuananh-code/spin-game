@@ -1,0 +1,486 @@
+<script>
+	"abe strict";
+
+	$(document).ready(function($) {
+		var userDate = new Date();
+		var userTimezoneOffset = userDate.getTimezoneOffset() * 60000; // Chuyển đổi phút sang mili giây
+
+		var userTime = new Date(userDate.getTime() - userTimezoneOffset);
+		var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
+		Vue.use(window.vuelidate.default);
+		var VueValids = window.validators;
+
+		SMColibri.PS.notifs = new Vue({
+			el: "#vue-manage-app",
+			data: {
+				selected: {},
+				loading: false,
+				loadmore: true,
+				type: '<?php echo ($cl["page_tab"]); ?>',
+				total_transactions: '<?php echo ($cl['total_transactions']); ?>',
+
+				submitting: false,
+				unsuccessful_attempt: false,
+				invalid_feedback_cname: "",
+				invalid_feedback_pname: "",
+				invalid_feedback_qty: "",
+				invalid_feedback_amount: "",
+				invalid_feedback_phone: "",
+				invalid_feedback_ccode: "",
+				invalid_feedback_pcode: "",
+				invalid_feedback_email: "",
+				cname: "",
+				pname: "",
+				qty: "",
+				amount: "",
+				phone: "",
+				email: "",
+				ccode: "",
+				weight: "",
+				ccode: "",
+				pcode: "",
+				time: formattedTime,
+				ccode_exist: false,
+				ccode_format: false
+			},
+			mounted() {
+				$('.dismiss').on('click', this.handleDismiss);
+				$('.dismiss_p').on('click', this.handleDismissP);
+			},
+			computed: {
+				is_valid_email: function() {
+					if (this.$v.email.$error) {
+						this.invalid_feedback_email = "<?php echo cl_translate("The email address you entered does not match the valid format."); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_email = "";
+						return false;
+					}
+				},
+				is_valid_cname: function() {
+					if (!this.cname && !this.phone) {
+						$('#if-val2').find('input').prop('readonly', false);
+						if (this.ccode) {
+							$('#if-val1').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val2').find('input').prop('readonly', true);
+						$('#if-val1').find('input').prop('readonly', false);
+					}
+					if (this.$v.cname.$error) {
+						this.invalid_feedback_cname = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_cname = "";
+						return false;
+					}
+
+				},
+				is_valid_pname: function() {
+					if (this.$v.pname.required == true && this.$v.pname.$error) {
+						this.invalid_feedback_pname = "<?php echo cl_translate("Please enter your product name, which is from 3 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_pname = "";
+						return false;
+					}
+
+
+				},
+				is_valid_qty: function() {
+					if (this.$v.qty.$error) {
+						this.invalid_feedback_qty = "<?php echo cl_translate("Please enter quantity"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_qty = "";
+						return false;
+					}
+				},
+				is_valid_amount: function() {
+					var value = this.amount;
+					if (value) {
+						var cleanValue = parseInt(value.replace(/\,/g, ''));
+
+						var formattedValue = cleanValue.toLocaleString('zh-TW')
+					} else {
+						var formattedValue = 0
+					}
+
+					this.amount = formattedValue;
+					if (this.$v.amount.$error) {
+						this.invalid_feedback_amount = "<?php echo cl_translate("Please enter amount"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_amount = "";
+						return false;
+					}
+				},
+				is_valid_phone: function() {
+					if (!this.cname && !this.phone) {
+						$('#if-val2').find('input').prop('readonly', false);
+						if (this.ccode) {
+							$('#if-val1').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val2').find('input').prop('readonly', true);
+						$('#if-val1').find('input').prop('readonly', false);
+					}
+					if (this.$v.phone.$error) {
+						this.invalid_feedback_phone = "<?php echo cl_translate("Please enter your phone, which is from 3 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_phone_taken = "";
+						return false;
+					}
+
+				},
+				is_valid_ccode: function() {
+					var _app_ = this;
+					if (!this.ccode) {
+						this.ccode_exist == false
+						$('#if-val1').find('input').prop('readonly', false);
+						if (!(!this.cname && !this.phone)) {
+							$('#if-val2').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val1').find('input').prop('readonly', true);
+						$('#if-val2').find('input').prop('readonly', false);
+					}
+					if (this.$v.ccode.$error) {
+						this.invalid_feedback_ccode = "<?php echo cl_translate("Please enter your customer code, which is from 10 to 25 characters'"); ?>";
+						return true;
+					} else if (this.ccode_exist == true) {
+						this.invalid_feedback_ccode = "<?php echo cl_translate("This customer code does not exist, please check again"); ?>";
+						_app_.ccode_exist = false
+						return true;
+					} else if (this.ccode) {
+
+						$.ajax({
+							url: '<?php echo cl_link("native_api/manage/ccode_exists"); ?>',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								ccode: this.ccode,
+							},
+							beforeSend: function() {
+								// _app_.loading = true;
+							}
+						}).done(function(data) {
+							if (data.status == 200) {
+								if (!data.exists) {
+									_app_.ccode_exist = true;
+
+								} else {
+									var name = `${data.user.fname} ${data.user.lname}`
+									_app_.cname = name;
+									_app_.phone = data.user.phone;
+									_app_.email = data.user.email;
+								}
+							} else {
+
+							}
+						}).always(function() {
+							// _app_.loading = false;
+						});
+					} else {
+						this.invalid_feedback_ccode = "";
+						return false;
+					}
+
+
+				},
+				is_valid_pcode: function() {
+					var _app_ = this;
+					if (!this.ccode) {
+						this.ccode_exist == false
+						$('#if-val1').find('input').prop('readonly', false);
+						if (!(!this.cname && !this.phone)) {
+							$('#if-val2').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val1').find('input').prop('readonly', true);
+						$('#if-val2').find('input').prop('readonly', false);
+					}
+					if (this.$v.ccode.$error) {
+						this.invalid_feedback_ccode = "<?php echo cl_translate("Please enter your customer code, which is from 10 to 25 characters'"); ?>";
+						return true;
+					} else if (this.ccode_exist == true) {
+						this.invalid_feedback_ccode = "<?php echo cl_translate("This customer code does not exist, please check again"); ?>";
+						_app_.ccode_exist = false
+						return true;
+					} else if (this.ccode) {
+						this.invalid_feedback_ccode = "";
+						return false;
+						// $.ajax({
+						// 	url: '<?php echo cl_link("native_api/manage/ccode_exists"); ?>',
+						// 	type: 'POST',
+						// 	dataType: 'json',
+						// 	data: {
+						// 		ccode: this.ccode,
+						// 	},
+						// 	beforeSend: function() {
+						// 		// _app_.loading = true;
+						// 	}
+						// }).done(function(data) {
+						// 	if (data.status == 200) {
+						// 		if (!data.exists) {
+						// 			_app_.ccode_exist = true;
+
+						// 		} else {
+						// 			var name = `${data.user.fname} ${data.user.lname}`
+						// 			_app_.cname = name;
+						// 			_app_.phone = data.user.phone;
+						// 			_app_.email = data.user.email;
+						// 		}
+						// 	} else {
+
+						// 	}
+						// }).always(function() {
+						// 	// _app_.loading = false;
+						// });
+					} else {
+						this.invalid_feedback_ccode = "";
+						return false;
+					}
+
+
+				}
+			},
+			validations: {
+				email: {
+					// required: VueValids.required,
+					email: VueValids.email,
+					min_length: VueValids.minLength(8),
+					max_length: VueValids.maxLength(55),
+				},
+				time: {
+
+				},
+				cname: {
+					// required: VueValids.required,
+					min_length: VueValids.minLength(2),
+					max_length: VueValids.maxLength(25),
+				},
+				pname: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(2),
+					max_length: VueValids.maxLength(25),
+				},
+				qty: {
+					// required: VueValids.required,
+					// min_length: VueValids.minLength(3),
+					// max_length: VueValids.maxLength(25),
+				},
+				amount: {
+					required: VueValids.required,
+					// min_length: VueValids.minLength(3),
+					// max_length: VueValids.maxLength(25),
+				},
+				weight: {
+					// required: VueValids.required,
+					// min_length: VueValids.minLength(3),
+					// max_length: VueValids.maxLength(25),
+				},
+				phone: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(3),
+					max_length: VueValids.maxLength(25),
+				},
+				ccode: {
+					// required: VueValids.required,
+					min_length: VueValids.minLength(10),
+					max_length: VueValids.maxLength(25),
+				},
+				pcode: {
+					// required: VueValids.required,
+					min_length: VueValids.minLength(10),
+					max_length: VueValids.maxLength(25),
+				}
+			},
+			methods: {
+				load_manage: function() {
+					var _app_ = this;
+					var transactions_ls = $(_app_.$el).find('[data-an="transactions-list"]');
+					var offset = 0;
+
+					if (cl_empty(_app_.loading) && _app_.loadmore) {
+
+						if (transactions_ls.find('div[data-list-item]').length) {
+							offset = transactions_ls.find('div[data-list-item]').last().data('list-item');
+						}
+
+						if ($.isNumeric(offset) && offset) {
+							$.ajax({
+								url: '<?php echo cl_link("native_api/manage/load_more"); ?>',
+								type: 'GET',
+								dataType: 'json',
+								data: {
+									offset: offset,
+									type: _app_.type
+								},
+								beforeSend: function() {
+									_app_.loading = true;
+								}
+							}).done(function(data) {
+								if (data.status == 200) {
+									notifs_ls.append($(data.html));
+								} else {
+									_app_.loadmore = false;
+								}
+							}).always(function() {
+								_app_.loading = false;
+							});
+						}
+					}
+				},
+				delete_transactions: function(id = false) {
+					var _app_ = this;
+
+					if (id) {
+						var transactions_ls = $(_app_.$el).find('[data-an="transactions-list"]');
+
+						$.ajax({
+							url: '<?php echo cl_link("native_api/manage/delete"); ?>',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								id: id
+							},
+						}).done(function(data) {
+							if (data.status == 200) {
+								transactions_ls.find('div[data-list-item="{0}"]'.format(id)).slideUp(150, function() {
+									$(this).remove();
+
+									if (notifs_ls.find('div[data-list-item]').length < 1) {
+										SMColibri.spa_reload(500);
+									}
+								});
+							} else {
+								SMColibri.errorMSG();
+							}
+						}).always(function() {
+							$("div.confirm-actions-modal").modal("hide");
+						});
+					}
+				},
+				delete_all_transactions: function() {
+					var _app_ = this;
+
+					if (_app_.total_notifs) {
+						var promise = SMColibri.confirm_action({
+							btn_1: "<?php echo cl_translate("Cancel"); ?>",
+							btn_2: "<?php echo cl_translate("Delete"); ?>",
+							title: "<?php echo cl_translate("Please confirm your actions!"); ?>",
+							message: "<?php echo cl_translate("Are you sure you want to delete all notifications? Please note that this action cannot be undone!"); ?>",
+						});
+
+						promise.done(function() {
+							$.ajax({
+								url: '<?php echo cl_link("native_api/manage/delete_all"); ?>',
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									type: _app_.type
+								},
+							}).done(function(data) {
+								if (data.status == 200) {
+									SMColibri.spa_reload();
+								} else {
+									SMColibri.errorMSG();
+								}
+							}).always(function() {
+								$("div.confirm-actions-modal").modal("hide");
+							});
+						});
+
+						promise.fail(function() {
+							$("div.confirm-actions-modal").modal("hide");
+						});
+					}
+				},
+				accept_follow: function(req_id, transactions_id) {
+					if ($.isNumeric(req_id)) {
+						var _app_ = this;
+
+						var transactions_ls = $(_app_.$el).find('[data-an="transactions-list"]');
+
+						$.ajax({
+							url: "<?php echo cl_link("native_api/connections/accept_request"); ?>",
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								req_id: req_id,
+								notif_id: notif_id
+							}
+						}).done(function(data) {
+							if (data.status == 200) {
+								notifs_ls.find('div[data-list-item="{0}"]'.format(notif_id)).slideUp(150, function() {
+									$(this).remove();
+
+									if (notifs_ls.find('div[data-list-item]').length < 1) {
+										SMColibri.spa_reload(500);
+									}
+								});
+
+								cl_bs_notify("<?php echo cl_translate("Follow request successfully accepted"); ?>", 5000, "success");
+							} else {
+								SMColibri.errorMSG();
+							}
+						});
+					}
+				},
+				handleDismiss() {
+					this.ccode = ''
+					this.cname = ''
+					this.phone = ''
+					this.email = ''
+				},
+				handleDismissP() {
+					this.pname = ''
+					this.weight = ''
+					this.qty = ''
+					this.pcode = ''
+				},
+				submit_form: function(_self = null) {
+					_self.preventDefault();
+
+					var _app_ = this;
+
+					$(_self.target).ajaxSubmit({
+						url: "<?php echo cl_link("native_api/manage/save_invoice"); ?>",
+						type: 'POST',
+						dataType: 'json',
+						beforeSend: function() {
+							_app_.submitting = true;
+							// _app_.qty_taken = false;
+							// _app_.qty_denied = false;
+						},
+						success: function(data) {
+							if (data.status == 200) {
+								handleDismissP();
+								cl_bs_notify("<?php echo cl_translate("Your changes has been successfully saved!"); ?>", 5000, "success");
+								// } else if (data.err_code && data.err_code == 'invalid_phone') {
+								// 	_app_.qty_taken = true;
+
+								// 	delay(function() {
+								// 		_app_.qty_taken = false;
+								// 	}, 5000);
+								// } else if (data.err_code && data.err_code == 'denied_qty') {
+								// 	_app_.qty_denied = true;
+
+								// 	delay(function() {
+								// 		_app_.qty_denied = false;
+								// 	}, 5000);
+								// } else {
+								// 	_app_.unsuccessful_attempt = true;
+							}
+						},
+						complete: function() {
+							_app_.submitting = false;
+						}
+					});
+				}
+			}
+		});
+	});
+</script>

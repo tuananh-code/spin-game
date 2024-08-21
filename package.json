@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "vue-good-table": "^2.21.11"
+  }
+}
