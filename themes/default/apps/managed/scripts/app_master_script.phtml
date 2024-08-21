@@ -1,0 +1,90 @@
+<script>
+	"use strict";
+
+	$(document).ready(function($) {
+		$("#store").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-store'>${required}</b>`;
+				$('.require-store').append(b);
+			} else {
+				$('.required-store').remove();
+			}
+		});
+		$("#address").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-address'>${required}</b>`;
+				$('.require-address').append(b);
+			} else {
+				$('.required-address').remove();
+			}
+		});
+		$("#city").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-city'>${required}</b>`;
+				$('.require-city').append(b);
+			} else {
+				$('.required-city').remove();
+			}
+		});
+		$("#phone").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-phone'>${required}</b>`;
+				$('.require-phone').append(b);
+			} else {
+				$('.required-phone').remove();
+			}
+		});
+		$("#mail").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-mail'>${required}</b>`;
+				$('.require-mail').append(b);
+			} else {
+				$('.required-mail').remove();
+			}
+		});
+		$('.add-prize').on('click', function() {
+			if (!($("#store").val() && $("#address").val() && $("#city").val() && $("#phone").val()) && $("#mail").val()) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					text: "<?php echo cl_translate("Enter all the field required!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
+			var store = $('#store').val();
+			var address = $('#address').val();
+			var city = $('#city').val();
+			var phone = $('#phone').val();
+			var mail = $('#mail').val();
+			$.ajax({
+				url: '<?php echo cl_link("core/apps/store/app_ctrl.php"); ?>',
+				type: 'POST',
+				data: {
+					store: store,
+					address: address,
+					city: city,
+					phone: phone,
+					mail: mail
+				},
+				success: function(result) {
+					console.log(result);
+				}
+			})
+		})
+	});
+</script>

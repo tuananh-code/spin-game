@@ -1,0 +1,1 @@
+SELECT shop_name, address FROM `<?php echo($data['t_store']); ?>` WHERE shop_name = "<?php echo($data['store']); ?>" AND address = "<?php echo($data['address']); ?>";

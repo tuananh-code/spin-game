@@ -1,0 +1,72 @@
+<div class="timeline-container" data-app="store">
+    <div class="timeline-header" data-el="tl-header">
+        <div class="timeline-header__botline">
+            <div class="lp">
+                <div class="nav-link-holder">
+                    <a>
+                        <?php echo cl_translate("Store"); ?>
+                    </a>
+                </div>
+            </div>
+            <div class="cp">
+                <a href="<?php echo cl_link('/'); ?>">
+                    <img src="{%config site_logo%}" alt="Logo">
+                </a>
+            </div>
+            <div class="rp">
+                <div class="nav-link-holder">
+                    <span class="go-back" onclick="SMColibri.go_back();">
+                        <?php echo cl_ficon('arrow_back'); ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php //if (not_empty($cl['is_admin'])): 
+    ?>
+    <!-- Add translate in json -->
+    <form action="" class="p-2">
+        <h2 class="text-center text-success">
+            <?php echo cl_translate("Add Store"); ?>
+        </h2>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="store" class="col-2 text-end"><?php echo cl_translate("Store Name:"); ?></label>
+            <div class="require-store col-9">
+                <input type="text" id="store" class="p-2 m-2 form-control" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="address" class="col-2 text-end"><?php echo cl_translate("Address:"); ?></label>
+            <div class="require-address col-9">
+                <input type="text" id="address" class="p-2 m-2 form-control" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="city" class="col-2 text-end"><?php echo cl_translate("City:"); ?></label>
+            <div class="require-city col-9">
+                <input name="city" id="city" class="form-control m-2 p-2" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="phone" class="col-2 text-end"><?php echo cl_translate("Phone:"); ?></label>
+            <div class="require-phone col-9">
+                <input name="phone" id="phone" class="form-control m-2 p-2" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="mail" class="col-2 text-end"><?php echo cl_translate("Mail:"); ?></label>
+            <div class="require-mail col-9">
+                <input name="mail" id="mail" class="form-control m-2 p-2" required>
+            </div>
+        </div>
+      
+        <div class="text-center">
+            <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-2 add-shop"><?php echo cl_translate("Add shop"); ?></button>
+            <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-2 clear-shop"><?php echo cl_translate("Clear"); ?></button>
+        </div>
+       
+    </form>
+    <?php //endif; 
+    ?>
+</div>
+<?php echo cl_template('managed/scripts/app_master_script'); ?>

@@ -1,0 +1,1 @@
+UPDATE `<?php echo($data['t_game']); ?>` SET  `buy` = '<?php echo $data['buy'] ?>', `limit` = '<?php echo $data['limit'] ?>', `quantity` = '<?php echo $data['quantity'] ?>', `expires` = '<?php echo $data['expires'] ?>', `join` = '<?php echo $data['join'] ?>' WHERE store_id = '<?php echo $data['store_condition'] ?>'

@@ -1,0 +1,95 @@
+<script>
+	"use strict";
+
+	$(document).ready(function($) {
+		$('#themes').on('change', function() {
+			var selectedOption = $(this).find(':selected');
+			var dataStore = selectedOption.data('store');
+			var dataGame = selectedOption.data('game');
+		})
+
+		var token = $('#tokenApi').val();
+		if (token) {
+			var tokenApi = token[32];
+		}
+		$('#spin').on('click', function() {
+			$(this).attr('disabled', true);
+			$('.store-api').attr('disabled', true);
+			var storeApi = $('.store-api').attr('data-store');
+			if (storeApi == 'undefined') {
+				var store = $('#propsWheel').attr('data-store');
+				var game = $('#propsWheel').attr('data-game');
+				var props = JSON.parse($('#propsWheel').attr('data-prop'));
+				for (var i = 0; i < props.length; i++) {
+					var value = props[i].value;
+					if (value == tokenApi) {
+						var name = props[i].prize;
+						// var name = value;
+					}
+				}
+			} else {
+				var store = $('#themes').attr('data-store');
+				var game = $('#themes').attr('data-game');
+				var multi = $('#themes').val()[64];
+				var props = JSON.parse($('#themes').attr('data-prop'));
+				for (var i = 0; i < props.length; i++) {
+					var value = props[i].value;
+					if (value == multi) {
+						var name = props[i].prize;
+						// var name = value;
+					}
+				}
+			}
+			// return;
+			console.log(store);
+			return;
+			var user = $('#propsWheel').attr('data-user');
+			// var ticket = '<?php //echo get_ticket($me['id'], $store); ?>';
+			if (ticket > 0) {
+				setTimeout(function() {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
+						type: 'POST',
+						data: {
+							name: name,
+							user: user,
+							store: store,
+							game: game,
+						},
+						beforeSend: function() {},
+						success: function(result) {
+							if (result.status == 200) {
+								$('#spin').attr('disabled', false);
+								$('.store-api').attr('disabled', false);
+								Swal.fire({
+									title: "<?php echo cl_translate("Congratulation"); ?>",
+									text: "<?php echo cl_translate("You gain"); ?>" + " " + name,
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
+								}).then((result) => {
+									if (result.isConfirmed) {
+										// window.location.reload(); // Reload the page on OK click
+									}
+								});
+							}
+						}
+					});
+				}, 4500); // Initial delay of 4500ms before sending the AJAX request
+			} else {
+				Swal.fire({
+					title: "<?php echo cl_translate("Warning"); ?>",
+					text: "<?php echo cl_translate("You run out of spins!"); ?>",
+					icon: "warning",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+			}
+		})
+
+	});
+</script>

@@ -1,0 +1,338 @@
+<script>
+	"use strict";
+
+	$(document).ready(function($) {
+		$("#event").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-event'>${required}</b>`;
+				$('.require-event').append(b);
+			} else {
+				$('.required-event').remove();
+			}
+		});
+		$("#prize").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-prize'>${required}</b>`;
+				$('.require-prize').append(b);
+			} else {
+				$('.required-prize').remove();
+			}
+		});
+		$("#percent").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-percent'>${required}</b>`;
+				$('.require-percent').append(b);
+			} else {
+				$('.required-percent').remove();
+			}
+		});
+		$("#stock").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-stock'>${required}</b>`;
+				$('.require-stock').append(b);
+			} else {
+				$('.required-stock').remove();
+			}
+		});
+		$('.add-prize').on('click', function() {
+			if (!($("#event").val() && $("#prize").val() && $("#percent").val() && $("#stock").val())) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					text: "<?php echo cl_translate("Enter all the field required!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
+			var prize = $('#prize').val();
+			var event = $('#event').val();
+			var percent = $('#percent').val();
+			var stock = $('#stock').val();
+			var themes = $('#themes').val();
+			var status = $('#status').val();
+			var store_id = $('#store_id').val();
+			//check list
+			var prizes = prize.split(',');
+			var percents = percent.split(',');
+			var stocks = stock.split(',');
+			if (prizes.length !== percents.length) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+					icon: "warning",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			} else if (prizes.length !== stocks.length) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+					icon: "warning",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
+			// check percent
+			var arr = percent.split(',');
+			var total = 0;
+			for (var p = 0; p < arr.length; p++) {
+				total += parseFloat(arr[p]);
+				if (parseFloat(arr[p]) < 0.01) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Warning"); ?>",
+						html: "<h4 class='text-danger'><?php echo cl_translate("Percent allow >= 0.01"); ?>: ",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				}
+			}
+			if (total > 100) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent > 100%. Please check and try again!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			} else if (total < 100) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent < 100%. Please check and try again!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
+			$.ajax({
+				url: '<?php echo cl_link("native_api/game/add_game"); ?>',
+				type: 'POST',
+				data: {
+					prize: prize,
+					event: event,
+					percent: percent,
+					stock: stock,
+					status: status,
+					store_id: store_id,
+					themes: themes
+				},
+				success: function(result) {
+					if (result.status == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Add event success!"); ?>",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else if (result.status == 500) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Warning"); ?>",
+							text: "<?php echo cl_translate("Event already exist with store!"); ?>",
+							icon: "warning",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else {
+						Swal.fire({
+							title: "<?php echo cl_translate("Failed"); ?>",
+							text: "<?php echo cl_translate("Error occurred, check your info before add!"); ?>",
+							icon: "Error",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					}
+				}
+			})
+		})
+
+		$("#buy").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-buy'>${required}</b>`;
+				$('.require-buy').append(b);
+			} else {
+				$('.required-buy').remove();
+			}
+		});
+		$("#limit").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-limit'>${required}</b>`;
+				$('.require-limit').append(b);
+			} else {
+				$('.required-limit').remove();
+			}
+		});
+		$("#expires").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-expires'>${required}</b>`;
+				$('.require-expires').append(b);
+			} else {
+				$('.required-expires').remove();
+			}
+		});
+		$("#join").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("This field is required"); ?>';
+			if (!currentValue) {
+				var b = `<b class='text-danger p-2 required-join'>${required}</b>`;
+				$('.require-join').append(b);
+			} else {
+				$('.required-join').remove();
+			}
+		});
+		$('.add-condition').on('click', function() {
+			if (!($("#buy").val() && $("#limit").val() && $("#expires").val() && $("#join").val())) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Failed"); ?>",
+					text: "<?php echo cl_translate("Enter all the field required!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
+			var buy = $('#buy').val();
+			var limit = $('#limit').val();
+			var quantity = $('#quantity').val();
+			var expires = $('#expires').val();
+			var join = $('#join').val();
+			var store_condition = $('#store_condition').val();
+
+			$.ajax({
+				url: '<?php echo cl_link("native_api/game/add_condition"); ?>',
+				type: 'POST',
+				data: {
+					buy: buy,
+					limit: limit,
+					quantity: quantity,
+					expires: expires,
+					join: join,
+					store_condition: store_condition,
+					// themes: themes
+				},
+				success: function(result) {
+					if (result.status == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Add condition success!"); ?>",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else {
+						Swal.fire({
+							title: "<?php echo cl_translate("Failed"); ?>",
+							text: "<?php echo cl_translate("Error occurred, check your info before add!"); ?>",
+							icon: "Error",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					}
+				}
+			})
+		})
+		$('#spin').on('click', function() {
+			var gif = $('.gif');
+			var token = $('#tokenApi').val();
+			var props = JSON.parse($('#propsWheel').attr('data-prop'));
+			if (token) {
+				var tokenApi = token[32];
+				for (var i = 0; i < props.length; i++) {
+					var value = props[i].value;
+					if (value == tokenApi) {
+						var name = props[i].prize;
+						// var name = value;
+					}
+				}
+				setTimeout(function() {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
+						type: 'POST',
+						data: {
+							name: name,
+						},
+						beforeSend: function() {},
+						success: function(result) {
+							Swal.fire({
+								title: "<?php echo cl_translate("Congratulation"); ?>",
+								text: "<?php echo cl_translate("You earn"); ?>" + result.value,
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+							});
+						}
+					});
+				}, 4500); // Initial delay of 4500ms before sending the AJAX request
+			} else {
+				Swal.fire({
+					title: "<?php echo cl_translate("Warning"); ?>",
+					text: "<?php echo cl_translate("You run out of spins!"); ?>",
+					icon: "warning",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+			}
+
+		})
+
+	});
+</script>

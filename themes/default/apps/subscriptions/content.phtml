@@ -1,0 +1,114 @@
+<?php
+$id = $me['id'];
+$sql = "SELECT * FROM cl_store WHERE user_id = $id ORDER BY id DESC";
+$result = conn()->query($sql);
+?>
+<script type="module" src="{%config theme_url%}/statics/js/index.js?v={%config update_date%}"></script>
+
+<div class="timeline-container" data-app="spin">
+	<div class="timeline-header" data-el="tl-header">
+		<div class="timeline-header__botline">
+			<div class="lp">
+				<div class="nav-link-holder">
+					<a href="<?php echo cl_link("spin"); ?>" data-spa="true">
+						<?php echo cl_translate("Spin"); ?>
+					</a>
+				</div>
+			</div>
+			<div class="cp">
+				<a href="<?php echo cl_link('/'); ?>">
+					<img src="{%config site_logo%}" alt="Logo">
+				</a>
+			</div>
+			<div class="rp">
+				<div class="nav-link-holder">
+					<span class="go-back" onclick="SMColibri.go_back();">
+						<?php echo cl_ficon('arrow_back'); ?>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<center>
+		<div class="timeline-game">
+			<h2 class="p-2 m-2"><?php echo cl_translate("Spin game"); ?></h2>
+			<div class="d-none justify-content-center align-items-center">
+				<label for="selectStore" class="col-2"><?php echo cl_translate("Select store:"); ?></label>
+				<div class="col-9">
+					<select name="selectStore" id="selectStore" class="m-2 form-select col-9">
+						<option value=""><?php echo cl_translate("Select store"); ?></option>
+						<?php
+						if ($result->num_rows > 0) {
+							foreach ($result as $row) {
+								$store_id[] = $row['id'];
+								$name[] = $row['shop_name'];
+						?>
+								<option value=" <?= $row['id'] ?>"><?= $row['shop_name'] ?></option>
+							<?php } ?>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+			<div class="d-flex align-items-center justify-content-center">
+				<label for="themes" class="col-2 text-end"><?php echo cl_translate("Select store:"); ?></label>
+				<div class="col-9">
+					<select class="form-select store-api m-2 p-2" id="themes"></select>
+				</div>
+			</div>
+			<div class="gui-wrapper bg-success text-white rounded-3 p-2 m-2">
+				<div class="justify-content-center">
+					<?php
+					if ($result->num_rows > 1) {
+						foreach ($store_id as $s) {
+							$sql_game = "SELECT * FROM cl_game WHERE store_id = $s AND status = 1";
+							$result_game = conn()->query($sql_game);
+							if ($result_game->num_rows > 0) {
+								foreach ($result_game as $row_game) {
+									$props[] = $row_game['props'];
+									$themes[] = $row_game['themes'];
+									$game_id[] = $row_game['id'];
+									$attr = json_decode($row_game['props'], true);
+									$value = choose_prize($attr);
+									$prizes[] = $value['value'];
+								}
+							}
+						}
+						$prop = implode('|', $props);
+						$theme = implode('|', $themes);
+						$prize = implode('|', $prizes);
+						$names = implode('|', $name);
+						$store_ids = implode('|', $store_id);
+						$game_ids = implode('|', $game_id);
+					?>
+						<h3 class="p-2 m-2"><?= cl_translate('You choosing') ?> <span class="store-name fs-3"></span></h3>
+						<input type="hidden" name="" id="propsWheel" data-name="<?= $names ?>" data-user="<?= $me['id'] ?>" data-store="<?= $store_ids ?>" data-game="<?= $game_ids ?>" data-prop='<?= $prop ?>' data-themes='<?= $theme ?>'>
+						<input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
+						<!-- else -->
+						<?php } elseif ($result->num_rows > 0) {
+						$s = $row['id'];
+						$sql_game = "SELECT * FROM cl_game WHERE store_id = $s AND status = 1";
+						$result_game = conn()->query($sql_game);
+						if ($result_game->num_rows > 0) {
+							foreach ($result_game as $row_game) {
+								$attr = json_decode($row_game['props'], true);
+								$value = choose_prize($attr);
+								$prize = $value['value'];
+						?>
+								<h3 class="p-2 m-2"><?= cl_translate('You choosing') . ' ' . $row['shop_name'] ?></h3>
+								<input type="hidden" name="" id="propsWheel" data-name="<?= $row['shop_name'] ?>" data-user="<?= $me['id'] ?>" data-store="<?= $s ?>" data-game="<?= $row_game['id'] ?>" data-prop='<?= $row_game['props'] ?>' data-themes='<?= $row_game['themes'] ?>'>
+								<input type="hidden" id="tokenApi" value="<?= get_random_number() . $prize . get_random_number() ?>">
+							<?php } ?>
+						<?php } ?>
+					<?php } ?>
+				</div>
+			</div>
+			<div class="wheel-wrapper"></div>
+			<div class="text-center">
+				<button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-2">
+					<span class="fs-4">Spin</span>
+				</button>
+			</div>
+		</div>
+	</center>
+</div>
+<?php echo cl_template('subscriptions/scripts/app_master_script'); ?>

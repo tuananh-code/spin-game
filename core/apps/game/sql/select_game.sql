@@ -1,0 +1,1 @@
+SELECT * FROM `<?= $data['t_game'] ?>` WHERE store_id = <?= $data['store_id'] ?> AND status = 1
