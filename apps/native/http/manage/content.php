@@ -37,6 +37,13 @@ else {
 		"limit"       => 50
 	));
 
+	$cl["edit_details"] = ($cl["page_tab"] == 'edit_invoice') ? cl_get_transaction_details($_GET["id"]) : '';
+
+	foreach ($cl["edit_details"] as $key => $value) {
+		if (!$value) {
+			$cl["edit_details"][$key] = '';
+		}
+	}
 	$cl["total_transactions"] = cl_get_total_transactions($cl["page_tab"]);
 	$cl["http_res"]     = cl_template("manage/content");
 }

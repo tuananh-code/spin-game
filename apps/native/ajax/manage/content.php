@@ -21,11 +21,6 @@ if ($me['admin'] == 0) {
     $data['error']  = 'You do not have access';
 }
 
-if (empty($cl["is_logged"])) {
-    $data['status'] = 400;
-    $data['error']  = 'Invalid access token';
-}
-
 else if ($action == "ccode_exists") {
     $user = cl_get_user_by_code($_POST['ccode']);
     $data['status'] = 200;
@@ -54,7 +49,7 @@ else if ($action == "save_invoice") {
         'amount'       => str_replace(',', '', $_POST['amount']),
         'weight'       => fetch_or_get($_POST['weight'],null)
 	);
-    // var_dump($transaction_data_fields);die;
+    
 	foreach ($transaction_data_fields as $field_name => $field_val) {
         if ($field_name == 'code') {
             if (empty($field_val)) {

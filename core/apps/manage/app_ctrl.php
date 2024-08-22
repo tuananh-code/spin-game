@@ -77,7 +77,26 @@ function cl_get_transactions($args = array()) {
 	return $data;
 }
 
-function cl_get_total_transactions($type = false) {
+function cl_get_transaction_details($id)
+{
+	global $db, $cl, $me;
+
+	$sql_query     = cl_sqltepmlate('apps/manage/sql/fetch_details', array(
+		't_transactions' => T_TRANSACTION,
+		'user_id'  => $me['id'],
+		'id_transaction'  => $id
+	));
+
+	$transaction = $db->rawQueryOne($sql_query);
+
+	if (!cl_queryset($transaction)) {
+		$transaction = '';
+	}
+
+	return $transaction;
+}
+
+function cl_get_total_transactions() {
 	global $db, $cl, $me;
 
 	$sql_query     = cl_sqltepmlate('apps/manage/sql/fetch_total', array(

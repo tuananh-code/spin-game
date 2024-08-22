@@ -25,6 +25,7 @@ RewriteEngine On
      
 RewriteRule ^manage(\/|)$ index.php?app=manage&page=inv [QSA]
 RewriteRule ^list(\/|)$ index.php?app=manage&page=list [QSA]
+RewriteRule ^edit_invoice/([0-9]+)(\/|)$ index.php?app=manage&page=edit_invoice&id=$1 [QSA]
 
 RewriteRule ^/$ index.php?app=home [QSA]
 RewriteRule ^language/(\w{2,25})(\/|)$ index.php?app=home&language=$1 [QSA]

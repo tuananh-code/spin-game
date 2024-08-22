@@ -1311,7 +1311,7 @@
 				if (window.mobileCheck()) {
 					_smc.hide_sb();
 				}
-
+				console.log(url);
 				$.ajax({
 					url: url,
 					type: 'GET',
@@ -1330,8 +1330,12 @@
 						$(window).scrollTop(0);
 
 						cl_close_all_modals();
+					},
+					error: function(xhr, status, error) {
+						console.log('Error:', error);
 					}
 				}).done(function(data = {}) {
+					console.log(data.status);
 
 					if (data.status == 200) {
 						var prevapp = _smc.curr_pn;
