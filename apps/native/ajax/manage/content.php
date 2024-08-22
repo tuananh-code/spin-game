@@ -31,7 +31,7 @@ else if ($action == "ccode_exists") {
     }
 }
 
-else if ($action == "save_invoice") {
+else if ($action == "cread_invoice") {
 	$data['err_code'] =  0;
     $data['status']   =  400;
     $user = cl_get_user_by_code($_POST['ccode']);
@@ -90,8 +90,66 @@ else if ($action == "save_invoice") {
         $data['status'] = 200;
         cl_db_insert('cl_transaction', $transaction_data_fields);
     }
-}
+} 
 
+else if ($action == "save_invoice") {
+    $data['err_code'] =  0;
+    $data['status']   =  400;
+    $user = cl_get_user_by_code($_POST['ccode']);
+    $transaction_data_fields =  array(
+        'cname'       => fetch_or_get($_POST['cname'], null),
+        'pname'       => fetch_or_get($_POST['pname'], null),
+        'business_id'       => $me["id"],
+        'customer_id'       => $user ? $user["id"] : null,
+        'phone'       => fetch_or_get($_POST['phone'], null),
+        'ccode'       => fetch_or_get($_POST['ccode'], null),
+        'pcode'       => fetch_or_get($_POST['pcode'], null),
+        'qty'       => fetch_or_get($_POST['qty'], null),
+        'email'       => fetch_or_get($_POST['email'], null),
+        'created_at'       => fetch_or_get($_POST['time'], null),
+        'amount'       => str_replace(',', '', $_POST['amount']),
+        'weight'       => fetch_or_get($_POST['weight'], null)
+    );
+
+    foreach ($transaction_data_fields as $field_name => $field_val) {
+        if ($field_name == 'code') {
+            if (empty($field_val)) {
+                // $data['err_code'] = "invalid_ccode"; break;
+            } else if (len_between($field_val, 10, 25) != true) {
+                $data['err_code'] = "invalid_ccode";
+                break;
+            }
+
+            // else if (preg_match('/^[\w]+$/', $field_val) != true) {
+            //     $data['err_code'] = "invalid_uname"; break;
+            // }
+
+            // else if(cl_uname_exists($field_val) && $field_val != $me['raw_uname']) {
+            //     $data['err_code'] = "doubling_uname"; break;
+            // }
+
+            // else if(in_array($field_val, $username_restricts) && $field_val != $me['raw_uname']) {
+            //     $data['err_code'] = "denied_uname"; break;
+            // }
+        } else if ($field_name == 'phone') {
+            if (empty($field_val) || len_between($field_val, 3, 25) != true) {
+                $data['err_code'] = "invalid_phone";
+                break;
+            }
+        } else if ($field_name == 'amount') {
+
+            if (empty($field_val) && ($field_val != 0)) {
+                $data['err_code'] = "invalid_amount";
+                break;
+            }
+        }
+    }
+
+    if (empty($data['err_code'])) {
+        $data['status'] = 200;
+        cl_db_insert('cl_transaction', $transaction_data_fields);
+    }
+}
 else if ($action == "save_profile_email") {
     $data['err_code'] = 0;
     $data['status']   = 400;

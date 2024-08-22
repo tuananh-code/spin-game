@@ -29,16 +29,17 @@
 				invalid_feedback_ccode: "",
 				invalid_feedback_pcode: "",
 				invalid_feedback_email: "",
-				cname: "",
-				pname: "",
-				qty: "",
-				amount: "",
-				phone: "",
-				email: "",
-				ccode: "",
-				weight: "",
-				ccode: "",
-				pcode: "",
+				id: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['id'] : ''; ?>",
+				cname: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['cname'] : ''; ?>",
+				pname: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['pname'] : ''; ?>",
+				qty: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['qty'] : ''; ?>",
+				amount: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['amount'] : ''; ?>",
+				phone: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['phone'] : ''; ?>",
+				email: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['email'] : ''; ?>",
+				ccode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['ccode'] : ''; ?>",
+				weight: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['weight'] : ''; ?>",
+				ccode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['ccode'] : ''; ?>",
+				pcode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['pcode'] : ''; ?>",
 				time: formattedTime,
 				ccode_exist: false,
 				ccode_format: false
@@ -259,7 +260,10 @@
 				cname: {
 					// required: VueValids.required,
 					min_length: VueValids.minLength(2),
-					max_length: VueValids.maxLength(25),
+					max_length: VueValids.maxLength(25)
+				},
+				id: {
+					<?php echo $cl["edit_details"] ? "required : VueValids.required" : ''; ?>
 				},
 				pname: {
 					required: VueValids.required,
@@ -445,9 +449,10 @@
 					_self.preventDefault();
 
 					var _app_ = this;
+					url = _app_.id ? "<?php echo cl_link("native_api/manage/save_invoice"); ?>" : "<?php echo cl_link("native_api/manage/cread_invoice"); ?>"
 
 					$(_self.target).ajaxSubmit({
-						url: "<?php echo cl_link("native_api/manage/save_invoice"); ?>",
+						url: url,
 						type: 'POST',
 						dataType: 'json',
 						beforeSend: function() {
