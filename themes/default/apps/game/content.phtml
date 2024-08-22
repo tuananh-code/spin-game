@@ -90,27 +90,17 @@ $result = conn()->query($sql);
         </div>
 
         <div class="text-center">
-            <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-2 add-prize"><?php echo cl_translate("Add prize"); ?></button>
-            <!-- <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-2 clear-prize"><?php echo cl_translate("Clear"); ?></button> -->
+            <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-pill add-prize"><?php echo cl_translate("Add prize"); ?></button>
+            <!-- <button class="ml-auto btn btn-custom main-inline lg add-prize"><?php echo cl_translate("Add prize"); ?></button> -->
+            
+            <!-- <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-pill clear-prize"><?php echo cl_translate("Clear"); ?></button> -->
         </div>
     </form>
     <form action="" class="p-2">
         <h2 class="text-center text-primary">
             <?php echo cl_translate("Condition"); ?>
         </h2>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="store_condition" class="col-2 text-end"><?php echo cl_translate("Select Store:"); ?></label>
-            <div class="col-9">
-                <select class="form-select store_condition m-2 p-2" id="store_condition">
-                    <?php if ($result->num_rows > 0) {
-                        foreach ($result as $row) {
-                            $store_id[] = $row['id']; ?>
-                            <option value="<?= $row['id']; ?>"><?= $row['shop_name']; ?></option>
-                        <?php } ?>
-                    <?php } ?>
-                </select>
-            </div>
-        </div>
+      
         <div class="d-flex align-items-center justify-content-center">
             <label for="buy" class="col-2 text-end"><?php echo cl_translate("Buy:"); ?></label>
             <div class="require-buy col-9">
@@ -142,7 +132,7 @@ $result = conn()->query($sql);
             </div>
         </div>
         <div class="text-center">
-            <button class="col-3 p-2 m-2 text-white btn-primary border-0 rounded-2 add-condition"><?php echo cl_translate("Add conditions"); ?></button>
+            <button class="col-3 p-2 m-2 text-white btn-primary border-0 rounded-pill add-condition"><?php echo cl_translate("Add conditions"); ?></button>
         </div>
     </form>
     <div class="d-flex align-items-center justify-content-center">
@@ -152,7 +142,7 @@ $result = conn()->query($sql);
         </div>
     </div>
     <div class="text-center">
-        <button class="col-2 p-2 m-2 text-white btn-primary border-0 rounded-2 publish-prize"><?php echo cl_translate("Publish"); ?></button>
+        <button class="col-2 p-2 m-2 text-white btn-primary border-0 rounded-pill publish-prize"><?php echo cl_translate("Publish"); ?></button>
     </div>
     <?php //endif; 
     ?>
@@ -165,7 +155,7 @@ $result = conn()->query($sql);
     ?>
         <div class="timeline-game">
             <div class="timeline-placeholder">
-                <div class="gui-wrapper">
+                <div class="">
                     <div>
                         <?php if ($result_game->num_rows > 0) {
                             foreach ($result_game as $row) {

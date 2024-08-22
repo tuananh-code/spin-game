@@ -116,6 +116,8 @@ if (empty($cl['is_logged'])) {
         $user = $_POST['user'];
         $store = $_POST['store'];
         $game = $_POST['game'];
+        $update = update_prize($game, $prize);
+        $status = cl_db_update(T_GAME, array('store_id' => $store),array('props' => $update));
         $id = cl_db_insert(T_PRIZE, array(
             // "user_id" => $me['id'],
             "prize" => $prize,

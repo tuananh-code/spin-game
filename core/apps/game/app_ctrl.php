@@ -113,3 +113,53 @@ function select_game($store_id)
         return $data;
     }
 }
+function update_prize($game, $prize)
+{
+    global $db, $cl, $me;
+    $sql_prop = cl_sqltepmlate("apps/game/sql/select_prop", array(
+        't_game' => T_GAME,
+        'game_id' => $game,
+    ));
+    $sql_prop = $db->rawQuery($sql_prop);
+    if (cl_queryset($sql_prop)) {
+        foreach ($sql_prop as $row) {
+            $props = $row['props'];
+        }
+    }
+    $prop = json_decode($props, true);
+    foreach ($prop as $key => &$p) { // Use & to modify the array by reference
+        if ($prize == $p['prize']) {
+            if ($p['stock'] == 1) {
+                // Remove the element from the array
+                unset($prop[$key]);
+                // Find the largest percent (only run if a prize was removed)
+                $largestPercent = 0;
+                $largestPercentKey = null;
+                foreach ($prop as $k => $item) {
+                    if ((int)$item['percent'] > $largestPercent) {
+                        $largestPercent = (int)$item['percent'];
+                        $largestPercentKey = $k;
+                    }
+                }
+                if ($largestPercentKey !== null) {
+                    $prop[$largestPercentKey]['percent'] = (int)$prop[$largestPercentKey]['percent'] + (int)$p['percent'];
+                }
+            } else {
+                // Update the stock
+                $p['stock'] = $p['stock'] - 1;
+            }
+            break; // Exit the loop after finding the prize
+        }
+    }
+    $newProps = [];
+    $value = 0;
+
+    foreach ($prop as $item) {
+        $item['value'] = $value;
+        $newProps[] = $item;
+        $value++;
+    }
+    $props = json_encode($newProps);
+    return $props;
+    // die;
+}

@@ -47,5 +47,4 @@ define("T_SUBSCRIPTIONS", "cl_subscriptions");
 define("T_GAME", "cl_game");
 define("T_STORE", "cl_store");
 define("T_PRIZE", "cl_prize");
-define("T_CONDITIONS", "cl_conditions");
-// define("T_STORE", "cl_store");
+define("T_TRANSACTION", "cl_transaction");

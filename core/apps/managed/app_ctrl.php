@@ -66,4 +66,3 @@ function add_store($id, $store, $address, $city, $phone, $mail)
 
     // return $args;
 }
-function show_store() {}

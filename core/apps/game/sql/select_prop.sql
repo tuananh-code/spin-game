@@ -1,0 +1,1 @@
+SELECT props FROM `<?= $data['t_game'] ?>` WHERE id = <?= $data['game_id'] ?> AND status = 1

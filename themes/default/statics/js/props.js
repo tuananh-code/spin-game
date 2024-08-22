@@ -9,6 +9,7 @@ export function setupWheel() {
     var names = $("#propsWheel").attr("data-name").split("|");
     var stores = $("#propsWheel").attr("data-store").split("|");
     var games = $("#propsWheel").attr("data-game").split("|");
+    var events = $("#propsWheel").attr("data-event").split("|");
     var tokenApi = $("#tokenApi").val();
     var tokens = tokenApi.match(/\d+/g);
     // Extract the tokens from the matches
@@ -18,6 +19,7 @@ export function setupWheel() {
       themes = JSON.parse(themess[i]);
       var attr = proper[i];
       var name = names[i];
+      var event = events[i];
       var items = $.map(prop, function (item) {
         return { label: item.prize };
       });
@@ -36,7 +38,7 @@ export function setupWheel() {
 
       props.push({
         // Add the prop object to the props array
-        name: name,
+        name: name + ': ' + event,
         radius: radius,
         itemLabelRadius: itemLabelRadius,
         itemLabelRadiusMax: itemLabelRadiusMax,

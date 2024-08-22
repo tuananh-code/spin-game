@@ -10,7 +10,7 @@ export const props = [
     itemLabelAlign: AlignText.left,
     itemLabelColors: ["#fff"],
     itemLabelBaselineOffset: -0.07,
-    itemLabelFont: "monospace",
+    itemLabelFont: "system-ui",
     itemLabelFontSizeMax: 20,
     itemBackgroundColors: [
       "#ffc93c",

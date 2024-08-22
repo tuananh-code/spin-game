@@ -41,24 +41,24 @@
 				}
 			}
 			// return;
-			console.log(store);
-			return;
 			var user = $('#propsWheel').attr('data-user');
-			// var ticket = '<?php //echo get_ticket($me['id'], $store); ?>';
-			if (ticket > 0) {
-				setTimeout(function() {
-					$.ajax({
-						url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
-						type: 'POST',
-						data: {
-							name: name,
-							user: user,
-							store: store,
-							game: game,
-						},
-						beforeSend: function() {},
-						success: function(result) {
-							if (result.status == 200) {
+			// var ticket = '<?php //echo get_ticket($me['id'], $store); 
+								?>';
+			// if (ticket > 0) {
+			if (token) {
+				$.ajax({
+					url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
+					type: 'POST',
+					data: {
+						name: name,
+						user: user,
+						store: store,
+						game: game,
+					},
+					beforeSend: function() {},
+					success: function(result) {
+						if (result.status == 200) {
+							setTimeout(function() {
 								$('#spin').attr('disabled', false);
 								$('.store-api').attr('disabled', false);
 								Swal.fire({
@@ -70,13 +70,13 @@
 									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
 								}).then((result) => {
 									if (result.isConfirmed) {
-										// window.location.reload(); // Reload the page on OK click
+										window.location.reload(); // Reload the page on OK click
 									}
 								});
-							}
+							}, 4500); // Initial delay of 4500ms before sending the AJAX request
 						}
-					});
-				}, 4500); // Initial delay of 4500ms before sending the AJAX request
+					}
+				});
 			} else {
 				Swal.fire({
 					title: "<?php echo cl_translate("Warning"); ?>",

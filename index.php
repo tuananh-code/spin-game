@@ -26,7 +26,6 @@ $spa_data = array();
 $site_url = parse_url($site_url);
 $cl["curr_url"] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
 if (is_array($site_url)) {
-	// var_dump($site_url['host'] != fetch_or_get($_SERVER['HTTP_HOST'], 'none'));die;
 	if ($site_url['host'] != fetch_or_get($_SERVER['HTTP_HOST'], 'none')) {
 		// cl_redirect("/");
 	}

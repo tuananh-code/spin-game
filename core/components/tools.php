@@ -1666,13 +1666,23 @@ function get_ticket($id, $store_id)
     $sql = "SELECT * FROM cl_ticket WHERE id = $id AND store_id = $store_id";
     $result = conn()->query($sql);
     if ($result->num_rows > 0) {
-        foreach($result as $row){
+        foreach ($result as $row) {
             $ticket['ticket'] = $row['ticket'];
         }
     }
     return $ticket['ticket'];
 }
-
+function get_store_name($game_id)
+{
+    $sql = "SELECT * FROM cl_store WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['shop_name'];
+        }
+    }
+    return $name;
+}
 function choose_prize($attr)
 {
     $randomNumber = rand(1, 10000);

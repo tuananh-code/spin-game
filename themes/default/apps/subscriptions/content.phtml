@@ -31,6 +31,8 @@ $result = conn()->query($sql);
 	</div>
 	<center>
 		<div class="timeline-game">
+			<!--  -->
+			<!--  -->
 			<h2 class="p-2 m-2"><?php echo cl_translate("Spin game"); ?></h2>
 			<div class="d-none justify-content-center align-items-center">
 				<label for="selectStore" class="col-2"><?php echo cl_translate("Select store:"); ?></label>
@@ -50,12 +52,12 @@ $result = conn()->query($sql);
 				</div>
 			</div>
 			<div class="d-flex align-items-center justify-content-center">
-				<label for="themes" class="col-2 text-end"><?php echo cl_translate("Select store:"); ?></label>
-				<div class="col-9">
+				<label for="themes" style="width:27%" class="text-end"><?php echo cl_translate("Select store and game:"); ?></label>
+				<div class="col-8">
 					<select class="form-select store-api m-2 p-2" id="themes"></select>
 				</div>
 			</div>
-			<div class="gui-wrapper bg-success text-white rounded-3 p-2 m-2">
+			<div class="gui-wrapper bg-success text-white rounded-pill p-2 m-2">
 				<div class="justify-content-center">
 					<?php
 					if ($result->num_rows > 1) {
@@ -64,24 +66,37 @@ $result = conn()->query($sql);
 							$result_game = conn()->query($sql_game);
 							if ($result_game->num_rows > 0) {
 								foreach ($result_game as $row_game) {
-									$props[] = $row_game['props'];
-									$themes[] = $row_game['themes'];
-									$game_id[] = $row_game['id'];
-									$attr = json_decode($row_game['props'], true);
-									$value = choose_prize($attr);
-									$prizes[] = $value['value'];
+									if ($result_game->num_rows > 0) {
+										$props[] = $row_game['props'];
+										$themes[] = $row_game['themes'];
+										$game_id[] = $row_game['id'];
+										$events[] = $row_game['game_name'];
+										$attr = json_decode($row_game['props'], true);
+										$value = choose_prize($attr);
+										// var_dump($attr, $value);die;
+										$prizes[] = $value['value'];
+										$store_id_game[] = $row_game['store_id'];
+										// $store_id[] = $row['shop_name'];
+										$name_game[] = get_store_name($row_game['store_id']);
+									}
 								}
 							}
 						}
 						$prop = implode('|', $props);
 						$theme = implode('|', $themes);
 						$prize = implode('|', $prizes);
-						$names = implode('|', $name);
-						$store_ids = implode('|', $store_id);
 						$game_ids = implode('|', $game_id);
+						$event = implode('|', $events);
+						if (@$store_id_game) {
+							$names = implode('|', $name_game);
+							$store_ids = implode('|', $store_id_game);
+						} else {
+							$names = implode('|', $name);
+							$store_ids = implode('|', $store_id);
+						}
 					?>
-						<h3 class="p-2 m-2"><?= cl_translate('You choosing') ?> <span class="store-name fs-3"></span></h3>
-						<input type="hidden" name="" id="propsWheel" data-name="<?= $names ?>" data-user="<?= $me['id'] ?>" data-store="<?= $store_ids ?>" data-game="<?= $game_ids ?>" data-prop='<?= $prop ?>' data-themes='<?= $theme ?>'>
+						<h3 class="p-2 m-2"><?= cl_translate('You choosing Store') ?> <span class="store-name fs-3"></span></h3>
+						<input type="hidden" name="" id="propsWheel" data-name="<?= $names ?>" data-event="<?= $event ?>" data-user="<?= $me['id'] ?>" data-store="<?= $store_ids ?>" data-game="<?= $game_ids ?>" data-prop='<?= $prop ?>' data-themes='<?= $theme ?>'>
 						<input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
 						<!-- else -->
 						<?php } elseif ($result->num_rows > 0) {
@@ -104,7 +119,7 @@ $result = conn()->query($sql);
 			</div>
 			<div class="wheel-wrapper"></div>
 			<div class="text-center">
-				<button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-2">
+				<button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
 					<span class="fs-4">Spin</span>
 				</button>
 			</div>
