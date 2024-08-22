@@ -42,7 +42,8 @@ $result = conn()->query($sql);
                 <select class="form-select store_id m-2 p-2" id="store_id">
                     <?php if ($result->num_rows > 0) {
                         foreach ($result as $row) {
-                            $store_id[] = $row['id']; ?>
+                            $store_id[] = $row['id'];
+                            $store_name[] = $row['shop_name']; ?>
                             <option value="<?= $row['id']; ?>"><?= $row['shop_name']; ?></option>
                         <?php } ?>
                     <?php } ?>
@@ -74,6 +75,12 @@ $result = conn()->query($sql);
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
+            <label for="expires-event" class="col-2 text-end"><?php echo cl_translate("Expires Event:"); ?></label>
+            <div class="require-expires-event col-9">
+                <input type="datetime-local" name="expires-event" id="expires-event" class="form-control m-2 p-2" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
             <label for="status" class="col-2 text-end"><?php echo cl_translate("Status:"); ?></label>
             <div class="col-9">
                 <select class="form-select status m-2 p-2" id="status">
@@ -92,7 +99,7 @@ $result = conn()->query($sql);
         <div class="text-center">
             <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-pill add-prize"><?php echo cl_translate("Add prize"); ?></button>
             <!-- <button class="ml-auto btn btn-custom main-inline lg add-prize"><?php echo cl_translate("Add prize"); ?></button> -->
-            
+
             <!-- <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-pill clear-prize"><?php echo cl_translate("Clear"); ?></button> -->
         </div>
     </form>
@@ -100,7 +107,7 @@ $result = conn()->query($sql);
         <h2 class="text-center text-primary">
             <?php echo cl_translate("Condition"); ?>
         </h2>
-      
+
         <div class="d-flex align-items-center justify-content-center">
             <label for="buy" class="col-2 text-end"><?php echo cl_translate("Buy:"); ?></label>
             <div class="require-buy col-9">
@@ -136,9 +143,22 @@ $result = conn()->query($sql);
         </div>
     </form>
     <div class="d-flex align-items-center justify-content-center">
-        <label for="setup" class="col-2"><?php echo cl_translate("Prize setup:"); ?></label>
+        <label for="setup" class="col-2 text-end"><?php echo cl_translate("Prize setup:"); ?></label>
         <div class="col-9">
-            <select name="setup" id="setup" class="form-select setup m-2"></select>
+            <select name="setup" id="setup" class="form-select setup m-2 p-2">
+                <?php
+                for ($i = 0; $i < count($store_id); $i++) {
+                    $id = $store_id[$i];
+                    $store = $store_name[$i];
+                    $sql_draft = "SELECT * FROM cl_game WHERE store_id = $id AND status = 0 ORDER BY id DESC";
+                    $result_draft = conn()->query($sql_draft);
+                    if ($result_draft->num_rows > 0) {
+                        foreach ($result_draft as $row) { ?>
+                            <option value="<?= $row['id'] ?>"><?= $store . ': ' . $row['game_name'] ?></option>
+                        <?php } ?>
+                    <?php } ?>
+                <?php } ?>
+            </select>
         </div>
     </div>
     <div class="text-center">
@@ -154,7 +174,7 @@ $result = conn()->query($sql);
         $result_game = conn()->query($sql_game);
     ?>
         <div class="timeline-game">
-            <div class="timeline-placeholder">
+            <div class="">
                 <div class="">
                     <div>
                         <?php if ($result_game->num_rows > 0) {

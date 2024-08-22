@@ -61,6 +61,7 @@
 			var percent = $('#percent').val();
 			var stock = $('#stock').val();
 			var themes = $('#themes').val();
+			var expiresEvent = $('#expires-event').val();
 			var status = $('#status').val();
 			var store_id = $('#store_id').val();
 			//check list
@@ -144,6 +145,7 @@
 					event: event,
 					percent: percent,
 					stock: stock,
+					expiresEvent: expiresEvent,
 					status: status,
 					store_id: store_id,
 					themes: themes
@@ -333,6 +335,40 @@
 			}
 
 		})
-
+		$('.publish-prize').on('click', function() {
+			var id = $('#setup').val();
+			$.ajax({
+				url: '<?php echo cl_link("native_api/game/publish"); ?>',
+				type: 'POST',
+				data: {
+					id: id,
+				},
+				success: function(result) {
+					if (result.status == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Publish event success!"); ?>",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else {
+						Swal.fire({
+							title: "<?php echo cl_translate("Warning"); ?>",
+							text: "<?php echo cl_translate("Something Wrong, Try again later!"); ?>",
+							icon: "warning",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					}
+				}
+			})
+		})
 	});
 </script>

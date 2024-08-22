@@ -43,30 +43,22 @@ function add_game($id, $event)
     // $id = $me['id'];
     // var_dump($get_store);
     $data = array();
-    $sql_store = cl_sqltepmlate("apps/game/sql/game", array(
-        't_store' => T_STORE,
-        'user_id' => $id,
+
+    $sql_exist = cl_sqltepmlate("apps/game/sql/exist", array(
+        't_game' => T_GAME,
+        'store_id' => $id,
+        'game' => $event,
     ));
-    $sql_store = $db->rawQuery($sql_store);
-    if (cl_queryset($sql_store)) {
-        foreach ($sql_store as $row) {
-            $sql_exist = cl_sqltepmlate("apps/game/sql/exist", array(
-                't_game' => T_GAME,
-                'store_id' => $row['id'],
-                'game' => $event,
-            ));
-            $exist = $db->rawQuery($sql_exist);
-            if (cl_queryset($exist)) {
-                $check = true;
-            } else {
-                $data['status'] = 200;
-                return $data;
-            }
-        }
-        if ($check) {
-            $data['status'] = 500;
-            return $data;
-        }
+    $exist = $db->rawQuery($sql_exist);
+    if (cl_queryset($exist)) {
+        $check = true;
+    } else {
+        $data['status'] = 200;
+        return $data;
+    }
+    if ($check) {
+        $data['status'] = 500;
+        return $data;
     }
 }
 function add_condition($store_condition, $buy, $limit, $quantity, $expires, $join)

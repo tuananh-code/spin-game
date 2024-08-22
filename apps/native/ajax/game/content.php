@@ -36,11 +36,17 @@ if (empty($cl['is_logged'])) {
         $themes = $_POST['themes'];
         $status = $_POST['status'];
         $store_id = $_POST['store_id'];
+        if ($_POST['expiresEvent']) {
+            $expires_event = str_replace('T', ' ', $_POST['expiresEvent']);
+            $expires_event .= ':00';
+        } else {
+            $expires_event = null;
+        }
         $prizes = explode(',', $_POST['prize']);
         $percents = explode(',', $_POST['percent']);
         $stocks = explode(',', $_POST['stock']);
         //handle game
-        $data = add_game($me['id'], $event);
+        $data = add_game($store_id, $event);
         if ($data['status'] == 500) {
             return $data;
         } else {
@@ -80,7 +86,6 @@ if (empty($cl['is_logged'])) {
                 ];
             }
             $props = json_encode($attr);
-
             $id = cl_db_insert(T_GAME, array(
                 // "user_id" => $me['id'],
                 "game_name" => $event,
@@ -88,7 +93,8 @@ if (empty($cl['is_logged'])) {
                 "props" => $props,
                 "status" => $status,
                 "store_id" => $store_id,
-                "created_at" => $date
+                "created_at" => $date,
+                "expires_date" => $expires_event
             ));
             if ($id) {
                 $data['status'] = 200;
@@ -117,7 +123,7 @@ if (empty($cl['is_logged'])) {
         $store = $_POST['store'];
         $game = $_POST['game'];
         $update = update_prize($game, $prize);
-        $status = cl_db_update(T_GAME, array('store_id' => $store),array('props' => $update));
+        $status = cl_db_update(T_GAME, array('store_id' => $store), array('props' => $update));
         $id = cl_db_insert(T_PRIZE, array(
             // "user_id" => $me['id'],
             "prize" => $prize,
@@ -127,6 +133,15 @@ if (empty($cl['is_logged'])) {
             "created_at" => $date
         ));
         if ($id) {
+            $data['status'] = 200;
+        } else {
+            $data['status'] = 400;
+        }
+        return $data;
+    } elseif ($action == 'publish') {
+        $game = $_POST['id'];
+        $status = cl_db_update(T_GAME, array('id' => $game), array('status' => 1));
+        if ($status) {
             $data['status'] = 200;
         } else {
             $data['status'] = 400;
