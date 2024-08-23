@@ -28,9 +28,11 @@ function cl_get_transactions($args = array()) {
 
     $args   = array_merge($options, $args);
     $limit  = $args['limit'];
+	$offset  = $args['offset'];
 	$sql    = cl_sqltepmlate('apps/manage/sql/fetch_transactions', array(
 		't_transaction' => T_TRANSACTION,
 		'user_id'  => $me['id'],
+		'offset'  => $offset,
 		'limit'  => $limit
 	));
 	$transactions = $db->rawQuery($sql);
@@ -73,7 +75,6 @@ function cl_get_transactions($args = array()) {
 		// 	$qr = $db->update(T_NOTIFS, array('status' => '1'));
 		// }
 	}
-
 	return $data;
 }
 

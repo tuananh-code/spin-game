@@ -10,7 +10,7 @@
 		Vue.use(window.vuelidate.default);
 		var VueValids = window.validators;
 
-		SMColibri.PS.notifs = new Vue({
+		SMColibri.PS.manage = new Vue({
 			el: "#vue-manage-app",
 			data: {
 				selected: {},
@@ -327,7 +327,7 @@
 								}
 							}).done(function(data) {
 								if (data.status == 200) {
-									notifs_ls.append($(data.html));
+									transactions_ls.append($(data.html));
 								} else {
 									_app_.loadmore = false;
 								}
@@ -340,9 +340,9 @@
 				delete_transactions: function(id = false) {
 					var _app_ = this;
 
+
 					if (id) {
 						var transactions_ls = $(_app_.$el).find('[data-an="transactions-list"]');
-
 						$.ajax({
 							url: '<?php echo cl_link("native_api/manage/delete"); ?>',
 							type: 'POST',
@@ -439,12 +439,6 @@
 					this.phone = ''
 					this.email = ''
 				},
-				handleDismissP() {
-					this.pname = ''
-					this.weight = ''
-					this.qty = ''
-					this.pcode = ''
-				},
 				submit_form: function(_self = null) {
 					_self.preventDefault();
 
@@ -462,8 +456,15 @@
 						},
 						success: function(data) {
 							if (data.status == 200) {
-								handleDismissP();
+								if (_app_.id) {
+									$("#list").click();
+								}
 								cl_bs_notify("<?php echo cl_translate("Your changes has been successfully saved!"); ?>", 5000, "success");
+								_app_.pname = ''
+								_app_.weight = ''
+								_app_.qty = ''
+								_app_.pcode = ''
+								_app_.amount = ''
 								// } else if (data.err_code && data.err_code == 'invalid_phone') {
 								// 	_app_.qty_taken = true;
 

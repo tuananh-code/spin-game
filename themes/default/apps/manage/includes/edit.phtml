@@ -37,7 +37,7 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						<label><?php echo cl_translate("Email:"); ?></label>
-						<input v-model.trim="$v.phone.$model" v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: example@gmail.com"); ?>">
+						<input v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: example@gmail.com"); ?>">
 						<div class="invalid-main-feedback" v-if="is_valid_email">
 							{{invalid_feedback_email}}
 						</div>

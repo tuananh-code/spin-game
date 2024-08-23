@@ -54,28 +54,29 @@
 
 					if(id) {
 						var notifs_ls = $(_app_.$el).find('[data-an="notifs-list"]');
+						console.log();
+						
+						// $.ajax({
+						// 	url: '<?php echo cl_link("native_api/notifications/delete"); ?>',
+						// 	type: 'POST',
+						// 	dataType: 'json',
+						// 	data: {id: id},
+						// }).done(function(data) {
+						// 	if (data.status == 200) {
+						// 		notifs_ls.find('div[data-list-item="{0}"]'.format(id)).slideUp(150, function() {
+						// 			$(this).remove();
 
-						$.ajax({
-							url: '<?php echo cl_link("native_api/notifications/delete"); ?>',
-							type: 'POST',
-							dataType: 'json',
-							data: {id: id},
-						}).done(function(data) {
-							if (data.status == 200) {
-								notifs_ls.find('div[data-list-item="{0}"]'.format(id)).slideUp(150, function() {
-									$(this).remove();
-
-									if (notifs_ls.find('div[data-list-item]').length < 1) {
-										SMColibri.spa_reload(500);
-									}
-								});
-							}
-							else {
-								SMColibri.errorMSG();
-							}
-						}).always(function() {
-							$("div.confirm-actions-modal").modal("hide");
-						});
+						// 			if (notifs_ls.find('div[data-list-item]').length < 1) {
+						// 				SMColibri.spa_reload(500);
+						// 			}
+						// 		});
+						// 	}
+						// 	else {
+						// 		SMColibri.errorMSG();
+						// 	}
+						// }).always(function() {
+						// 	$("div.confirm-actions-modal").modal("hide");
+						// });
 					}
 				},
 				delete_all_notifs: function() {

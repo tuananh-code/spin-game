@@ -16,6 +16,10 @@
   background: aliceblue;
 }
 
+.hide{
+  display: none;
+}
+
 @media (max-width: 1199.98px) {
   :root {
     --cl-primary-avatar-size: 32px;
