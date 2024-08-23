@@ -17,7 +17,7 @@
 			var required = '<?php echo cl_translate("This field is required"); ?>';
 			if (!currentValue) {
 				var b = `<b class='text-danger p-2 required-prize'>${required}</b>`;
-				$('.require-prize').append(b);
+				$('.bootstrap-tagsinput').append(b);
 			} else {
 				$('.required-prize').remove();
 			}
@@ -230,7 +230,7 @@
 			}
 		});
 		$('.add-condition').on('click', function() {
-			if (!($("#buy").val() && $("#limit").val() && $("#expires").val() && $("#join").val())) {
+			if (!($("#event").val() && $("#buy").val() && $("#limit").val() && $("#expires").val() && $("#join").val())) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
 					text: "<?php echo cl_translate("Enter all the field required!"); ?>",
@@ -243,6 +243,7 @@
 				});
 				return;
 			}
+			var event = $('#event').val();
 			var buy = $('#buy').val();
 			var limit = $('#limit').val();
 			var quantity = $('#quantity').val();
@@ -254,6 +255,7 @@
 				url: '<?php echo cl_link("native_api/game/add_condition"); ?>',
 				type: 'POST',
 				data: {
+					event: event,
 					buy: buy,
 					limit: limit,
 					quantity: quantity,
@@ -268,6 +270,17 @@
 							title: "<?php echo cl_translate("Success"); ?>",
 							text: "<?php echo cl_translate("Add condition success!"); ?>",
 							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else if (result.status == 500) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Warning"); ?>",
+							text: "<?php echo cl_translate("Event already exist with store!"); ?>",
+							icon: "warning",
 							allowOutsideClick: true,
 							showConfirmButton: true,
 							onBeforeOpen: () => {

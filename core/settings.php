@@ -12,5 +12,5 @@ $sql_db_pass = "root";
 $sql_db_name = "social";
 
 # Site URL
-$site_url    = "http://localhost:8888/social/"; // E.g (https://www.colibrism.com)
+$site_url    = "http://localhost:8888/social"; // E.g (https://www.colibrism.com)
 ?>

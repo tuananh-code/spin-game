@@ -25,7 +25,7 @@
 //     $id = $me['id'];
 //     return $id;
 // }
-function cl_get_managed($args = array())
+function cl_get_manager($args = array())
 {
     global $db, $cl, $me;
     $args        = (is_array($args)) ? $args : array();

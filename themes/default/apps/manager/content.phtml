@@ -1,0 +1,109 @@
+<?php
+$prize = get_prize($me['id']);
+?>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid #000;
+        padding: 8px;
+        text-align: center;
+    }
+</style>
+<div class="timeline-container" data-app="store">
+    <div class="timeline-header" data-el="tl-header">
+        <div class="timeline-header__botline">
+            <div class="lp">
+                <div class="nav-link-holder">
+                    <a>
+                        <?php echo cl_translate("Manager"); ?>
+                    </a>
+                </div>
+            </div>
+            <div class="cp">
+                <a href="<?php echo cl_link('/'); ?>">
+                    <img src="{%config site_logo%}" alt="Logo">
+                </a>
+            </div>
+            <div class="rp">
+                <div class="nav-link-holder">
+                    <span class="go-back" onclick="SMColibri.go_back();">
+                        <?php echo cl_ficon('arrow_back'); ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <center>
+        <?php //if (not_empty($cl['is_admin'])): 
+        ?>
+        <!-- Add translate in json -->
+        <?php if ($prize) { ?>
+            <div>
+                <h2 class="p-2 m-2 text-primary">Prize manager</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>
+                                <?php echo cl_translate("Customer"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Store"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Game"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Prize"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Rewarded"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Claimed"); ?>
+                            </th>
+                            <th>
+                                <?php echo cl_translate("Action"); ?>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($prize as $p) { ?>
+                            <tr>
+                                <td>
+                                    <?= $me['name'] ?>
+                                </td>
+                                <td>
+                                    <?= get_store_name($p['store_id']) ?>
+                                </td>
+                                <td>
+                                    <?= get_game_name($p['game_id']) ?>
+                                </td>
+                                <td>
+                                    <?= $p['prize'] ?>
+                                </td>
+                                <td>
+                                    <?= $p['created_at'] ?>
+                                </td>
+                                <td>
+                                    <?= $p['claimed_at'] ?>
+                                </td>
+                                <td>
+                                    <div>
+                                        <button class="p-2 m-2 border-0 rounded-pill btn-success" data-id="<?= $me['id'] ?>"><?php echo cl_translate("Save"); ?></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php } else { ?>
+            <?php echo cl_template('manager/includes/no_prize'); ?>
+        <?php } ?>
+
+        <?php //endif; 
+        ?>
+    </center>
+</div>
+<?php echo cl_template('manager/scripts/app_master_script'); ?>

@@ -9,7 +9,7 @@
     /* font-family: 'Lucida Grande', sans-serif; */
     font-size: 15px;
     -webkit-tap-highlight-color: transparent;
-    user-select: none;
+    /* user-select: none; */
     /* Prevent selecting ui text when dragging */
 }
 
@@ -19,14 +19,14 @@ html, body {
 
 body {
     /* Prevent pull-down-to-refresh gesture */
-    overscroll-behavior-y: contain;
+    /* overscroll-behavior-y: contain; */
     /* overflow: auto; */
     /* Prevent iOS rubber-band effect */
     /* position: fixed; */
     width: 100%;
 
     /* Prevent browser from handling touch events */
-    touch-action: none;
+    /* touch-action: none; */
 
     display: flex;
     flex-direction: column;
@@ -71,3 +71,14 @@ label {
     margin-right: 10px;
     max-width: 100px;
 } */
+
+@media (max-width: 768px) {
+    .wheel-wrapper {
+        /* Hide UI during page load */
+        height: 380px;
+        width: 380px;
+    }
+    /* body{
+        position: fixed;
+    } */
+}

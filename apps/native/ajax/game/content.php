@@ -46,55 +46,123 @@ if (empty($cl['is_logged'])) {
         $percents = explode(',', $_POST['percent']);
         $stocks = explode(',', $_POST['stock']);
         //handle game
-        $data = add_game($store_id, $event);
+        if ($themes == 'Workout') {
+            $layout = [
+                "theme" => 'Workout',
+                "radius" => '0.84',
+                "itemLabelRadius" => '0.93',
+                "itemLabelRadiusMax" => '0.35',
+                "itemBackgroundColors" => ['#ffc93c', '#66bfbf', '#a2d5f2', '#515070', '#43658b', '#ed6663', '#d54062'],
+                "itemLabelColors" => ['#fff'],
+                "image" => './themes/default/statics/img/example-0-image.svg',
+                "overlayImage" => './themes/default/statics/img/example-0-overlay.svg'
+            ];
+        } else {
+            $layout = [
+                "theme" => 'Movies',
+                "radius" => '0.88',
+                "itemLabelRadius" => '0.92',
+                "itemLabelRadiusMax" => '0.4',
+                "itemBackgroundColors" => ['#c7160c', '#fff'],
+                "itemLabelColors" => ['#fff', '#000'],
+                "image" => 'null',
+                "overlayImage" => './themes/default/statics/img/example-2-overlay.svg'
+            ];
+        }
+        $themes = json_encode($layout);
+        for ($p = 0; $p < count($prizes); $p++) {
+            $prize = $prizes[$p];
+            $percent = $percents[$p];
+            $stock = $stocks[$p];
+            $attr[] = [
+                'value' => $p,
+                'prize' => $prize,
+                'percent' => $percent,
+                'stock' => $stock
+            ];
+        }
+        $props = json_encode($attr);
+        $data = add_game($store_id, $event, $themes, $props, $status, $date, $expires_event);
+        return $data;
+        // if ($data['status'] == 500) {
+        //     return $data;
+        // } else {
+        //     if ($themes == 'Workout') {
+        //         $layout = [
+        //             "theme" => 'Workout',
+        //             "radius" => '0.84',
+        //             "itemLabelRadius" => '0.93',
+        //             "itemLabelRadiusMax" => '0.35',
+        //             "itemBackgroundColors" => ['#ffc93c', '#66bfbf', '#a2d5f2', '#515070', '#43658b', '#ed6663', '#d54062'],
+        //             "itemLabelColors" => ['#fff'],
+        //             "image" => './themes/default/statics/img/example-0-image.svg',
+        //             "overlayImage" => './themes/default/statics/img/example-0-overlay.svg'
+        //         ];
+        //     } else {
+        //         $layout = [
+        //             "theme" => 'Movies',
+        //             "radius" => '0.88',
+        //             "itemLabelRadius" => '0.92',
+        //             "itemLabelRadiusMax" => '0.4',
+        //             "itemBackgroundColors" => ['#c7160c', '#fff'],
+        //             "itemLabelColors" => ['#fff', '#000'],
+        //             "image" => 'null',
+        //             "overlayImage" => './themes/default/statics/img/example-2-overlay.svg'
+        //         ];
+        //     }
+        //     $themes = json_encode($layout);
+        //     for ($p = 0; $p < count($prizes); $p++) {
+        //         $prize = $prizes[$p];
+        //         $percent = $percents[$p];
+        //         $stock = $stocks[$p];
+        //         $attr[] = [
+        //             'value' => $p,
+        //             'prize' => $prize,
+        //             'percent' => $percent,
+        //             'stock' => $stock
+        //         ];
+        //     }
+        //     $props = json_encode($attr);
+        //     $id = cl_db_insert(T_GAME, array(
+        //         // "user_id" => $me['id'],
+        //         "game_name" => $event,
+        //         "themes" => $themes,
+        //         "props" => $props,
+        //         "status" => $status,
+        //         "store_id" => $store_id,
+        //         "created_at" => $date,
+        //         "expires_date" => $expires_event
+        //     ));
+        //     if ($id) {
+        //         $data['status'] = 200;
+        //     } else {
+        //         $data['status'] = 400;
+        //     }
+        //     return $data;
+        // }
+    } else if ($action == 'add_condition') {
+        $event = $_POST['event'];
+        $event = $_POST['event'];
+        $buy = $_POST['buy'];
+        $limit = $_POST['limit'];
+        $quantity = $_POST['quantity'];
+        $expires = $_POST['expires'];
+        $join =  $_POST['join'];
+        $store_condition =  $_POST['store_condition'];
+        //handle game
+
+        $data = add_condition($event, $store_condition, $buy, $limit, $quantity, $expires, $join);
         if ($data['status'] == 500) {
             return $data;
         } else {
-            if ($themes == 'Workout') {
-                $layout = [
-                    "theme" => 'Workout',
-                    "radius" => '0.84',
-                    "itemLabelRadius" => '0.93',
-                    "itemLabelRadiusMax" => '0.35',
-                    "itemBackgroundColors" => ['#ffc93c', '#66bfbf', '#a2d5f2', '#515070', '#43658b', '#ed6663', '#d54062'],
-                    "itemLabelColors" => ['#fff'],
-                    "image" => './themes/default/statics/img/example-0-image.svg',
-                    "overlayImage" => './themes/default/statics/img/example-0-overlay.svg'
-                ];
-            } else {
-                $layout = [
-                    "theme" => 'Movies',
-                    "radius" => '0.88',
-                    "itemLabelRadius" => '0.92',
-                    "itemLabelRadiusMax" => '0.4',
-                    "itemBackgroundColors" => ['#c7160c', '#fff'],
-                    "itemLabelColors" => ['#fff', '#000'],
-                    "image" => 'null',
-                    "overlayImage" => './themes/default/statics/img/example-2-overlay.svg'
-                ];
-            }
-            $themes = json_encode($layout);
-            for ($p = 0; $p < count($prizes); $p++) {
-                $prize = $prizes[$p];
-                $percent = $percents[$p];
-                $stock = $stocks[$p];
-                $attr[] = [
-                    'value' => $p,
-                    'prize' => $prize,
-                    'percent' => $percent,
-                    'stock' => $stock
-                ];
-            }
-            $props = json_encode($attr);
             $id = cl_db_insert(T_GAME, array(
-                // "user_id" => $me['id'],
+                "store_id" => $store_condition,
                 "game_name" => $event,
-                "themes" => $themes,
-                "props" => $props,
-                "status" => $status,
-                "store_id" => $store_id,
-                "created_at" => $date,
-                "expires_date" => $expires_event
+                "buy" => $buy,
+                "limit" => $limit,
+                "quantity" => $quantity,
+                "expires" => $expires,
+                "join" => $join,
             ));
             if ($id) {
                 $data['status'] = 200;
@@ -103,16 +171,6 @@ if (empty($cl['is_logged'])) {
             }
             return $data;
         }
-    } else if ($action == 'add_condition') {
-        $buy = $_POST['buy'];
-        $limit = $_POST['limit'];
-        $quantity = $_POST['quantity'];
-        $expires = $_POST['expires'];
-        $join =  $_POST['join'];
-        $store_condition =  $_POST['store_condition'];
-        //handle game
-        $data = add_condition($store_condition, $buy, $limit, $quantity, $expires, $join);
-        return $data;
     } else if ($action == 'select_game') {
         $store_id = $_POST['store_id'];
         $data = select_game($store_id);

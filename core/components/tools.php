@@ -1672,13 +1672,57 @@ function get_ticket($id, $store_id)
     }
     return $ticket['ticket'];
 }
-function get_store_name($game_id)
+function get_prize($id, $store_id = null)
 {
-    $sql = "SELECT * FROM cl_store WHERE id = $game_id";
+    $sql = "SELECT * FROM cl_prize WHERE user_id = $id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $data[] = [
+                'id' => $row['id'],
+                'store_id' => $row['store_id'],
+                'game_id' => $row['game_id'],
+                'prize' => $row['prize'],
+                'created_at' => $row['created_at'],
+                'claimed_at' => $row['claimed_at'],
+            ];
+        }
+    } else {
+        $data = null;
+    }
+    return $data;
+}
+function get_store_name($store_id)
+{
+    $sql = "SELECT * FROM cl_store WHERE id = $store_id";
     $result = conn()->query($sql);
     if ($result->num_rows > 0) {
         foreach ($result as $row) {
             $name = $row['shop_name'];
+        }
+    }
+    return $name;
+}
+
+function get_game_name($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['game_name'];
+        }
+    }
+    return $name;
+}
+
+function get_game_id($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name[] = $row['id'];
         }
     }
     return $name;

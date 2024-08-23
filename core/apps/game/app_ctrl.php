@@ -36,17 +36,37 @@ function cl_get_game($args = array())
     return $args;
 }
 // var_dump(cl_get_game());
-function add_game($id, $event)
+function add_game($id, $event, $themes, $props, $status, $date, $expires_event)
 {
 
+    global $db, $cl, $me;
+
+    $data = array();
+
+    $sql_game = cl_sqltepmlate("apps/game/sql/update", array(
+        't_game' => T_GAME,
+        'store_id' => $id,
+        'event' => $event,
+        'themes' => $themes,
+        'props' => $props,
+        'status' => $status,
+        'expires_event' => $expires_event,
+    ));
+    $sql_game = $db->rawQuery($sql_game);
+    if (!cl_queryset($sql_game)) {
+        $data['status'] = 200;
+        return $data;
+    }
+}
+function add_condition($event, $store_condition, $buy, $limit, $quantity, $expires, $join)
+{
     global $db, $cl, $me;
     // $id = $me['id'];
     // var_dump($get_store);
     $data = array();
-
     $sql_exist = cl_sqltepmlate("apps/game/sql/exist", array(
         't_game' => T_GAME,
-        'store_id' => $id,
+        'store_id' => $store_condition,
         'game' => $event,
     ));
     $exist = $db->rawQuery($sql_exist);
@@ -58,27 +78,6 @@ function add_game($id, $event)
     }
     if ($check) {
         $data['status'] = 500;
-        return $data;
-    }
-}
-function add_condition($store_condition, $buy, $limit, $quantity, $expires, $join)
-{
-    global $db, $cl, $me;
-    // $id = $me['id'];
-    // var_dump($get_store);
-    $data = array();
-    $sql_condition = cl_sqltepmlate("apps/game/sql/update", array(
-        't_game' => T_GAME,
-        'store_condition' => $store_condition,
-        'buy' => $buy,
-        'limit' => $limit,
-        'quantity' => $quantity,
-        'expires' => $expires,
-        'join' => $join,
-    ));
-    $sql_condition = $db->rawQuery($sql_condition);
-    if (!cl_queryset($sql_condition)) {
-        $data['status'] = 200;
         return $data;
     }
 }

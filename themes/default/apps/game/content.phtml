@@ -33,8 +33,8 @@ $result = conn()->query($sql);
     ?>
     <!-- Add translate in json -->
     <form action="" class="p-2">
-        <h2 class="text-center text-success">
-            <?php echo cl_translate("Add Attributes"); ?>
+        <h2 class="text-center text-primary">
+            <?php echo cl_translate("Add Condition"); ?>
         </h2>
         <div class="d-flex align-items-center justify-content-center">
             <label for="store_id" class="col-2 text-end"><?php echo cl_translate("Select Store:"); ?></label>
@@ -56,58 +56,6 @@ $result = conn()->query($sql);
                 <input type="text" id="event" class="p-2 m-2 form-control" required>
             </div>
         </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="prize" class="col-2 text-end"><?php echo cl_translate("Prize:"); ?></label>
-            <div class="require-prize col-9">
-                <input type="text" id="prize" class="p-2 m-2 form-control" required>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center" style="display: none;">
-            <label for="percent" class="col-2 text-end"><?php echo cl_translate("Percent:"); ?></label>
-            <div class="require-percent col-9">
-                <input name="percent" id="percent" class="form-control m-2 p-2" required>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="stock" class="col-2 text-end"><?php echo cl_translate("Stock:"); ?></label>
-            <div class="require-stock col-9">
-                <input name="stock" id="stock" class="form-control m-2 p-2" required>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="expires-event" class="col-2 text-end"><?php echo cl_translate("Expires Event:"); ?></label>
-            <div class="require-expires-event col-9">
-                <input type="datetime-local" name="expires-event" id="expires-event" class="form-control m-2 p-2" required>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="status" class="col-2 text-end"><?php echo cl_translate("Status:"); ?></label>
-            <div class="col-9">
-                <select class="form-select status m-2 p-2" id="status">
-                    <option value="0"><?php echo cl_translate("Draft"); ?></option>
-                    <option value="1"><?php echo cl_translate("Publish"); ?></option>
-                </select>
-            </div>
-        </div>
-        <div class="d-flex align-items-center justify-content-center">
-            <label for="themes" class="col-2 text-end"><?php echo cl_translate("Theme:"); ?></label>
-            <div class="col-9">
-                <select class="form-select themes m-2 p-2" id="themes"></select>
-            </div>
-        </div>
-
-        <div class="text-center">
-            <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-pill add-prize"><?php echo cl_translate("Add prize"); ?></button>
-            <!-- <button class="ml-auto btn btn-custom main-inline lg add-prize"><?php echo cl_translate("Add prize"); ?></button> -->
-
-            <!-- <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-pill clear-prize"><?php echo cl_translate("Clear"); ?></button> -->
-        </div>
-    </form>
-    <form action="" class="p-2">
-        <h2 class="text-center text-primary">
-            <?php echo cl_translate("Condition"); ?>
-        </h2>
-
         <div class="d-flex align-items-center justify-content-center">
             <label for="buy" class="col-2 text-end"><?php echo cl_translate("Buy:"); ?></label>
             <div class="require-buy col-9">
@@ -139,9 +87,62 @@ $result = conn()->query($sql);
             </div>
         </div>
         <div class="text-center">
-            <button class="col-3 p-2 m-2 text-white btn-primary border-0 rounded-pill add-condition"><?php echo cl_translate("Add conditions"); ?></button>
+            <button class="p-2 m-2 px-3 text-white btn-primary border-0 rounded-pill add-condition"><?php echo cl_translate("Add conditions"); ?></button>
         </div>
     </form>
+
+    <form action="" class="p-2">
+        <h2 class="text-center text-success">
+            <?php echo cl_translate("Add Event"); ?>
+        </h2>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="prize" class="col-2 text-end"><?php echo cl_translate("Prize:"); ?></label>
+            <div class="require-prize col-9">
+                <input type="text" id="prize" placeholder="<?php echo cl_translate("Enter Prize"); ?>" data-role="tagsinput" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="stock" class="col-2 text-end"><?php echo cl_translate("Stock:"); ?></label>
+            <div class="require-stock col-9">
+                <input type="text" name="stock" id="stock" placeholder="<?php echo cl_translate("Enter Stock, number only"); ?>" data-role="tagsinput" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="percent" class="col-2 text-end"><?php echo cl_translate("Percent:"); ?></label>
+            <div class="require-percent col-9">
+                <input type="text" name="percent" id="percent" placeholder="<?php echo cl_translate("Enter Percent, number only"); ?>" data-role="tagsinput" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="expires-event" class="col-2 text-end"><?php echo cl_translate("Expires Event:"); ?></label>
+            <div class="require-expires-event col-9">
+                <input type="datetime-local" name="expires-event" id="expires-event" class="form-control m-2 p-2" required>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="status" class="col-2 text-end"><?php echo cl_translate("Status:"); ?></label>
+            <div class="col-9">
+                <select class="form-select status m-2 p-2" id="status">
+                    <option value="0"><?php echo cl_translate("Draft"); ?></option>
+                    <option value="1"><?php echo cl_translate("Publish"); ?></option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="themes" class="col-2 text-end"><?php echo cl_translate("Theme:"); ?></label>
+            <div class="col-9">
+                <select class="form-select themes m-2 p-2" id="themes"></select>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button class="p-2 px-3 m-2 text-white btn-success border-0 rounded-pill add-prize"><?php echo cl_translate("Add prize"); ?></button>
+            <!-- <button class="ml-auto btn btn-custom main-inline lg add-prize"><?php echo cl_translate("Add prize"); ?></button> -->
+
+            <!-- <button class="col-2 p-2 m-2 px-3 text-white btn-danger border-0 rounded-pill clear-prize"><?php echo cl_translate("Clear"); ?></button> -->
+        </div>
+    </form>
+
     <div class="d-flex align-items-center justify-content-center">
         <label for="setup" class="col-2 text-end"><?php echo cl_translate("Prize setup:"); ?></label>
         <div class="col-9">
@@ -162,39 +163,42 @@ $result = conn()->query($sql);
         </div>
     </div>
     <div class="text-center">
-        <button class="col-2 p-2 m-2 text-white btn-primary border-0 rounded-pill publish-prize"><?php echo cl_translate("Publish"); ?></button>
+        <button class="p-2 m-2 px-3 text-white btn-primary border-0 rounded-pill publish-prize"><?php echo cl_translate("Publish"); ?></button>
     </div>
     <?php //endif; 
     ?>
-    <?php
-    if (@$store_id) {
-        foreach ($store_id as $id) {
-            $sql_game = "SELECT * FROM cl_game WHERE store_id = $id AND status = 1 ORDER BY id DESC";
-        }
-        $result_game = conn()->query($sql_game);
-    ?>
-        <div class="timeline-game">
-            <div class="">
+    <center>
+        <?php
+        if (@$store_id) {
+            foreach ($store_id as $id) {
+                $sql_game = "SELECT * FROM cl_game WHERE store_id = $id AND status = 1 ORDER BY id DESC";
+            }
+            $result_game = conn()->query($sql_game);
+        ?>
+            <div class="timeline-game">
                 <div class="">
-                    <div>
-                        <?php if ($result_game->num_rows > 0) {
-                            foreach ($result_game as $row) {
-                                $attr = json_decode($row['props'], true);
-                                $value = choose_prize($attr);
-                                $prize = $value['value'];
-                        ?>
-                                <input type="hidden" name="" id="propsWheel" data-prop='<?= $row['props']; ?>' data-themes='<?= $row['themes'] ?>'>
-                                <input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
+                    <div class="">
+                        <div>
+                            <?php if ($result_game->num_rows > 0) {
+                                foreach ($result_game as $row) {
+                                    $attr = json_decode($row['props'], true);
+                                    $value = choose_prize($attr);
+                                    $prize = $value['value'];
+                            ?>
+                                    <input type="hidden" name="" id="propsWheel" data-prop='<?= $row['props']; ?>' data-themes='<?= $row['themes'] ?>'>
+                                    <input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
+                                <?php } ?>
                             <?php } ?>
                         <?php } ?>
-                    <?php } ?>
-                    <button id="spin" class="spin p-2 m-2 btn-primary rounded-2">Spin</button>
+                        </div>
                     </div>
-                </div>
-                <div class="wheel-wrapper"></div>
+                    <div class="wheel-wrapper"></div>
+                    <button id="spin" class="spin p-2 m-2 btn-primary rounded-2">Spin</button>
 
+                </div>
             </div>
-        </div>
+    </center>
 </div>
+<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>
 <?php echo cl_template('game/scripts/app_master_script');
 ?>
