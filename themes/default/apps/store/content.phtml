@@ -23,7 +23,28 @@ foreach ($store_id as $id) {
     }
 }
 ?>
+<style>
+    tbody>.tr:hover {
+        background: #e9e9e9 !important;
+    }
 
+
+    tr {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tr:nth-child(odd) {
+        background-color: #f4f4f4 !important;
+        /* Color for odd rows */
+    }
+
+    .tr:nth-child(even) {
+        background-color: #ffffff !important;
+        /* Color for even rows */
+    }
+
+</style>
 <div class="timeline-container" data-app="store">
     <div class="timeline-header" data-el="tl-header">
         <div class="timeline-header__botline">
@@ -148,8 +169,8 @@ foreach ($store_id as $id) {
                 </thead>
                 <tbody class="font-size-1">
                     <?php for ($i = 0; $i < count($game); $i++) { ?>
-                        <tr>
-                            <td class="align-middle text-dark font-weight-normal"><?= $store[$i] ?></td>
+                        <tr class="tr text-center">
+                            <td class="align-middle text-dark font-weight-normal"><b><?= $store[$i] ?></b></td>
                             <td>
                                 <span><?= $game[$i] ?></span>
                             </td>
@@ -158,7 +179,6 @@ foreach ($store_id as $id) {
                             <td class="align-middle text-danger">Rejected</td>
                         </tr>
                     <?php } ?>
-
                 </tbody>
             </table>
         </div>
