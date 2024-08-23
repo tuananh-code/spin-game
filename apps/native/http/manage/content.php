@@ -16,56 +16,36 @@
 # @ ColibriSM - The Ultimate Social Network PHP Script                      @
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
-
 if (empty($cl["is_logged"])) {
-    $data['status'] = 400;
-    $data['error']  = 'Invalid access token';
+	if ($cl["config"]["guest_page_status"] == "on") {
+		cl_redirect("guest");
+	}
+	else{
+		cl_redirect("feed");
+	}
 }
+else {
+	require_once(cl_full_path("core/apps/manage/app_ctrl.php"));
+	$cl["page_tab"]   = fetch_or_get($_GET["page"], "notifs");
+	$cl["page_title"] = cl_translate("Manage");
+	$cl["page_desc"]  = $cl["config"]["description"];
+	$cl["page_kw"]    = $cl["config"]["keywords"];
+	$cl["pn"]         = "manage";
+	$cl["sbr"]        = true;
+	$cl["sbl"]        = true;
+	$cl["transactions"]     = cl_get_transactions(array(
+		"limit"       => 50
+	));
 
-else if ($action == 'load_more') {
+	$cl["edit_details"] = ($cl["page_tab"] == 'edit_invoice') ? cl_get_transaction_details($_GET["id"]) : '';
+	if ($cl["edit_details"]) {
+		foreach ($cl["edit_details"] as $key => $value) {
+			if (!$value) {
+				$cl["edit_details"][$key] = '';
+			}
+		}
+	}
 
-    require_once(cl_full_path("core/apps/home/app_ctrl.php"));
-
-    $data['err_code'] = 0;
-    $data['status']   = 400;
-    $offset           = fetch_or_get($_GET['offset'], 0);
-    $html_arr         = array();
-
-    if (is_posnum($offset)) {    
-
-        $posts_ls = cl_get_timeline_feed(30, $offset);
-
-        if (not_empty($posts_ls)) {
-            foreach ($posts_ls as $cl['li']) {
-                $html_arr[] = cl_template('timeline/post');
-            }
-
-            $data['status'] = 200;
-            $data['html']   = implode("", $html_arr);
-        }
-    }
-}
-
-else if ($action == 'update_timeline') {
-
-    require_once(cl_full_path("core/apps/home/app_ctrl.php"));
-
-    $data['err_code'] = 0;
-    $data['status']   = 400;
-    $onset            = fetch_or_get($_GET['onset'], 0);
-    $html_arr         = array();
-
-    if (is_posnum($onset)) {    
-
-        $posts_ls = cl_get_timeline_feed(false, false, $onset);
-
-        if (not_empty($posts_ls)) {
-            foreach ($posts_ls as $cl['li']) {
-                $html_arr[] = cl_template('timeline/post');
-            }
-
-            $data['status'] = 200;
-            $data['html']   = implode("", $html_arr);
-        }
-    }
+	$cl["total_transactions"] = cl_get_total_transactions($cl["page_tab"]);
+	$cl["http_res"]     = cl_template("manage/content");
 }

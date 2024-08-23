@@ -69,6 +69,9 @@ $applications       = array(
   "subscriptions" => true,
   "monetization" => true,
   "subscription" => true,
+  "manage" => true,
+  "edit_invoice" => true,
+  "list" => true,
   "spa_load" => true
 );
 

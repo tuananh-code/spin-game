@@ -25,7 +25,6 @@ if (empty($cl["is_logged"])) {
 	}
 }
 else {
-
 	require_once(cl_full_path("core/apps/home/app_ctrl.php"));
 
 	$cl["app_statics"] = array(

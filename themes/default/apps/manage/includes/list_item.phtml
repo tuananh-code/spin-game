@@ -1,0 +1,76 @@
+<!-- <link rel="stylesheet" href="https://cdn.datatables.net/2.0.2/css/dataTables.dataTables.min.css">
+<script src="https://cdn.datatables.net/2.0.2/js/dataTables.min.js" defer></script> -->
+
+<div class="notifications-list__item" data-list-item="<?php //echo ($cl['li']['id']); 
+														?>">
+	<div class="notif-data">
+		<div class="notifications-list__item-data">
+			<div class="notifications-data">
+				<div class="notifications-data__body">
+					<a href="<?php echo cl_link("edit_invoice") . '/' . $cl['li']['id']; ?>" data-spa="true" style="display: flex;">
+						<div class="notifications-data__topline" style='width: 40%;'>
+							<span class="user-name-holder" style="flex-wrap: wrap;">
+								<span class="user-name-holder__name">
+									<?php echo cl_translate("Customer| "); ?>
+									<?php echo cl_translate("Name") . ': ' . $cl['li']['cname']; ?>
+
+								</span>
+
+								<span class="transaction-details">
+									<?php echo $cl['li']['phone'] ? ', ' . cl_translate("Phone") . ': ' . $cl['li']['phone'] : ''; ?>
+
+								</span>
+								<span class="transaction-details">
+									<?php echo $cl['li']['email'] ? ', ' . cl_translate("Email") . ': ' . $cl['li']['email'] : ''; ?>
+								</span>
+
+
+							</span>
+						</div>
+						<div class="notifications-data__topline" style='width: 40%;'>
+							<span class="user-name-holder" style="flex-wrap: wrap;">
+								<span class="user-name-holder__name">
+									<?php echo cl_translate("Product| "); ?>
+									<?php echo cl_translate("Name") . ': ' . $cl['li']['pname']; ?>
+
+								</span>
+
+								<span class="transaction-details">
+									<?php echo $cl['li']['qty'] ? ', ' . cl_translate("Quantity") . ': ' . intval($cl['li']['qty'], 2) : ''; ?>
+
+								</span>
+								<span class="transaction-details">
+									<?php echo $cl['li']['weight'] ? ', ' . cl_translate("Weight") . ': ' . $cl['li']['weight'] : ''; ?>
+								</span>
+								<span class="transaction-details">
+									<?php echo $cl['li']['amount'] ? ', ' . cl_translate("Amount") . ': ' . $cl['li']['amount'] : ''; ?>
+								</span>
+
+							</span>
+
+						</div>
+						<div class="notifications-data__midline">
+							<span class="notif-time">
+								<?php echo $cl['li']['created_at']; ?>
+							</span>
+						</div>
+						<div class="notifications-data__ctrls">
+							<div class="notif-ctrls">
+								<div class="notif-ctrls__delete">
+									<button type="button" class="btn-custom-icon col-red" onclick="SMColibri.PS.notifs.delete_notif(<?php echo ($cl['li']['id']); ?>);">
+										<?php echo cl_ficon("delete"); ?>
+									</button>
+								</div>
+							</div>
+						</div>
+					</a>
+				</div>
+
+
+			</div>
+		</div>
+	</div>
+</div>
+<script>
+
+</script>

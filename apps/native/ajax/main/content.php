@@ -1,4 +1,4 @@
-<?php
+<?php 
 # @*************************************************************************@
 # @ Software author: Mansur Terla (Mansur_TL)                               @
 # @ UI/UX Designer & Web developer ;)                                       @
@@ -21,7 +21,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -31,11 +32,11 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $post_id   = cl_create_orphan_post($me['id'], "image");
                 $post_data = cl_get_orphan_post($post_id);
 
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => $post_id
                 ));
             }
-
+            
             if (not_empty($post_data) && $post_data["type"] == "image") {
                 if (empty($post_data['media']) || count($post_data['media']) < 10) {
                     $file_info      =  array(
@@ -81,23 +82,28 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             $data['status']  = 200;
                         }
                     }
-                } else {
+                }
+                else {
                     $data['err_code'] = "total_limit_exceeded";
                     $data['status']   = 400;
                 }
-            } else {
+            }
+            else {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
         }
     }
-} else if ($action == 'upload_post_video' && $cl["config"]["post_videos_system"] == "on") {
+}
+
+else if ($action == 'upload_post_video' && $cl["config"]["post_videos_system"] == "on") {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -107,7 +113,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $post_id   = cl_create_orphan_post($me['id'], "video");
                 $post_data = cl_get_orphan_post($post_id);
 
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => $post_id
                 ));
             }
@@ -135,7 +141,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             require_once(cl_full_path("core/libs/ffmpeg-php/vendor/autoload.php"));
                             require_once(cl_full_path("core/libs/getID3/getid3/getid3.php"));
 
-                            $ffmpeg_binary       = ($config['ffmpeg_binary'] == "/core/libs/ffmpeg/ffmpeg") ? cl_full_path($config['ffmpeg_binary']) : $config['ffmpeg_binary'];
+                            $ffmpeg_binary       = ($config['ffmpeg_binary'] == "/core/libs/ffmpeg/ffmpeg") ? cl_full_path($config['ffmpeg_binary']) : $config['ffmpeg_binary']; 
                             $ffmpeg              = new FFmpeg($ffmpeg_binary);
                             $getID3              = new getID3;
                             $getID3_FAR          = $getID3->analyze($file_upload['filename']);
@@ -155,10 +161,12 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                             $ffmpeg->input($file_upload['filename']);
                             $ffmpeg->set('-ss', $poster_frame_offset);
-                            $ffmpeg->set('-vframes', '1');
-                            $ffmpeg->set('-f', 'mjpeg');
+                            $ffmpeg->set('-vframes','1');
+                            $ffmpeg->set('-f','mjpeg');
                             $ffmpeg->output($thumb_path)->ready();
-                        } catch (Exception $e) {
+                        } 
+
+                        catch (Exception $e) {
                             $data["error"] = $e->getMessage();
                             $upload_fail   = true;
                         }
@@ -177,7 +185,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                 "json_data" => json(array(
                                     "poster_thumb" => $thumb_path,
                                     "ratio" => "8:6"
-                                ), true)
+                                ),true)
                             ));
 
                             if (is_posnum($img_id)) {
@@ -194,26 +202,32 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                 }
                             }
                         }
-                    } else if (not_empty($file_upload['error'])) {
+                    }
+                    else if(not_empty($file_upload['error'])) {
                         $data["error"] = $file_upload['error'];
                     }
-                } else {
+                }
+                else {
                     $data['err_code'] = "total_limit_exceeded";
                     $data['status']   = 400;
                 }
-            } else {
+            }
+            else {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
         }
     }
-} else if ($action == 'upload_post_arecord' && $cl["config"]["post_record_system"] == "on") {
+}
+
+else if ($action == 'upload_post_arecord' && $cl["config"]["post_record_system"] == "on") {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -223,7 +237,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $post_id   = cl_create_orphan_post($me['id'], "audio");
                 $post_data = cl_get_orphan_post($post_id);
 
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => $post_id
                 ));
             }
@@ -251,7 +265,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             "type"   => "audio",
                             "src"    => $file_upload['filename'],
                             "time"   => time(),
-                            "json_data" => json(array(), true)
+                            "json_data" => json(array(),true)
                         ));
 
                         if (is_posnum($img_id)) {
@@ -261,26 +275,32 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                 "source"      => cl_get_media($file_upload['filename'])
                             );
                         }
-                    } else if (not_empty($file_upload['error'])) {
+                    }
+                    else if(not_empty($file_upload['error'])) {
                         $data["error"] = $file_upload['error'];
                     }
-                } else {
+                }
+                else {
                     $data['err_code'] = "total_limit_exceeded";
                     $data['status']   = 400;
                 }
-            } else {
+            }
+            else {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
         }
     }
-} else if ($action == 'upload_post_music' && $cl["config"]["post_audio_system"] == "on") {
+}
+
+else if ($action == 'upload_post_music' && $cl["config"]["post_audio_system"] == "on") {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -290,7 +310,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $post_id   = cl_create_orphan_post($me['id'], "audio");
                 $post_data = cl_get_orphan_post($post_id);
 
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => $post_id
                 ));
             }
@@ -318,7 +338,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             "type"   => "audio",
                             "src"    => $file_upload['filename'],
                             "time"   => time(),
-                            "json_data" => json(array(), true)
+                            "json_data" => json(array(),true)
                         ));
 
                         if (is_posnum($img_id)) {
@@ -328,26 +348,32 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                 "source"      => cl_get_media($file_upload['filename'])
                             );
                         }
-                    } else if (not_empty($file_upload['error'])) {
+                    }
+                    else if(not_empty($file_upload['error'])) {
                         $data["error"] = $file_upload['error'];
                     }
-                } else {
+                }
+                else {
                     $data['err_code'] = "total_limit_exceeded";
                     $data['status']   = 400;
                 }
-            } else {
+            }
+            else {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
         }
     }
-} else if ($action == 'upload_post_document' && $cl["config"]["post_documents_system"] == "on") {
+}
+
+else if ($action == 'upload_post_document' && $cl["config"]["post_documents_system"] == "on") {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -357,7 +383,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $post_id   = cl_create_orphan_post($me['id'], "document");
                 $post_data = cl_get_orphan_post($post_id);
 
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => $post_id
                 ));
             }
@@ -392,7 +418,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             "json_data" => json(array(
                                 "filename" => $_FILES['doc_file']['name'],
                                 "file_type" => strtoupper($file_ext),
-                            ), true)
+                            ),true)
                         ));
 
                         if (is_posnum($img_id)) {
@@ -402,26 +428,32 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                 "filename"  => $_FILES['doc_file']['name']
                             );
                         }
-                    } else if (not_empty($file_upload['error'])) {
+                    }
+                    else if(not_empty($file_upload['error'])) {
                         $data["error"] = $file_upload['error'];
                     }
-                } else {
+                }
+                else {
                     $data['err_code'] = "total_limit_exceeded";
                     $data['status']   = 400;
                 }
-            } else {
+            }
+            else {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
         }
     }
-} else if ($action == 'delete_post_image') {
+}
+
+else if ($action == 'delete_post_image') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $image_id         = fetch_or_get($_POST['image_id'], 0);
@@ -440,9 +472,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $db               = $db->where('id', $image_id)->where('pub_id', $post_id);
                 $qr               = $db->delete(T_PUBMEDIA);
 
-                if (in_array($image_data['type'], array('image', 'video'))) {
+                if (in_array($image_data['type'], array('image','video'))) {
                     cl_delete_media($image_data['src']);
-
+                    
                     if (not_empty($json_data['image_thumb'])) {
                         cl_delete_media($json_data['image_thumb']);
                     }
@@ -451,17 +483,20 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
             if (count($post_data['media']) < 2) {
                 cl_delete_orphan_posts($me['id']);
-                cl_update_user_data($me['id'], array(
+                cl_update_user_data($me['id'],array(
                     'last_post' => 0
                 ));
             }
-        }
+        }   
     }
-} else if ($action == 'delete_post_video' || $action == 'delete_post_document') {
+}
+
+else if ($action == 'delete_post_video' || $action == 'delete_post_document') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -470,18 +505,21 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
             $data['err_code'] = "0";
             $data['status']   = 200;
-
+            
             cl_delete_orphan_posts($me['id']);
-            cl_update_user_data($me['id'], array(
+            cl_update_user_data($me['id'],array(
                 'last_post' => 0
             ));
-        }
+        }   
     }
-} else if ($action == 'delete_post_audiofile') {
+}
+
+else if ($action == 'delete_post_audiofile') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
         $post_data        = $me['draft_post'];
@@ -490,22 +528,26 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
             $data['err_code'] = "0";
             $data['status']   = 200;
-
+            
             cl_delete_orphan_posts($me['id']);
-            cl_update_user_data($me['id'], array(
+            cl_update_user_data($me['id'],array(
                 'last_post' => 0
             ));
-        }
+        }   
     }
-} else if ($action == 'import_og_data') {
+}
+
+else if($action == 'import_og_data') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+
+    else {
         $data['err_code'] = "invalid_req_data";
         $data['status']   = 400;
 
-        if (empty($_POST['url']) || is_url($_POST['url'])) {
+        if(empty($_POST['url']) || is_url($_POST['url'])) {
             $post_data = $me['draft_post'];
             $og_url    = fetch_or_get($_POST['url'], "");
 
@@ -522,32 +564,46 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         "type" => ""
                     );
 
-                    foreach (array_keys($og_data_values) as $og_val) {
+                    foreach(array_keys($og_data_values) as $og_val) {
                         if ($og_val == "title") {
                             if ($og_data_object->find('title', 0)) {
                                 $og_data_values["title"] = $og_data_object->find('title', 0)->plaintext;
-                            } else if ($og_data_object->find("meta[name='og:title']", 0)) {
+                            }
+
+                            else if ($og_data_object->find("meta[name='og:title']", 0)) {
                                 $og_data_values["title"] = $og_data_object->find("meta[name='og:title']", 0)->content;
                             }
-                        } else if ($og_val == "description") {
+                        }
+
+                        else if($og_val == "description") {
                             if ($og_data_object->find("meta[name='description']", 0)) {
                                 $og_data_values["description"] = $og_data_object->find("meta[name='description']", 0)->content;
-                            } else if ($og_data_object->find("meta[property='og:description']", 0)) {
+                            }
+
+                            else if($og_data_object->find("meta[property='og:description']", 0)) {
                                 $og_data_values["description"] = $og_data_object->find("meta[property='og:description']", 0)->content;
                             }
-                        } else if ($og_val == "image") {
-                            if ($og_data_object->find("meta[name='image']", 0)) {
+                        }
+
+                        else if($og_val == "image") {
+                            if($og_data_object->find("meta[name='image']", 0)) {
                                 $og_data_values["image"] = $og_data_object->find("meta[name='image']", 0)->content;
-                            } else if ($og_data_object->find("meta[property='og:image']", 0)) {
+                            }
+
+                            else if($og_data_object->find("meta[property='og:image']", 0)) {
                                 $og_data_values["image"] = $og_data_object->find("meta[property='og:image']", 0)->content;
                             }
-                        } else if ($og_val == "type") {
-                            if ($og_data_object->find("meta[property='og:type']", 0)) {
+                        }
+
+                        else if($og_val == "type") {
+                            if($og_data_object->find("meta[property='og:type']", 0)) {
                                 $og_data_values["type"] = $og_data_object->find("meta[property='og:type']", 0)->content;
-                            } else if ($og_data_object->find("meta[name='type']", 0)) {
+                            }
+
+                            else if($og_data_object->find("meta[name='type']", 0)) {
                                 $og_data_values["type"] = $og_data_object->find("meta[name='type']", 0)->content;
                             }
-                        }
+                        } 
                     }
 
                     $og_data_values = array(
@@ -563,17 +619,21 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         $data['og_data'] = $og_data_values;
                     }
                 }
-            } catch (Exception $e) {
-                /*pass*/
+            } 
+
+            catch (Exception $e) {
+                /*pass*/ 
             }
         }
     }
-} else if ($action == 'publish_new_post') {
+}
 
+else if ($action == 'publish_new_post') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $max_post_length  = $cl["config"]["max_post_len"];
@@ -595,10 +655,12 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             $post_privacy = "everyone";
 
             if (empty($thread_data) || cl_can_reply($thread_data) != true) {
-                $thread_id   = 0;
+                $thread_id   = 0; 
                 $thread_data = array();
             }
-        } else {
+        }
+
+        else {
             if (in_array($post_privacy, array("everyone", "followers", "mentioned")) != true) {
                 $post_privacy = "everyone";
             }
@@ -619,7 +681,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 "priv_wcr"  => $post_privacy
             );
 
-            if (not_empty($post_text) && not_empty($donation_amount) && is_numeric($donation_amount) && $donation_amount > 0) {
+            if(not_empty($post_text) && not_empty($donation_amount) && is_numeric($donation_amount) && $donation_amount > 0) {
                 if ($cl["config"]["donation_system_status"] == "on") {
                     $post_data_update['is_donation_post'] = "Y";
                     $post_data_update['donation_amount'] = $donation_amount;
@@ -639,7 +701,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
 
             cl_update_post_data($post_id, $post_data_update);
-
+            
             if (empty($thread_id)) {
                 cl_db_insert(T_POSTS, array(
                     "user_id"        => $me['id'],
@@ -648,11 +710,13 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 ));
 
                 $data['posts_total'] = ($me['posts'] += 1);
-
+                
                 cl_update_user_data($me['id'], array(
                     'posts' => $data['posts_total']
                 ));
-            } else {
+            }
+
+            else {
                 $data['replys_total'] = cl_update_thread_replys($thread_id, 'plus');
 
                 cl_update_post_data($post_id, array(
@@ -668,7 +732,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 }
             }
 
-            if (in_array($curr_pn, array('home', 'thread'))) {
+            if (in_array($curr_pn, array('home','thread'))) {
                 $post_data    = cl_raw_post_data($post_id);
                 $cl['li']     = cl_post_data($post_data);
                 $data['html'] = cl_template('timeline/post');
@@ -679,7 +743,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
 
             cl_delete_post_junk_files($post_data['id'], $post_data['type']);
-        } else {
+        }
+
+        else {
             if (not_empty($post_text) || not_empty($gif_src) || not_empty($og_data) || not_empty($poll_data)) {
                 $thread_id      = ((is_posnum($thread_id)) ? $thread_id : 0);
                 $post_text      = cl_upsert_htags($post_text);
@@ -695,7 +761,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                     "priv_wcr"  => $post_privacy
                 );
 
-                if (not_empty($post_text) && not_empty($donation_amount) && is_numeric($donation_amount) && $donation_amount > 0) {
+                if(not_empty($post_text) && not_empty($donation_amount) && is_numeric($donation_amount) && $donation_amount > 0) {
                     if ($cl["config"]["donation_system_status"] == "on") {
                         $insert_data['is_donation_post'] = "Y";
                         $insert_data['donation_amount'] = $donation_amount;
@@ -714,12 +780,12 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                     }
                 }
 
-                if (not_empty($post_text) && not_empty($poll_data) && cl_is_valid_poll($poll_data)) {
+                if(not_empty($post_text) && not_empty($poll_data) && cl_is_valid_poll($poll_data)) {
                     if ($cl["config"]["post_polls_system"] == "on") {
                         $insert_data['og_data']   = "";
                         $gif_src                  = "";
                         $insert_data['type']      = "poll";
-                        $insert_data['poll_data'] = array_map(function ($option) {
+                        $insert_data['poll_data'] = array_map(function($option) {
                             return array(
                                 "option" => cl_text_secure($option["value"]),
                                 "voters" => array(),
@@ -729,10 +795,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                         $insert_data['poll_data'] = json($insert_data['poll_data'], true);
                     }
-                } else if (not_empty($gif_src) && is_url($gif_src)) {
+                }
+
+                else if (not_empty($gif_src) && is_url($gif_src)) {
                     $insert_data['og_data'] = "";
                     $insert_data['type']    = "gif";
-                } else if (not_empty($og_data) && cl_is_valid_og($og_data)) {
+                }
+
+                else if(not_empty($og_data) && cl_is_valid_og($og_data)) {
                     if (not_empty($og_data["image"]) && is_url($og_data["image"])) {
                         $og_data["image"] = cl_import_image(array(
                             'url' => $og_data["image"],
@@ -743,13 +813,15 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                         if (empty($og_data["image"])) {
                             $og_data["image"] = "";
-                        } else {
+                        }
+                        else{
                             $og_data["image_loc"] = true;
                         }
 
                         $insert_data['og_data'] = json($og_data, true);
                         $gif_src = "";
-                    } else {
+                    }
+                    else{
                         $insert_data['og_data'] = json(array(), true);
                         $gif_src = "";
                     }
@@ -774,7 +846,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         cl_update_user_data($me['id'], array(
                             'posts' => $data['posts_total']
                         ));
-                    } else {
+                    }
+
+                    else {
                         $data['replys_total'] = cl_update_thread_replys($thread_id, 'plus');
 
                         cl_update_post_data($post_id, array(
@@ -817,14 +891,17 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             'last_post' => 0
         ));
     }
-} else if ($action == 'get_draft_post') {
+}
+
+else if($action == 'get_draft_post') {
     $data['status']   = 404;
     $data['err_code'] = 0;
 
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         if (not_empty($me['draft_post'])) {
             if ($me['draft_post']['type'] == "image") {
                 if (not_empty($me['draft_post']['media'])) {
@@ -839,10 +916,11 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         );
                     }
                 }
-            } else if ($me['draft_post']['type'] == "video") {
+            }
+            else if($me['draft_post']['type'] == "video") {
 
                 $video_src = fetch_or_get($me['draft_post']['media'][0], false);
-
+               
                 if (not_empty($video_src)) {
                     $data['status'] = 200;
                     $data['type']   = "video";
@@ -851,10 +929,11 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         "source"    => cl_get_media($video_src['src'])
                     );
                 }
-            } else if ($me['draft_post']['type'] == "audio") {
+            }
+            else if($me['draft_post']['type'] == "audio") {
 
-                $audio_src = fetch_or_get($me['draft_post']['media'][0], false);
-
+                $audio_src = fetch_or_get($me['draft_post']['media'][0],false);
+               
                 if (not_empty($audio_src)) {
                     $data['status'] = 200;
                     $data['type']   = "audio";
@@ -862,10 +941,12 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         "source"    => cl_get_media($audio_src['src'])
                     );
                 }
-            } else if ($me['draft_post']['type'] == "document") {
+            }
 
-                $doc_src = fetch_or_get($me['draft_post']['media'][0], false);
+            else if($me['draft_post']['type'] == "document") {
 
+                $doc_src = fetch_or_get($me['draft_post']['media'][0],false);
+               
                 if (not_empty($doc_src)) {
                     $data['status'] = 200;
                     $data['type']   = "document";
@@ -876,20 +957,23 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'follow') {
+}
+
+else if($action == 'follow') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['status']   = 404;
         $data['err_code'] = 0;
-        $user_id          = fetch_or_get($_POST['id'], 0);
+        $user_id          = fetch_or_get($_POST['id'],0);
 
         if (is_posnum($user_id) && $me['id'] != $user_id) {
-
+            
             $udata = cl_raw_user_data($user_id);
 
-            if (not_empty($udata) && cl_is_blocked($me['id'], $user_id) != true && cl_is_blocked($user_id, $me['id']) != true) {
+            if (not_empty($udata) && cl_is_blocked($me['id'], $user_id) != true && cl_is_blocked($user_id, $me['id']) != true) {    
                 if (cl_is_following($me['id'], $user_id)) {
                     if (cl_unfollow($me['id'], $user_id)) {
                         $data['status'] = 200;
@@ -907,7 +991,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                         cl_follow_decrease($me['id'], $user_id);
                     }
-                } else {
+                }
+
+                else{
                     if ($udata["follow_privacy"] == "everyone") {
                         if (cl_follow($me['id'], $user_id)) {
                             $data['status'] = 200;
@@ -924,7 +1010,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                             cl_follow_increase($me['id'], $user_id);
                         }
-                    } else {
+                    }
+                    else {
                         if (cl_follow_requested($me['id'], $user_id)) {
                             if (cl_unfollow($me['id'], $user_id)) {
                                 $data['status'] = 200;
@@ -943,7 +1030,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                                     'entry_id'     => $user_id
                                 ));
                             }
-                        } else {
+                        }
+                        else {
                             $follow_request_id = cl_follow_request($me['id'], $user_id);
 
                             if ($follow_request_id) {
@@ -962,11 +1050,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'delete_post') {
+}
+
+else if($action == 'delete_post') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $post_id          = fetch_or_get($_POST['id'], 0);
@@ -990,24 +1081,29 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                         $db = $db->where('publication_id', $post_id);
                         $qr = $db->delete(T_POSTS);
-                    } else {
+                    }
+
+                    else {
                         $data['url'] = cl_link(cl_strf("thread/%d", $post_data['thread_id']));
 
                         cl_update_thread_replys($post_data['thread_id'], 'minus');
                     }
-
+                    
                     cl_recursive_delete_post($post_id);
-
+                    
                     $data['status'] = 200;
                 }
             }
         }
     }
-} else if ($action == 'like_post') {
+}
+
+else if($action == 'like_post') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $post_id          = fetch_or_get($_POST['id'], 0);
@@ -1038,7 +1134,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             'entry_id' => $post_id
                         ));
                     }
-                } else {
+                }
+                else {
                     $db                  = $db->where('pub_id', $post_id);
                     $db                  = $db->where('user_id', $me['id']);
                     $qr                  = $db->delete(T_LIKES);
@@ -1059,14 +1156,16 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'show_likes') {
+}
+
+else if($action == 'show_likes') {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $post_id          = fetch_or_get($_POST['id'], 0);
 
     if (is_posnum($post_id)) {
         $post_data = cl_raw_post_data($post_id);
-
+   
         if (not_empty($post_data)) {
             $cl['liked_post']  = $post_id;
             $cl['post_likes']  = cl_get_post_likes($post_id, 30);
@@ -1075,12 +1174,16 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 $cl['likes_count'] = cl_number($post_data['likes_count']);
                 $data['status']    = 200;
                 $data['html']      = cl_template('timeline/modals/likes');
-            } else {
-                $data['status'] = 404;
             }
+
+            else{
+                $data['status'] = 404;
+            }  
         }
     }
-} else if ($action == 'load_likes') {
+}
+
+else if($action == 'load_likes') {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $post_id          = fetch_or_get($_GET['id'], 0);
@@ -1089,7 +1192,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
     if (is_posnum($post_id) && is_posnum($offset)) {
         $cl['post_likes'] = cl_get_post_likes($post_id, 30, $offset);
         $html_arr         = array();
-
+   
         if (not_empty($cl['post_likes'])) {
             foreach ($cl['post_likes'] as $cl['li']) {
                 $html_arr[] = cl_template('timeline/includes/like_li');
@@ -1099,11 +1202,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             $data['html']   = implode('', $html_arr);
         }
     }
-} else if ($action == 'bookmark_post') {
+}
+
+else if($action == 'bookmark_post') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $post_id          = fetch_or_get($_POST['id'], 0);
@@ -1122,7 +1228,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                     $data['status']      = 200;
                     $data['status_code'] = '1';
-                } else {
+                }
+                else {
                     $db                  = $db->where('publication_id', $post_id);
                     $db                  = $db->where('user_id', $me['id']);
                     $qr                  = $db->delete(T_BOOKMARKS);
@@ -1132,11 +1239,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'repost') {
+}
+
+else if($action == 'repost') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $post_id          = fetch_or_get($_POST['id'], 0);
@@ -1168,7 +1278,8 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                             'entry_id' => $post_id
                         ));
                     }
-                } else {
+                }
+                else {
                     $db     = $db->where('publication_id', $post_id);
                     $db     = $db->where('user_id', $me['id']);
                     $db     = $db->where('type', 'repost');
@@ -1198,22 +1309,27 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'update_msb_indicators') {
+}
+
+else if($action == 'update_msb_indicators') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['status']        = 200;
         $data['notifications'] = cl_total_new_notifs();
         $data['messages']      = cl_total_new_messages();
     }
-} else if ($action == 'search') {
+}
+
+else if($action == 'search') {
     $data['err_code'] = 0;
     $data['status']   = 400;
-    $search_query     = fetch_or_get($_GET['query'], false);
-    $type             = fetch_or_get($_GET['type'], false);
+    $search_query     = fetch_or_get($_GET['query'], false); 
+    $type             = fetch_or_get($_GET['type'], false); 
 
-    if (not_empty($search_query) && len_between($search_query, 3, 32) && in_array($type, array('users', 'htags'))) {
+    if (not_empty($search_query) && len_between($search_query,3, 32) && in_array($type, array('users','htags'))) {
         require_once(cl_full_path("core/apps/explore/app_ctrl.php"));
 
         if ($type == "htags") {
@@ -1221,7 +1337,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             $search_query = cl_croptxt($search_query, 32);
             $query_result = cl_search_hashtags($search_query, false, 150);
             $html_arr     = array();
-
+            
             if (not_empty($query_result)) {
                 foreach ($query_result as $cl['li']) {
                     $html_arr[] = cl_template('main/includes/search/htags_li');
@@ -1229,8 +1345,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
                 $data['status'] = 200;
                 $data['html']   = implode("", $html_arr);
-            }
-        } else {
+            }  
+        }
+        else {
             $search_query = cl_text_secure($search_query);
             $search_query = cl_croptxt($search_query, 32);
             $query_result = cl_search_people($search_query, false, 150);
@@ -1246,12 +1363,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'report_profile') {
+}
+
+else if($action == 'report_profile') {
     $data['err_code'] = 0;
     $data['status']   = 400;
-    $report_reason    = fetch_or_get($_POST['reason'], false);
-    $profile_id       = fetch_or_get($_POST['profile_id'], false);
-    $comment          = fetch_or_get($_POST['comment'], false);
+    $report_reason    = fetch_or_get($_POST['reason'], false); 
+    $profile_id       = fetch_or_get($_POST['profile_id'], false); 
+    $comment          = fetch_or_get($_POST['comment'], false); 
     $profile_data     = cl_raw_user_data($profile_id);
 
     if (not_empty($profile_data) && $profile_id != $me['id'] && in_array($report_reason, array_keys($cl['profile_report_types']))) {
@@ -1269,10 +1388,12 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             'time'       => time()
         ));
     }
-} else if ($action == 'user_lbox') {
+}
+
+else if($action == 'user_lbox') {
     $data['err_code'] = 0;
     $data['status']   = 400;
-    $user_id          = fetch_or_get($_GET['id'], false);
+    $user_id          = fetch_or_get($_GET['id'], false); 
     $user_data        = cl_user_data($user_id);
 
     if (not_empty($user_data)) {
@@ -1294,22 +1415,25 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
         $data['status'] = 200;
         $data['html']   = cl_template("main/includes/lbox/userinfo");
     }
-} else if ($action == 'block') {
+}
+
+else if($action == 'block') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['status']   = 404;
         $data['err_code'] = 0;
         $user_id          = fetch_or_get($_POST['id'], 0);
 
 
         if (is_posnum($user_id) && $me['id'] != $user_id) {
-
+            
             $udata = cl_raw_user_data($user_id);
 
             if (not_empty($udata)) {
-
+            
                 if (cl_is_blocked($me['id'], $user_id)) {
                     $data['status'] = 200;
 
@@ -1317,8 +1441,10 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                         'user_id'    => $me['id'],
                         'profile_id' => $user_id
                     ));
-                } else {
+                }
 
+                else{
+                    
                     $data['status']  = 200;
                     $insert_id       = cl_db_insert(T_BLOCKS, array(
                         'user_id'    => $me['id'],
@@ -1339,11 +1465,14 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'post_privacy') {
+}
+
+else if($action == 'post_privacy') {
     if (empty($cl["is_logged"])) {
         $data['status'] = 400;
         $data['error']  = 'Invalid access token';
-    } else {
+    }
+    else {
         $data['err_code'] = 0;
         $data['status']   = 400;
         $post_id          = fetch_or_get($_POST['id'], 0);
@@ -1361,7 +1490,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'vote_poll' && not_empty($cl["is_logged"])) {
+}
+
+else if($action == 'vote_poll' && not_empty($cl["is_logged"])) {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $post_id          = fetch_or_get($_POST['id'], 0);
@@ -1369,7 +1500,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
 
     if (is_posnum($post_id) && is_numeric($option)) {
         $post_data = cl_raw_post_data($post_id);
-
+   
         if (not_empty($post_data) && $post_data["type"] == "poll") {
             $poll_data = json($post_data["poll_data"]);
 
@@ -1387,7 +1518,7 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
                 ));
 
                 if ($update_status !== true) {
-                    $free_poll = array_map(function ($option) {
+                    $free_poll = array_map(function($option) {
                         return $option["voters"] = array();
                     }, $poll_data);
 
@@ -1400,14 +1531,16 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             }
         }
     }
-} else if ($action == 'stop_poll' && not_empty($cl["is_logged"])) {
+}
+
+else if($action == 'stop_poll' && not_empty($cl["is_logged"])) {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $post_id          = fetch_or_get($_POST['id'], 0);
 
     if (is_posnum($post_id)) {
         $post_data = cl_raw_post_data($post_id);
-
+   
         if (not_empty($post_data) && $post_data["type"] == "poll") {
             cl_update_post_data($post_id, array(
                 "poll_status" => "stopped"
@@ -1416,16 +1549,18 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             $data['status'] = 200;
         }
     }
-} else if ($action == 'report_post') {
+}
+
+else if($action == 'report_post') {
     $data['err_code'] = 0;
     $data['status']   = 400;
-    $report_reason    = fetch_or_get($_POST['reason'], false);
-    $post_id          = fetch_or_get($_POST['post_id'], false);
-    $comment          = fetch_or_get($_POST['comment'], false);
+    $report_reason    = fetch_or_get($_POST['reason'], false); 
+    $post_id          = fetch_or_get($_POST['post_id'], false); 
+    $comment          = fetch_or_get($_POST['comment'], false); 
     $post_data        = cl_raw_post_data($post_id);
 
     if (not_empty($post_data) && in_array($report_reason, array_keys($cl['post_report_types']))) {
-
+       
         cl_db_delete_item(T_PUB_REPORTS, array(
             'user_id' => $me['id'],
             'post_id' => $post_id
@@ -1443,7 +1578,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             'time'    => time()
         ));
     }
-} elseif ($action == "mentions_autocomp") {
+}
+
+elseif ($action == "mentions_autocomp") {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $username         = fetch_or_get($_GET['username'], false);
@@ -1456,7 +1593,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
         $data["status"] = 200;
         $data["users"]  = $users_list;
     }
-} elseif ($action == "hashtags_autocomp") {
+}
+
+elseif ($action == "hashtags_autocomp") {
     $data['err_code'] = 0;
     $data['status']   = 400;
     $hashtag          = fetch_or_get($_GET['hashtag'], false);
@@ -1469,11 +1608,15 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
         $data["status"] = 200;
         $data["tags"]   = $hashtag_list;
     }
-} else if ($action == "cua") {
+}
+
+else if($action == "cua") {
     setcookie("__c_u_a__", "1", strtotime("+3 years"), '/') or die('unable to create cookie');
 
     $data["status"] = 200;
-} else if ($action == "save_display_settings") {
+}
+
+else if($action == "save_display_settings") {
     $data['err_code'] = 0;
     $data['status']   = 400;
 
@@ -1490,7 +1633,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             ), true)
         ));
     }
-} else if ($action == "update_web_device_id") {
+}
+
+else if($action == "update_web_device_id") {
     $data['err_code'] = 0;
     $data['status']   = 400;
 
@@ -1506,7 +1651,9 @@ if ($action == 'upload_post_image' && $cl["config"]["post_images_system"] == "on
             $data['status'] = 200;
         }
     }
-} else if ($action == "delete_web_device_id") {
+}
+
+else if($action == "delete_web_device_id") {
     $data['err_code'] = 0;
     $data['status']   = 400;
 

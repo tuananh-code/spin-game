@@ -33,9 +33,10 @@ require_once("components/glob_context.php");
 require_once("components/user.php");
 require_once("components/post.php");
 require_once("components/ad.php");
-require_once("configs/conf.php");
-require_once("libs/DB/vendor/autoload.php");
 
+require_once("configs/conf.php");
+
+require_once("libs/DB/vendor/autoload.php");
 $cl["db_errors"] = array();
 $sql_db_host     = (isset($sql_db_host) ? $sql_db_host : "");
 $sql_db_user     = (isset($sql_db_user) ? $sql_db_user : "");
@@ -43,6 +44,7 @@ $sql_db_pass     = (isset($sql_db_pass) ? $sql_db_pass : "");
 $sql_db_name     = (isset($sql_db_name) ? $sql_db_name : "");
 $site_url        = (isset($site_url)    ? $site_url    : "");
 $mysqli          = new mysqli($sql_db_host, $sql_db_user, $sql_db_pass, $sql_db_name);
+
 if (mysqli_connect_errno()) {
     array_push($cl["db_errors"], mysqli_connect_error());
 

@@ -52,7 +52,6 @@ if ($api == "native") {
 		        exit();
 		    }
 	    }
-
 		require_once(cl_full_path($req_handler));
 
 		echo json_encode($data, JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT);

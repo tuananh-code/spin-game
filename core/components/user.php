@@ -188,6 +188,13 @@ function cl_email_exists($email = "") {
     return ($db->where('email', cl_text_secure($email))->getValue(T_USERS, 'count(*)') > 0) ? true : false;
 }
 
+function cl_get_user_by_code($code = "")
+{
+    global $db;
+    $data = $db->where('code', cl_text_secure($code))->getOne(T_USERS);
+    return $data;
+}
+
 function cl_verify_emcode($emcode = "") {
     global $db;
     return ($db->where('em_code', cl_text_secure($emcode))->getValue(T_USERS, 'count(*)') > 0) ? true : false;

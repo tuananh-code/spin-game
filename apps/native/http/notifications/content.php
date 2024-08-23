@@ -22,7 +22,6 @@ if (empty($cl["is_logged"])) {
 }
 else{
 	require_once(cl_full_path("core/apps/notifications/app_ctrl.php"));
-
 	$cl["page_tab"]   = fetch_or_get($_GET["page"],"notifs");
 	$cl["page_title"] = cl_translate("Notifications");
 	$cl["page_desc"]  = $cl["config"]["description"];

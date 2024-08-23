@@ -1,0 +1,218 @@
+<!-- <script type="module">
+	import VueGoodTablePlugin from 'vue-good-table';
+
+	import 'vue-good-table/dist/vue-good-table.css'
+
+	Vue.use(VueGoodTablePlugin);
+
+	export default {
+		components: {
+			VueGoodTable
+		},
+		// ...
+	}
+</script> -->
+<style>
+	.dismiss,
+	.dismiss_p {
+		padding: 0;
+		margin: 0;
+		width: 35px;
+		height: 35px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		cursor: pointer;
+		border-radius: 100%;
+		position: absolute;
+		right: 1%;
+		top: 35px;
+	}
+
+	h6 {
+		font-weight: bold;
+	}
+
+
+	.user-name-holder__name {
+		color: #0461bf;
+	}
+
+	.transaction-details {
+		color: #3d72ab;
+	}
+
+	button.btn-custom-icon {
+		/* opacity: 0.7; */
+		visibility: hidden;
+	}
+
+	.notifications-list__item:hover button.btn-custom-icon {
+		/* opacity: 1; */
+		visibility: visible;
+	}
+
+	.notifications-data__body {
+		border-bottom: 1px solid var(--cl-primary-border-color);
+		transition: all 0.27s ease-in-out;
+		padding: var(--cl-primary-offset-size);
+		font-size: 14px;
+
+		font-weight: 700;
+
+	}
+
+	.notif-time {
+		color: #496389;
+	}
+
+
+	.notifications-data__topline {
+		border-right: 1px solid var(--cl-primary-border-color);
+		padding: 0 10px;
+	}
+
+	.dismiss:hover,
+	.dismiss_p {
+		background: var(--cl-secondary-bg-color);
+	}
+</style>
+<div class="timeline-container" data-app="notifications">
+	<div class="timeline-header" data-el="tl-header">
+		<div class="timeline-header__botline">
+			<div class="lp">
+				<div class="nav-link-holder">
+					<a href="<?php echo cl_link("manage"); ?>" data-spa="true">
+						<?php echo cl_translate("Manage"); ?>
+					</a>
+				</div>
+			</div>
+			<div class="cp">
+				<a href="<?php echo cl_link('/'); ?>">
+					<img src="{%config site_logo%}" alt="Logo">
+				</a>
+			</div>
+			<div class="rp">
+				<div class="nav-link-holder">
+					<button class="go-options dropleft">
+						<div class="dropdown-toggle icon go-options__icon" data-toggle="dropdown">
+							<?php echo cl_ficon('more_horiz'); ?>
+						</div>
+						<div class="dropdown-menu dropdown-icons">
+							<a class="dropdown-item" href="<?php echo cl_link("settings/notifications"); ?>" data-spa="true">
+								<span class="flex-item dropdown-item-icon">
+									<?php echo cl_ficon('notifications'); ?>
+								</span>
+								<span class="flex-item">
+									<?php echo cl_translate("Notification settings"); ?>
+								</span>
+								<span class="flex-item dropdown-item-icon dropdown-item-icon_adinfo">
+									<?php echo cl_ficon('open'); ?>
+								</span>
+							</a>
+							<?php if (not_empty($cl["notifs"])): ?>
+								<div class="dropdown-divider"></div>
+								<a onclick="SMColibri.PS.notifs.delete_all_notifs();" class="dropdown-item" href="javascript:void(0);">
+									<span class="flex-item dropdown-item-icon">
+										<?php echo cl_ficon("delete"); ?>
+									</span>
+									<span class="flex-item">
+										<span><?php echo cl_translate("Delete all notification"); ?></span>
+									</span>
+								</a>
+							<?php endif; ?>
+							<div class="dropdown-divider"></div>
+							<a class="dropdown-item" href="javascript:void(0);" onclick="SMColibri.go_back();">
+								<span class="flex-item dropdown-item-icon">
+									<?php echo cl_ficon('arrow_back'); ?>
+								</span>
+								<span class="flex-item">
+									<?php echo cl_translate("Go back"); ?>
+								</span>
+								<span class="flex-item dropdown-item-icon dropdown-item-icon_adinfo">
+									<?php echo cl_ficon('open'); ?>
+								</span>
+							</a>
+						</div>
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="timeline-navbar">
+		<?php if ($cl['page_tab'] == 'edit_invoice'): ?>
+			<div class="timeline-navbar__item">
+				<a href="<?php echo cl_link("manage"); ?>" data-spa="true">
+					<button class="timeline-navbar__item-btn active">
+						<span class="btn-flex-inner">
+							<?php echo cl_translate("Edit invoice"); ?>
+						</span>
+					</button>
+				</a>
+			</div>
+		<?php else: ?>
+			<div class="timeline-navbar__item">
+				<a href="<?php echo cl_link("manage"); ?>" data-spa="true">
+					<button class="timeline-navbar__item-btn <?php
+																if ($cl['page_tab'] == 'inv') {
+																	echo ('active');
+																} ?>">
+						<span class="btn-flex-inner">
+							<?php echo cl_translate("Enter invoice"); ?>
+						</span>
+					</button>
+				</a>
+			</div>
+			<div class="timeline-navbar__item">
+				<a href="<?php echo cl_link("list"); ?>" data-spa="true">
+					<button class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'list') {
+																	echo ('active');
+																} ?>">
+						<span class="btn-flex-inner">
+							<?php echo cl_translate("List"); ?>
+						</span>
+					</button>
+				</a>
+			</div>
+		<?php endif ?>
+	</div>
+
+	<div class="d-block" id="vue-manage-app" style="padding: 30px;">
+		<div class="manage">
+
+			<?php if ($cl['page_tab'] == 'list'): ?>
+				<?php if (not_empty($cl["transactions"])): ?>
+					<div data-an="transactions-list" class="manage-list">
+						<?php foreach ($cl["transactions"] as $cl['li']): ?>
+							<?php echo cl_template('manage/includes/list_item'); ?>
+						<?php endforeach; ?>
+					</div>
+				<?php else: ?>
+					<?php echo cl_template('manage/includes/no_notifs'); ?>
+				<?php endif; ?>
+			<?php elseif ($cl['page_tab'] == 'edit_invoice'): ?>
+				<?php echo cl_template('manage/includes/edit'); ?>
+			<?php else: ?>
+				<?php echo cl_template('manage/includes/create'); ?>
+			<?php endif; ?>
+
+		</div>
+
+		<!-- <?php if (count($cl["transactions"]) >= 45): ?>
+			<div class="timeline-data-loader">
+				<button v-if="loading" class="timeline-data-loader__btn" disabled="true">
+					<?php echo cl_translate("Please wait"); ?>
+				</button>
+				<button v-else-if="loadmore" class="timeline-data-loader__btn" v-on:click="load_manage">
+					<?php echo cl_translate("Show more"); ?>
+				</button>
+				<button v-else class="timeline-data-loader__btn" disabled="true">
+					<?php echo cl_translate("That is all for now!"); ?>
+				</button>
+			</div>
+		<?php endif; ?> -->
+	</div>
+	<?php echo cl_template('manage/scripts/app_master_script'); ?>
+
+
+</div>

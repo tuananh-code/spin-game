@@ -16,11 +16,13 @@
 # @ ColibriSM - The Ultimate Social Network PHP Script                      @
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
+
 if (empty($cl['is_logged'])) {
     $data['status'] = 400;
     $data['error']  = 'Invalid access token';
 }
 else {
+    
     if ($action == 'load_more') {
     	$data['err_code'] = 0;
         $data['status']   = 400;
@@ -49,6 +51,7 @@ else {
     		}
         }
     }
+
     else if($action == 'delete') {
         $data['err_code'] = 0;
         $data['status']   = 400;
