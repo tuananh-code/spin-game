@@ -16,6 +16,7 @@
 # @ ColibriSM - The Ultimate Social Network PHP Script                      @
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
+
 if (empty($cl["is_logged"])) {
 	require_once cl_full_path("apps/native/http/err404/content.php");
 }

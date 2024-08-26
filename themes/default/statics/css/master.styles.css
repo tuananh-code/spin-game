@@ -12,6 +12,14 @@
   --cl-primary-name-size: 16px;
   --cl-primary-username-size: 12px;
 }
+.timeline-container-wrapper {
+  background: aliceblue;
+}
+
+.hide{
+  display: none;
+}
+
 @media (max-width: 1199.98px) {
   :root {
     --cl-primary-avatar-size: 32px;

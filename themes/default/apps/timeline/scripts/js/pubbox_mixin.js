@@ -353,6 +353,7 @@ var pubbox_form_app_mixin = Object({
 
 			var form  = $(_self.$el);
 			var _app_ = this;
+
 			$(_self.target).ajaxSubmit({
 				url: "<?php echo cl_link("native_api/main/publish_new_post"); ?>",
 				type: 'POST',

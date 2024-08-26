@@ -2,6 +2,7 @@
 	<div class="sidebar__inner">
 		<div class="sidebar__nav">
 			<div class="sidebar__nav-group">
+				
 				<div data-navitem="home" class="sidebar__nav-item <?php if($cl['pn'] == 'home') {echo('active');} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('home'); ?>
@@ -12,42 +13,7 @@
 						</a>
 					</span>
 				</div>
-				<!-- game -->
-				<div data-navitem="game" class="game sidebar__nav-item <?php if($cl['pn'] == 'game') {echo('active');} ?>">
-					<span class="icon">
-						<?php echo cl_ficon('premium'); ?>
-					</span>
-					<span class="text">
-						<a href="<?php echo cl_link('game'); ?>" data-spa="true">
-							<?php echo cl_translate('Game'); ?>
-						</a>
-					</span>
-				</div>
-				<!-- game -->
-				<!-- store -->
-				<div data-navitem="store" class="store sidebar__nav-item <?php if($cl['pn'] == 'store') {echo('active');} ?>">
-					<span class="icon">
-						<?php echo cl_ficon('city'); ?>
-					</span>
-					<span class="text">
-						<a href="<?php echo cl_link('store'); ?>" data-spa="true">
-							<?php echo cl_translate('Store'); ?>
-						</a>
-					</span>
-				</div>
-				<!-- store -->
-				<!-- manager -->
-				<div data-navitem="manager" class="manager sidebar__nav-item <?php if($cl['pn'] == 'manager') {echo('active');} ?>">
-					<span class="icon">
-						<?php echo cl_ficon('users_list'); ?>
-					</span>
-					<span class="text">
-						<a href="<?php echo cl_link('manager'); ?>" data-spa="true">
-							<?php echo cl_translate('Manager'); ?>
-						</a>
-					</span>
-				</div>
-				<!-- manager -->
+
 				<div data-navitem="notifications" class="sidebar__nav-item <?php if($cl['pn'] == 'notifications') {echo('active');} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('notifications'); ?>
@@ -59,13 +25,13 @@
 						</a>
 					</span>
 				</div>
-				<div data-navitem="subscriptions" id="reload" class="sidebar__nav-item <?php if($cl['pn'] == 'subscriptions') {echo('active');} ?>">
+				<div data-navitem="subscriptions" class="sidebar__nav-item <?php if($cl['pn'] == 'subscriptions') {echo('active');} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('person_tag'); ?>
 					</span>
 					<span class="text">
 						<a href="<?php echo cl_link("subscriptions"); ?>" data-spa="true">
-							<?php echo cl_translate('Spin'); ?>
+							<?php echo cl_translate('Subscriptions'); ?>
 						</a>
 					</span>
 				</div>

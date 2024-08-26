@@ -44,7 +44,4 @@ define("T_UI_LANGS", "cl_ui_langs");
 define("T_BANKTRANS_REQS", "cl_banktrans_requests");
 define("T_WALLET_POUT", "cl_wallet_payout");
 define("T_SUBSCRIPTIONS", "cl_subscriptions");
-define("T_GAME", "cl_game");
-define("T_STORE", "cl_store");
-define("T_PRIZE", "cl_prize");
 define("T_TRANSACTION", "cl_transaction");

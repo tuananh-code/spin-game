@@ -1,4 +1,4 @@
-<?php
+<?php 
 # @*************************************************************************@
 # @ Software author: Mansur Terla (Mansur_TL)                               @
 # @ UI/UX Designer & Web developer ;)                                       @
@@ -18,14 +18,16 @@
 # @*************************************************************************@
 
 if (empty($cl['is_logged'])) {
-    $data         = array(
-        'code'    => 401,
-        'data'    => array(),
-        'message' => 'Unauthorized Access'
-    );
-} else {
+	$data         = array(
+		'code'    => 401,
+		'data'    => array(),
+		'message' => 'Unauthorized Access'
+	);
+}
+
+else {
     $max_post_length = $cl["config"]["max_post_len"];
-    $post_data       = $me['draft_post'];
+	$post_data       = $me['draft_post'];
     $post_text       = fetch_or_get($_POST['post_text'], "");
     $gif_src         = fetch_or_get($_POST['gif_src'], "");
     $og_data         = fetch_or_get($_POST['og_data'], array());
@@ -39,13 +41,15 @@ if (empty($cl['is_logged'])) {
     if (not_empty($thread_id)) {
         $thread_data  = cl_raw_post_data($thread_id);
         $post_privacy = "everyone";
-    } else {
+    }
+    else {
         if (in_array($post_privacy, array("everyone", "followers", "mentioned")) != true) {
             $post_privacy = "everyone";
         }
     }
-    if (not_empty($post_data) && not_empty($post_data["media"])) {
 
+    if (not_empty($post_data) && not_empty($post_data["media"])) {
+        
         $thread_id      = ((is_posnum($thread_id)) ? $thread_id : 0);
         $post_id        = $post_data['id'];
         $post_text      = cl_upsert_htags($post_text);
@@ -67,11 +71,13 @@ if (empty($cl['is_logged'])) {
             ));
 
             $data['posts_total'] = ($me['posts'] += 1);
-
+            
             cl_update_user_data($me['id'], array(
                 'posts' => $data['posts_total']
             ));
-        } else {
+        }
+
+        else {
             $data['replys_total'] = cl_update_thread_replys($thread_id, 'plus');
 
             cl_update_post_data($post_id, array(
@@ -97,7 +103,9 @@ if (empty($cl['is_logged'])) {
         $data['message'] = "Post published successfully";
 
         cl_delete_post_junk_files($post_data['id'], $post_data['type']);
-    } else {
+    }
+
+    else {
         if (not_empty($post_text) || not_empty($gif_src)) {
             $thread_id      = ((is_posnum($thread_id)) ? $thread_id : 0);
             $post_text      = cl_upsert_htags($post_text);
@@ -113,11 +121,11 @@ if (empty($cl['is_logged'])) {
                 "priv_wcr"  => $post_privacy
             );
 
-            if (not_empty($post_text) && empty($poll_data) != true && cl_is_valid_poll($poll_data)) {
+            if(not_empty($post_text) && empty($poll_data) != true && cl_is_valid_poll($poll_data)) {
                 $insert_data['og_data']   = "";
                 $gif_src                  = "";
                 $insert_data['type']      = "poll";
-                $insert_data['poll_data'] = array_map(function ($option) {
+                $insert_data['poll_data'] = array_map(function($option) {
                     return array(
                         "option" => cl_text_secure($option["value"]),
                         "voters" => array(),
@@ -126,10 +134,14 @@ if (empty($cl['is_logged'])) {
                 }, $poll_data);
 
                 $insert_data['poll_data'] = json($insert_data['poll_data'], true);
-            } else if (not_empty($gif_src) && is_url($gif_src)) {
+            }
+
+            else if (not_empty($gif_src) && is_url($gif_src)) {
                 $insert_data['og_data'] = "";
                 $insert_data['type']    = "gif";
-            } else if (not_empty($og_data) && is_array($og_data)) {
+            }
+
+            else if(not_empty($og_data) && is_array($og_data)) {
                 $insert_data['og_data'] = json($og_data, true);
                 $gif_src                = "";
             }
@@ -150,8 +162,10 @@ if (empty($cl['is_logged'])) {
                     cl_update_user_data($me['id'], array(
                         'posts' => $data['posts_total']
                     ));
-                } else {
-                    $data['replys_total'] = cl_update_thread_replys($thread_id, 'plus');
+                }
+
+                else {
+                    $data['replys_total'] = cl_update_thread_replys($thread_id,'plus');
 
                     cl_update_post_data($post_id, array(
                         "target" => "pub_reply"
@@ -176,19 +190,20 @@ if (empty($cl['is_logged'])) {
                 }
 
                 $post_data       = cl_raw_post_data($post_id);
-                $data['data']    = cl_post_data($post_data);
-                $data['code']    = 200;
-                $data['message'] = "Post published successfully";
+		        $data['data']    = cl_post_data($post_data);
+		        $data['code']    = 200;
+		        $data['message'] = "Post published successfully";
 
                 if (not_empty($mentions)) {
                     cl_notify_mentioned_users($mentions, $post_id);
                 }
             }
-        } else {
-            $data['code']     = 400;
-            $data['err_code'] = "invalid_post_data";
-            $data['message']  = "Invalid data for publication. Please check your details";
-            $data['data']     = array();
+        }
+        else {
+        	$data['code']     = 400;
+	        $data['err_code'] = "invalid_post_data";
+	        $data['message']  = "Invalid data for publication. Please check your details";
+	    	$data['data']     = array();
         }
     }
 

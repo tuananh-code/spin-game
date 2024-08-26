@@ -17,15 +17,15 @@
 	.dismiss_p {
 		padding: 0;
 		margin: 0;
-		width: 35px;
-		height: 35px;
+		width: 30px;
+		height: 30px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
 		border-radius: 100%;
 		position: absolute;
-		right: 1%;
+		right: 2%;
 		top: 35px;
 	}
 
@@ -73,7 +73,7 @@
 	}
 
 	.dismiss:hover,
-	.dismiss_p {
+	.dismiss_p:hover {
 		background: var(--cl-secondary-bg-color);
 	}
 </style>
@@ -163,18 +163,19 @@
 					</button>
 				</a>
 			</div>
-			<div class="timeline-navbar__item">
-				<a href="<?php echo cl_link("list"); ?>" data-spa="true">
-					<button class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'list') {
-																	echo ('active');
-																} ?>">
-						<span class="btn-flex-inner">
-							<?php echo cl_translate("List"); ?>
-						</span>
-					</button>
-				</a>
-			</div>
+
 		<?php endif ?>
+		<div class="timeline-navbar__item <?php if ($cl['page_tab'] == 'edit_invoice') {echo ('hide');} ?>">
+			<a href="<?php echo cl_link("list"); ?>" data-spa="true">
+				<button id='list' class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'list') {
+																		echo ('active');
+																	} ?>">
+					<span class="btn-flex-inner">
+						<?php echo cl_translate("List"); ?>
+					</span>
+				</button>
+			</a>
+		</div>
 	</div>
 
 	<div class="d-block" id="vue-manage-app" style="padding: 30px;">
@@ -197,8 +198,7 @@
 			<?php endif; ?>
 
 		</div>
-
-		<!-- <?php if (count($cl["transactions"]) >= 45): ?>
+		<?php if (count($cl["transactions"]) >= 45 && $cl['page_tab'] == 'list'): ?>
 			<div class="timeline-data-loader">
 				<button v-if="loading" class="timeline-data-loader__btn" disabled="true">
 					<?php echo cl_translate("Please wait"); ?>
@@ -210,7 +210,7 @@
 					<?php echo cl_translate("That is all for now!"); ?>
 				</button>
 			</div>
-		<?php endif; ?> -->
+		<?php endif; ?>
 	</div>
 	<?php echo cl_template('manage/scripts/app_master_script'); ?>
 

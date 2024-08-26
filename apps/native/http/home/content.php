@@ -16,6 +16,7 @@
 # @ ColibriSM - The Ultimate Social Network PHP Script                      @
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
+
 if (empty($cl["is_logged"])) {
 	if ($cl["config"]["guest_page_status"] == "on") {
 		cl_redirect("guest");

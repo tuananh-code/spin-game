@@ -19,12 +19,14 @@
 
 function cl_get_notifications($args = array()) {
 	global $db, $cl, $me;
+
 	$args        = (is_array($args)) ? $args : array();
 	$options     = array(
         "offset" => false,
         "limit"  => 10,
         "type"   => "notifs"
     );
+
     $args   = array_merge($options, $args);
     $offset = $args['offset'];
     $limit  = $args['limit'];

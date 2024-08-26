@@ -22,7 +22,7 @@ RewriteEngine On
 # RewriteCond %{HTTPS} off
 # RewriteCond %{HTTP:X-Forwarded-Proto} !https
 # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-                                            
+     
 RewriteRule ^manage(\/|)$ index.php?app=manage&page=inv [QSA]
 RewriteRule ^list(\/|)$ index.php?app=manage&page=list [QSA]
 RewriteRule ^edit_invoice/([0-9]+)(\/|)$ index.php?app=manage&page=edit_invoice&id=$1 [QSA]
@@ -36,9 +36,6 @@ RewriteRule ^admin_panel(\/|)$ index.php?app=cpanel [QSA]
 RewriteRule ^admin_panel/(\w{3,25})(\/|)$ index.php?app=cpanel&section=$1 [QSA]
 RewriteRule ^bookmarks(\/|)$ index.php?app=bookmarks [QSA]
 RewriteRule ^subscriptions(\/|)$ index.php?app=subscriptions [QSA]
-RewriteRule ^game(\/|)$ index.php?app=game [QSA]
-RewriteRule ^store(\/|)$ index.php?app=store [QSA]
-RewriteRule ^manager(\/|)$ index.php?app=manager [QSA]
 RewriteRule ^notifications(\/|)$ index.php?app=notifications&page=notifs [QSA]
 RewriteRule ^mentions(\/|)$ index.php?app=notifications&page=mentions [QSA]
 RewriteRule ^search(\/|)$ index.php?app=explore [QSA]

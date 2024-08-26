@@ -900,7 +900,7 @@
     "routing_code": "Routing code",
     "country": "Country",
     "account_name": "Account name",
-    "address:": "Address:",
+    "address": "Address",
     "transaction_was_declined": "Transaction was declined",
     "find_out_how_it_works": "Find out how it works?",
     "transfer_earnings_to_my_wallet": "Transfer earnings to my wallet",
