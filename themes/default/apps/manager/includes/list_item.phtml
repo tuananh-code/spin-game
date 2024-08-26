@@ -1,86 +1,90 @@
-<div class="user-list-item">
-	<div class="user-list-item__avatar">
-		<a href="<?php echo($cl['li']['url']); ?>" class="block-link">
-			<div class="user-avatar <?php if(cl_is_online($cl['li']['is_online'])) {echo "user-avatar-online";} ?>">
-				<img src="<?php echo($cl['li']['avatar']); ?>" alt="Avatar">
-			</div>
-		</a>
-	</div>
-	<div class="user-list-item__data">
-		<div class="user-data">
-			<div class="user-data__body">
-				<div class="user-data__body-topline">
-					<div class="flex-item-left">
-						<div class="user-data__name">
-							<a href="<?php echo($cl['li']['url']); ?>" data-spa="true" data-uinfo-lbox="<?php echo($cl['li']['id']); ?>" data-toggle="popover" data-placement="bottom">
-								<span class="user-name-holder">
-									<span class="user-name-holder__name">
-										<?php echo $cl['li']['name']; ?>
-									</span>
-
-									<?php if ($cl['li']['verified'] == '1'): ?>
-										<span class="user-name-holder__badge">
-											<?php echo cl_icon("verified_user_badge"); ?>
-										</span>
-									<?php endif; ?>
-								</span>
-							</a>
-						</div>
-						<div class="user-data__stats">
-							<div class="stats-item">
-								<span>
-									<?php echo cl_number($cl['li']['posts']); ?>
-								</span>
-								<span><?php echo cl_translate("Posts"); ?></span>	
-							</div>
-							<div class="stats-item">
-								<span>
-									<?php echo cl_number($cl['li']['followers']); ?>
-								</span>
-								<span><?php echo cl_translate("Followers"); ?></span>	
-							</div>
-							<div class="stats-item">
-								<span>
-									<?php echo cl_number($cl['li']['following']); ?>
-								</span>
-								<span><?php echo cl_translate("Following"); ?></span>	
-							</div>
+<?php
+$prize = get_prize($me['id']);
+?>
+<div class="table-responsive-md u-datatable p-2">
+	<h2 class="p-2 m-2 text-primary"> <?= cl_translate('Prize manager') ?></h2>
+	<table id="prizeTable">
+		<thead>
+			<tr class="text-uppercase font-size-1">
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Customer') ?>
+						<div class="ml-2">
 						</div>
 					</div>
-					<div class="flex-item-right">
-						<div class="user-data__ctrls">
-							<a href="<?php echo $cl['li']['url']; ?>" data-spa="true" class="block-link">
-								<div class="btn btn-custom main-gray md">
-									<?php echo cl_translate("Show profile"); ?>
-								</div>
-							</a>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Store') ?>
+						<div class="ml-2">
 						</div>
 					</div>
-				</div>
-				<?php if (not_empty($cl['li']['about'])): ?>
-					<div class="user-data__about">
-						<?php echo $cl['li']['about']; ?>
-
-						<?php if (not_empty($cl['li']['website'])): ?>
-							| <?php echo cl_html_el("a", $cl['li']['website'], array("href" => $cl['li']['website'], "target" => "_blank", "class" => "inline-link")); ?>
-						<?php endif; ?>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Game') ?>
+						<div class="ml-2">
+						</div>
 					</div>
-				<?php endif; ?>
-				<div class="user-data__subscription">
-					<?php if ($cl["li"]["left_days"] > 1): ?>
-						<span>
-							<?php echo cl_translate("{@days@} days left", array("days" => $cl["li"]["left_days"])); ?>
-						</span>
-						<span>
-							<?php echo cl_translate("Until {@end_date@}", array("end_date" => cl_date("d F", $cl["li"]["subscription_end"]))); ?>
-						</span>
-					<?php else: ?>
-						<span>
-							<?php echo cl_translate("Subscription expired {@end_date@}", array("end_date" => cl_date("d F, Y", $cl["li"]["subscription_end"]))); ?>
-						</span>
-					<?php endif; ?>
-				</div>
-			</div>
-		</div>
-	</div>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Prize') ?>
+						<div class="ml-2">
+						</div>
+					</div>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Reward') ?>
+						<div class="ml-2">
+						</div>
+					</div>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Claimed') ?>
+						<div class="ml-2">
+						</div>
+					</div>
+				</th>
+				<th scope="col" class="font-weight-medium">
+					<div class="d-flex justify-content-center align-items-center">
+						<?= cl_translate('Action') ?>
+						<div class="ml-2">
+						</div>
+					</div>
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			<?php foreach ($prize as $p) { ?>
+				<tr class="tr text-center">
+					<td>
+						<?= $me['name'] ?>
+					</td>
+					<td class="text-primary">
+						<?= get_store_name($p['store_id']) ?>
+					</td>
+					<td>
+						<?= get_game_name($p['game_id']) ?>
+					</td>
+					<td class="text-success">
+						<?= $p['prize'] ?>
+					</td>
+					<td>
+						<?= $date = date('Y-m-d', strtotime($p['created_at'])) ?>
+					</td>
+					<td>
+						<?= $p['claimed_at'] ?>
+					</td>
+					<td>
+						<div>
+							<button class="claim p-2 m-2 border-0 rounded-3 btn-success" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>"><?php echo cl_translate("Claimed"); ?></button>
+						</div>
+					</td>
+				</tr>
+			<?php } ?>
+		</tbody>
+	</table>
 </div>

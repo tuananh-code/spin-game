@@ -42,6 +42,22 @@
 	<link rel="stylesheet" href="{%config theme_url%}/statics/css/css-libs.css">
 	<link rel="stylesheet" href="{%config theme_url%}/statics/css/libs/jquery.toast.min.css">
 	<link rel="stylesheet" href="{%config theme_url%}/statics/css/master.styles.css?v={%config update_date%}">
+	<!-- for wheel -->
+	<link rel="stylesheet" href="{%config theme_url%}/statics/css/index.css">
+	<link rel="stylesheet" href="{%config theme_url%}/statics/css/app.css">
+	<link rel="stylesheet" href="{%config theme_url%}/statics/css/lib/element_styles.css">
+	<link rel="stylesheet" href="{%config theme_url%}/statics/css/lib/app_layout.css">
+	<link href="https://fonts.googleapis.com/css?family=Josefin+Sans" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.css">
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+	<!-- tags input -->
+	<link rel="stylesheet" href="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.css">
+	<!-- Datatables -->
+	<link href="{%config theme_url%}/statics/DataTables/datatables.min.css" rel="stylesheet">
+	<!-- icon -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+	<?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y") : ?>
+		<link rel="stylesheet" href="{%config theme_url%}/statics/css/master.styles.rtl.css?v={%config update_date%}">
 
 	<?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y"): ?>
 		<link rel="stylesheet" href="{%config theme_url%}/statics/css/master.styles.rtl.css?v={%config update_date%}">
@@ -213,7 +229,17 @@
 
 	<?php echo cl_template('custom/header_tags'); ?>
 </head>
-<body <?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y"){echo('dir="rtl"');} else{echo('dir="ltr"');} ?> class="cl-app-<?php echo fetch_or_get($cl["pn"], "none"); ?> <?php echo (($cl["is_logged"]) ? "" : "body-guest-mode" ); ?>" data-page-tab="<?php echo fetch_or_get($cl["page_tab"], "none"); ?>" data-skin="<?php echo($cl["display_set"]["color_scheme"]); ?>" data-bg="<?php echo($cl["display_set"]["background"]); ?>">
+<!-- check expires -->
+<?php echo cl_template('main/includes/expires/check'); ?>
+
+<body <?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y") {
+			echo ('dir="rtl"');
+		} else {
+			echo ('dir="ltr"');
+		} ?> class="cl-app-<?php echo fetch_or_get($cl["pn"], "none"); ?> <?php echo (($cl["is_logged"]) ? "" : "body-guest-mode"); ?>" data-page-tab="<?php echo fetch_or_get($cl["page_tab"], "none"); ?>" data-skin="<?php echo ($cl["display_set"]["color_scheme"]); ?>" data-bg="<?php echo ($cl["display_set"]["background"]); ?>">
+	<div class="position-absolute gif" style="width: 24%;z-index: 12;top: 100%;left: 32%; display:none;">
+		<img class="lozad col-12" src="<?php echo cl_link("themes/default/statics/img/fire.gif"); ?>">
+	</div>
 	<div class="main-preloader-holder" id="main-preloader-holder">
 		<div class="main-preloader">
 			<div class="loading">

@@ -73,7 +73,6 @@
 					mail: mail
 				},
 				success: function(result) {
-					console.log(result.status);
 					if (result.status == 200) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Success"); ?>",
@@ -85,6 +84,22 @@
 								Swal.showLoading();
 							},
 						});
+						var tr = `  <tr class="tr text-center">
+                                <td class="align-middle text-dark font-weight-normal"><b>${store}</b></td>
+                                <td>
+                                    <span>${address}</span>
+                                </td>
+                                <td class="align-middle">${city}</td>
+                                <td class="align-middle text-success">${phone}</td>
+                                <td class="align-middle text-danger">${mail}</td>
+                                <td>
+                                    <div>
+                                        <button class="edit-store text-white border-0 rounded-3 btn-primary" data-id="${result.id}"><i class="fas fs-5 fa-edit text-white"></i></button>
+                                        <button class="delete-store text-white border-0 rounded-3 btn-danger" data-id="${result.id}"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
+                                    </div>
+                                </td>
+                            </tr>`
+						$('.store-tr').append(tr);
 					} else if (result.status == 500) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Warning"); ?>",
@@ -111,5 +126,201 @@
 				}
 			})
 		})
+		$('.delete').on('click', function() {
+			var id = $(this).attr('data-id');
+			var tr = $(this).closest('tr');
+			Swal.fire({
+				title: "<?php echo cl_translate("Warning"); ?>",
+				text: "<?php echo cl_translate("Are you certain about deleting event for this store?"); ?>",
+				icon: "warning",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: "<?php echo cl_link("native_api/store/delete_event"); ?>",
+						type: 'POST',
+						data: {
+							id: id
+						},
+						success: function(result) {
+							if (result.status = 200) {
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Delete Event success!"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								});
+								tr.fadeOut();
+							} else {
+								Swal.fire({
+									title: "<?php echo cl_translate("Error"); ?>",
+									text: "<?php echo cl_translate("Error Ocurred, Delete failed!"); ?>",
+									icon: "error",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								});
+							}
+						}
+					})
+				}
+			});
+		})
+		$(document).on('click', '.delete-store', function() {
+			var id = $(this).attr('data-id');
+			var tr = $(this).closest('tr');
+			Swal.fire({
+				title: "<?php echo cl_translate("Warning"); ?>",
+				text: "<?php echo cl_translate("Are you certain about deleting this store?"); ?>",
+				icon: "warning",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: "<?php echo cl_link("native_api/store/delete_store"); ?>",
+						type: 'POST',
+						data: {
+							id: id
+						},
+						success: function(result) {
+							if (result.status = 200) {
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Delete Store success!"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								});
+								tr.fadeOut();
+							} else {
+								Swal.fire({
+									title: "<?php echo cl_translate("Error"); ?>",
+									text: "<?php echo cl_translate("Error Ocurred, Delete failed!"); ?>",
+									icon: "error",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								});
+							}
+						}
+					})
+				}
+			});
+		})
+		$('.edit-store').on('click', function() {
+			var id = $(this).attr('data-id');
+			var store = $(this).attr('data-store');
+			var address = $(this).attr('data-address');
+			var city = $(this).attr('data-city');
+			var phone = $(this).attr('data-phone');
+			var mail = $(this).attr('data-mail');
+			$(this).parent().find(".save-store").show();
+			$(this).hide();
+
+			var inputStore = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-shop form-control' data-id='${id}' value='${store}'>
+            </div>`;
+			var inputAddress = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-address form-control' data-id='${id}' value='${address}'>
+            </div>`;
+			var inputCity = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-city form-control' data-id='${id}' value='${city}'>
+            </div>`;
+			var inputPhone = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-phone form-control' data-id='${id}' value='${phone}'>
+            </div>`;
+			var inputMail = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-mail form-control' data-id='${id}' value='${mail}'>
+            </div>`;
+			var storeField = $(this).closest("tr").find(".store-field");
+			var addressField = $(this).closest("tr").find(".address-field");
+			var cityField = $(this).closest("tr").find(".city-field");
+			var phoneField = $(this).closest("tr").find(".phone-field");
+			var mailField = $(this).closest("tr").find(".mail-field");
+
+			storeField.html(inputStore);
+			addressField.html(inputAddress);
+			cityField.html(inputCity);
+			phoneField.html(inputPhone);
+			mailField.html(inputMail);
+
+		})
+		$('.save-store').on('click', function() {
+			var shop = $(this).closest("tr").find(".save-shop").val();
+			var address = $(this).closest("tr").find(".save-address").val();
+			var city = $(this).closest("tr").find(".save-city").val();
+			var phone = $(this).closest("tr").find(".save-phone").val();
+			var mail = $(this).closest("tr").find(".save-mail").val();
+			var saveId = $(this).attr("data-id");
+			var storeField = $(this).closest("tr").find(".store-field");
+			var addressField = $(this).closest("tr").find(".address-field");
+			var cityField = $(this).closest("tr").find(".city-field");
+			var phoneField = $(this).closest("tr").find(".phone-field");
+			var mailField = $(this).closest("tr").find(".mail-field");
+			storeField.html(shop);
+			addressField.html(address);
+			cityField.html(city);
+			phoneField.html(phone);
+			mailField.html(mail);
+			$(this).hide();
+			$(this).parent().find(".edit-store").show();
+			var saveId = $(this).attr("data-id");
+
+			$.ajax({
+				url: "<?php echo cl_link("native_api/store/save_store"); ?>",
+				type: 'POST',
+				data: {
+					id: saveId,
+					store: shop,
+					address: address,
+					city: city,
+					phone: phone,
+					mail: mail
+				},
+				success: function(result) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Success"); ?>",
+						text: "<?php echo cl_translate("Save change success!"); ?>",
+						icon: "success",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+				}
+			})
+		})
+
 	});
 </script>

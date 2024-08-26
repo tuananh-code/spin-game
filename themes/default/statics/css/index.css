@@ -17,6 +17,10 @@ html, body {
     height: 100%;
 }
 
+div.sidebar__nav-item{
+    /* width: max-content!important; */
+}
+
 body {
     /* Prevent pull-down-to-refresh gesture */
     /* overscroll-behavior-y: contain; */

@@ -64,6 +64,19 @@
 			var expiresEvent = $('#expires-event').val();
 			var status = $('#status').val();
 			var store_id = $('#store_id').val();
+			if (store_id == 0) {
+				Swal.fire({
+					title: "<?php echo cl_translate("Error"); ?>",
+					text: "<?php echo cl_translate("Try to add store before add condition!"); ?>",
+					icon: "error",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+				return;
+			}
 			//check list
 			var prizes = prize.split(',');
 			var percents = percent.split(',');
@@ -303,11 +316,10 @@
 			})
 		})
 		$('#spin').on('click', function() {
-			var gif = $('.gif');
 			var token = $('#tokenApi').val();
-			var props = JSON.parse($('#propsWheel').attr('data-prop'));
 			if (token) {
-				var tokenApi = token[32];
+				var props = JSON.parse($('#propsWheel').attr('data-prop'));
+				var tokenApi = token[32]
 				for (var i = 0; i < props.length; i++) {
 					var value = props[i].value;
 					if (value == tokenApi) {
@@ -315,38 +327,16 @@
 						// var name = value;
 					}
 				}
-				setTimeout(function() {
-					$.ajax({
-						url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
-						type: 'POST',
-						data: {
-							name: name,
-						},
-						beforeSend: function() {},
-						success: function(result) {
-							Swal.fire({
-								title: "<?php echo cl_translate("Congratulation"); ?>",
-								text: "<?php echo cl_translate("You earn"); ?>" + result.value,
-								icon: "success",
-								allowOutsideClick: true,
-								showConfirmButton: true,
-							});
-						}
-					});
-				}, 4500); // Initial delay of 4500ms before sending the AJAX request
-			} else {
+			}
+			setTimeout(function() {
 				Swal.fire({
-					title: "<?php echo cl_translate("Warning"); ?>",
-					text: "<?php echo cl_translate("You run out of spins!"); ?>",
-					icon: "warning",
+					title: "<?php echo cl_translate("Congratulation"); ?>",
+					text: "<?php echo cl_translate("You earn reward"); ?>",
+					icon: "success",
 					allowOutsideClick: true,
 					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
 				});
-			}
-
+			}, 4000); // Initial delay of 4500ms before sending the AJAX request
 		})
 		$('.publish-prize').on('click', function() {
 			var id = $('#setup').val();

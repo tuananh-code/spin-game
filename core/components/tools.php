@@ -1693,3 +1693,178 @@ function cl_create_user_avatar($text = "", $destination_url = false) {
 
     return $destination_url;
 }
+
+function get_ticket($id, $store_id)
+{
+    $sql = "SELECT * FROM cl_ticket WHERE id = $id AND store_id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $ticket['ticket'] = $row['ticket'];
+        }
+    }
+    return $ticket['ticket'];
+}
+function get_prize($id, $store_id = null)
+{
+    $sql = "SELECT * FROM cl_prize WHERE user_id = $id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $data[] = [
+                'id' => $row['id'],
+                'store_id' => $row['store_id'],
+                'game_id' => $row['game_id'],
+                'prize' => $row['prize'],
+                'created_at' => $row['created_at'],
+                'claimed_at' => $row['claimed_at'],
+            ];
+        }
+    } else {
+        $data = null;
+    }
+    return $data;
+}
+function get_store_name($store_id)
+{
+    $sql = "SELECT * FROM cl_store WHERE id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['shop_name'];
+        }
+    }
+    return $name;
+}
+
+function get_game_name($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['game_name'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
+
+function get_game_id($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name[] = $row['id'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
+
+function get_game_data($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $id[] = $row['id'];
+            $game_name[] = $row['game_name'];
+            $props[] = $row['props'];
+            $status[] = $row['status'];
+            $buy[] = $row['buy'];
+            $limit[] = $row['limit'];
+            $quantity[] = $row['quantity'];
+            $expires[] = $row['expires'];
+            $join[] = $row['join'];
+            $created_at[] = $row['created_at'];
+            $expires_date[] = $row['expires_date'];
+        }
+        $data = [
+            'id' => $id,
+            'game_name' => $game_name,
+            'props' => $props,
+            'status' => $status,
+            'buy' => $buy,
+            'limit' => $limit,
+            'quantity' => $quantity,
+            'expires' => $expires,
+            'join'  => $join,
+            'created_at'  => $created_at,
+            'expires_date' => $expires_date,
+        ];
+    } else {
+        $data = [];
+    }
+    return $data;
+}
+
+function get_store_id($user_id)
+{
+    $sql = "SELECT * FROM cl_store WHERE user_id = $user_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name[] = $row['id'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
+function choose_prize($attr)
+{
+    $randomNumber = rand(1, 10000);
+    // Find the item that corresponds to the random number
+    $selectedValue = null;
+    $currentPercent = 0;
+    foreach ($attr as $item) {
+        $currentPercent += intval($item['percent']);
+        if ($randomNumber < $currentPercent * 100) {
+            $selectedValue = $item;
+            break;
+        }
+    }
+    return $selectedValue;
+}
+
+function get_random()
+{
+    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=';
+    // $numbers = '0123456789';
+    $combinedChars = $characters;
+    $randomString = '';
+    for ($i = 0; $i < 32; $i++) {
+        $randomString .= $combinedChars[rand(0, strlen($combinedChars) - 1)];
+    }
+    return $randomString;
+}
+function get_random_number()
+{
+    $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*()_+-=';
+    $numbers = '0123456789';
+    $combinedChars = $characters . $numbers;
+    $randomString = '';
+    for ($i = 0; $i < 32; $i++) {
+        $randomString .= $combinedChars[rand(0, strlen($combinedChars) - 1)];
+    }
+    return $randomString;
+}
+function conn()
+{
+    $servername = "localhost";
+    $username = "root"; //mych_managed
+    $password = "root"; //Toidayhoc123
+    $dbname = "social"; //mych_managed
+
+    $conn = mysqli_connect($servername, $username, $password, $dbname);
+    mysqli_set_charset($conn, "utf8mb4");
+
+    if (!$conn) {
+        die("Connection failed: " . mysqli_connect_error());
+    }
+    return $conn;
+}

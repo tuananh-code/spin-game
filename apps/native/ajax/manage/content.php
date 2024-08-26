@@ -59,18 +59,6 @@ else if ($action == "cread_invoice") {
             else if (len_between($field_val,10, 25) != true) {
                 $data['err_code'] = "invalid_ccode"; break;
             }
-
-            // else if (preg_match('/^[\w]+$/', $field_val) != true) {
-            //     $data['err_code'] = "invalid_uname"; break;
-            // }
-
-            // else if(cl_uname_exists($field_val) && $field_val != $me['raw_uname']) {
-            //     $data['err_code'] = "doubling_uname"; break;
-            // }
-
-            // else if(in_array($field_val, $username_restricts) && $field_val != $me['raw_uname']) {
-            //     $data['err_code'] = "denied_uname"; break;
-            // }
         }
 
 		else if ($field_name == 'phone') {

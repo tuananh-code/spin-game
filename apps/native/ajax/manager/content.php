@@ -26,15 +26,13 @@ if (empty($cl['is_logged'])) {
         $offset           = fetch_or_get($_GET['offset'], 0);
         $type             = fetch_or_get($_GET['type'], false);
         $html_arr         = array();
-        require_once(cl_full_path("core/apps/managed/app_ctrl.php"));
-        $html_arr[] = cl_template('managed/includes/list_item');
-    } elseif ($action === 'add_store') {
-        require_once(cl_full_path("core/apps/managed/app_ctrl.php"));
+        require_once(cl_full_path("core/apps/manager/app_ctrl.php"));
+        $html_arr[] = cl_template('manager/includes/list_item');
+    } elseif ($action === 'claim') {
+        require_once(cl_full_path("core/apps/manager/app_ctrl.php"));
+        $id = $_POST['id'];
         $store = $_POST['store'];
-        $address = $_POST['address'];
-        $city = $_POST['city'];
-        $phone = $_POST['phone'];
-        $mail = $_POST['mail'];
+        $game = $_POST['city'];
         $date = date('Y-m-d H:m:s');
         //handle store
         $data = add_store($me['id'], $store, $address, $city, $phone, $mail);

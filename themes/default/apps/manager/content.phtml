@@ -2,12 +2,35 @@
 $prize = get_prize($me['id']);
 ?>
 <style>
-    table,
-    th,
-    td {
-        border: 1px solid #000;
-        padding: 8px;
-        text-align: center;
+    tbody>.tr:hover {
+        background: #e9e9e9 !important;
+    }
+
+    .dt-type-date {
+        text-align: center !important;
+    }
+
+    .dt-input {
+        margin: 0 5px !important;
+    }
+
+    tbody>tr>td {
+        padding: 4px 0 !important;
+    }
+
+    tr {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tr:nth-child(odd) {
+        background-color: #f4f4f4 !important;
+        /* Color for odd rows */
+    }
+
+    .tr:nth-child(even) {
+        background-color: #ffffff !important;
+        /* Color for even rows */
     }
 </style>
 <div class="timeline-container" data-app="store">
@@ -39,65 +62,7 @@ $prize = get_prize($me['id']);
         ?>
         <!-- Add translate in json -->
         <?php if ($prize) { ?>
-            <div>
-                <h2 class="p-2 m-2 text-primary">Prize manager</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>
-                                <?php echo cl_translate("Customer"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Store"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Game"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Prize"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Rewarded"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Claimed"); ?>
-                            </th>
-                            <th>
-                                <?php echo cl_translate("Action"); ?>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($prize as $p) { ?>
-                            <tr>
-                                <td>
-                                    <?= $me['name'] ?>
-                                </td>
-                                <td>
-                                    <?= get_store_name($p['store_id']) ?>
-                                </td>
-                                <td>
-                                    <?= get_game_name($p['game_id']) ?>
-                                </td>
-                                <td>
-                                    <?= $p['prize'] ?>
-                                </td>
-                                <td>
-                                    <?= $p['created_at'] ?>
-                                </td>
-                                <td>
-                                    <?= $p['claimed_at'] ?>
-                                </td>
-                                <td>
-                                    <div>
-                                        <button class="p-2 m-2 border-0 rounded-pill btn-success" data-id="<?= $me['id'] ?>"><?php echo cl_translate("Save"); ?></button>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
+            <?php echo cl_template('manager/includes/list_item'); ?>
         <?php } else { ?>
             <?php echo cl_template('manager/includes/no_prize'); ?>
         <?php } ?>
@@ -107,3 +72,7 @@ $prize = get_prize($me['id']);
     </center>
 </div>
 <?php echo cl_template('manager/scripts/app_master_script'); ?>
+<script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
+<script>
+    new DataTable('#prizeTable');
+</script>
