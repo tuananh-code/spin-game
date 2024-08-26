@@ -46,44 +46,46 @@ $result = conn()->query($sql);
                             $store_name[] = $row['shop_name']; ?>
                             <option value="<?= $row['id']; ?>"><?= $row['shop_name']; ?></option>
                         <?php } ?>
-                    <?php } ?>
+                    <?php } else { ?>
+                        <option value="0"><?php echo cl_translate("No store available, try to add store first"); ?></option>
                 </select>
+            <?php } ?>
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="event" class="col-2 text-end"><?php echo cl_translate("Event Name:"); ?></label>
             <div class="require-event col-9">
-                <input type="text" id="event" class="p-2 m-2 form-control" required>
+                <input type="text" id="event" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Event Name"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="buy" class="col-2 text-end"><?php echo cl_translate("Buy:"); ?></label>
             <div class="require-buy col-9">
-                <input name="buy" id="buy" class="form-control m-2 p-2" required>
+                <input name="buy" id="buy" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter minimum Quantity"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="limit" class="col-2 text-end"><?php echo cl_translate("Limit:"); ?></label>
             <div class="require-limit col-9">
-                <input name="limit" id="limit" class="form-control m-2 p-2" required>
+                <input name="limit" id="limit" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter minimum price for 1 ticket"); ?>">
             </div>
         </div>
-        <div class="d-flex align-items-center justify-content-center">
+        <div class="d-none align-items-center justify-content-center">
             <label for="quantity" class="col-2 text-end"><?php echo cl_translate("Quantity:"); ?></label>
             <div class="require-quantity col-9">
-                <input name="quantity" id="quantity" class="form-control m-2 p-2">
+                <input name="quantity" id="quantity" class="form-control m-2 p-2" placeholder="<?php echo cl_translate("Enter minimum quantity to create ticket"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="expires" class="col-2 text-end"><?php echo cl_translate("Expires Date:"); ?></label>
             <div class="require-expires col-9">
-                <input name="expires" id="expires" class="form-control m-2 p-2" required>
+                <input name="expires" id="expires" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter expires date for ticket"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="join" class="col-2 text-end"><?php echo cl_translate("Max Ticket:"); ?></label>
             <div class="require-join col-9">
-                <input name="join" id="join" class="form-control m-2 p-2" required>
+                <input name="join" id="join" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter max ticket customer can have"); ?>">
             </div>
         </div>
         <div class="text-center">
@@ -189,11 +191,13 @@ $result = conn()->query($sql);
                                     <input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
                                 <?php } ?>
                             <?php } ?>
-                        <?php } ?>
                         </div>
                     </div>
-                    <div class="wheel-wrapper"></div>
-                    <button id="spin" class="spin p-2 m-2 btn-primary rounded-2">Spin</button>
+                <?php } ?>
+                <div class="wheel-wrapper"></div>
+                <button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
+                    <span class="fs-4">Spin</span>
+                </button>
 
                 </div>
             </div>

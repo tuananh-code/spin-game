@@ -1712,6 +1712,8 @@ function get_game_name($game_id)
         foreach ($result as $row) {
             $name = $row['game_name'];
         }
+    } else {
+        $name = [];
     }
     return $name;
 }
@@ -1724,6 +1726,59 @@ function get_game_id($store_id)
         foreach ($result as $row) {
             $name[] = $row['id'];
         }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
+
+function get_game_data($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $id[] = $row['id'];
+            $game_name[] = $row['game_name'];
+            $props[] = $row['props'];
+            $status[] = $row['status'];
+            $buy[] = $row['buy'];
+            $limit[] = $row['limit'];
+            $quantity[] = $row['quantity'];
+            $expires[] = $row['expires'];
+            $join[] = $row['join'];
+            $created_at[] = $row['created_at'];
+            $expires_date[] = $row['expires_date'];
+        }
+        $data = [
+            'id' => $id,
+            'game_name' => $game_name,
+            'props' => $props,
+            'status' => $status,
+            'buy' => $buy,
+            'limit' => $limit,
+            'quantity' => $quantity,
+            'expires' => $expires,
+            'join'  => $join,
+            'created_at'  => $created_at,
+            'expires_date' => $expires_date,
+        ];
+    } else {
+        $data = [];
+    }
+    return $data;
+}
+
+function get_store_id($user_id)
+{
+    $sql = "SELECT * FROM cl_store WHERE user_id = $user_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name[] = $row['id'];
+        }
+    } else {
+        $name = [];
     }
     return $name;
 }
@@ -1768,9 +1823,9 @@ function get_random_number()
 function conn()
 {
     $servername = "localhost";
-    $username = "root";
-    $password = "root";
-    $dbname = "social";
+    $username = "root"; //mych_managed
+    $password = "root"; //Toidayhoc123
+    $dbname = "social"; //mych_managed
 
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     mysqli_set_charset($conn, "utf8mb4");

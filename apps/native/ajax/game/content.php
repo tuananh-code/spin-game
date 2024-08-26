@@ -84,62 +84,6 @@ if (empty($cl['is_logged'])) {
         $props = json_encode($attr);
         $data = add_game($store_id, $event, $themes, $props, $status, $date, $expires_event);
         return $data;
-        // if ($data['status'] == 500) {
-        //     return $data;
-        // } else {
-        //     if ($themes == 'Workout') {
-        //         $layout = [
-        //             "theme" => 'Workout',
-        //             "radius" => '0.84',
-        //             "itemLabelRadius" => '0.93',
-        //             "itemLabelRadiusMax" => '0.35',
-        //             "itemBackgroundColors" => ['#ffc93c', '#66bfbf', '#a2d5f2', '#515070', '#43658b', '#ed6663', '#d54062'],
-        //             "itemLabelColors" => ['#fff'],
-        //             "image" => './themes/default/statics/img/example-0-image.svg',
-        //             "overlayImage" => './themes/default/statics/img/example-0-overlay.svg'
-        //         ];
-        //     } else {
-        //         $layout = [
-        //             "theme" => 'Movies',
-        //             "radius" => '0.88',
-        //             "itemLabelRadius" => '0.92',
-        //             "itemLabelRadiusMax" => '0.4',
-        //             "itemBackgroundColors" => ['#c7160c', '#fff'],
-        //             "itemLabelColors" => ['#fff', '#000'],
-        //             "image" => 'null',
-        //             "overlayImage" => './themes/default/statics/img/example-2-overlay.svg'
-        //         ];
-        //     }
-        //     $themes = json_encode($layout);
-        //     for ($p = 0; $p < count($prizes); $p++) {
-        //         $prize = $prizes[$p];
-        //         $percent = $percents[$p];
-        //         $stock = $stocks[$p];
-        //         $attr[] = [
-        //             'value' => $p,
-        //             'prize' => $prize,
-        //             'percent' => $percent,
-        //             'stock' => $stock
-        //         ];
-        //     }
-        //     $props = json_encode($attr);
-        //     $id = cl_db_insert(T_GAME, array(
-        //         // "user_id" => $me['id'],
-        //         "game_name" => $event,
-        //         "themes" => $themes,
-        //         "props" => $props,
-        //         "status" => $status,
-        //         "store_id" => $store_id,
-        //         "created_at" => $date,
-        //         "expires_date" => $expires_event
-        //     ));
-        //     if ($id) {
-        //         $data['status'] = 200;
-        //     } else {
-        //         $data['status'] = 400;
-        //     }
-        //     return $data;
-        // }
     } else if ($action == 'add_condition') {
         $event = $_POST['event'];
         $event = $_POST['event'];
@@ -180,20 +124,39 @@ if (empty($cl['is_logged'])) {
         $user = $_POST['user'];
         $store = $_POST['store'];
         $game = $_POST['game'];
-        $update = update_prize($game, $prize);
-        $status = cl_db_update(T_GAME, array('store_id' => $store), array('props' => $update));
-        $id = cl_db_insert(T_PRIZE, array(
-            // "user_id" => $me['id'],
-            "prize" => $prize,
-            "user_id" => $user,
-            "store_id" => $store,
-            "game_id" => $game,
-            "created_at" => $date
-        ));
-        if ($id) {
-            $data['status'] = 200;
+        $check = true;
+        $is_store = cl_db_get_items(T_STORE, array('user_id' => $me['id']));
+        if ($is_store) {
+            foreach ($is_store as $s) {
+                $is_game = cl_db_get_items(T_GAME, array('store_id' => $s['id']));
+                if ($is_game) {
+                    foreach ($is_game as $g) {
+                        if ($g['id'] == $game) {
+                            $check = false;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if ($check) {
+            $update = update_prize($game, $prize);
+            $status = cl_db_update(T_GAME, array('store_id' => $store), array('props' => $update));
+            $id = cl_db_insert(T_PRIZE, array(
+                // "user_id" => $me['id'],
+                "prize" => $prize,
+                "user_id" => $user,
+                "store_id" => $store,
+                "game_id" => $game,
+                "created_at" => $date
+            ));
+            if ($id) {
+                $data['status'] = 200;
+            } else {
+                $data['status'] = 400;
+            }
         } else {
-            $data['status'] = 400;
+            $data['status'] = 800;
         }
         return $data;
     } elseif ($action == 'publish') {

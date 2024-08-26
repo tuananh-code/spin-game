@@ -52,11 +52,50 @@ if (empty($cl['is_logged'])) {
             ));
             if ($id) {
                 $data['status'] = 200;
+                $data['id'] = $id;
                 return $data;
             } else {
                 $data['status'] = 400;
                 return $data;
             }
         }
+    } elseif ($action === 'delete_event') {
+        $id = $_POST['id'];
+        $delete = cl_db_delete_item(T_GAME, array("id" => $id));
+        if ($delete) {
+            $data['status'] = 200;
+        } else {
+            $data['status'] = 500;
+        }
+        return $data;
+    } elseif ($action === 'delete_store') {
+        $id = $_POST['id'];
+        $delete = cl_db_delete_item(T_STORE, array("id" => $id));
+        if ($delete) {
+            $data['status'] = 200;
+        } else {
+            $data['status'] = 500;
+        }
+        return $data;
+    } elseif ($action === 'save_store') {
+        $id = $_POST['id'];
+        $store = $_POST['store'];
+        $address = $_POST['address'];
+        $city = $_POST['city'];
+        $phone = $_POST['phone'];
+        $mail = $_POST['mail'];
+        $update = cl_db_update(T_STORE, array("id" => $id), array(
+            'shop_name' => $store,
+            'address' => $address,
+            'city' => $city,
+            'phone' => $phone,
+            'mail' => $mail
+        ));
+        if ($update) {
+            $data['status'] = 200;
+        } else {
+            $data['status'] = 500;
+        }
+        return $data;
     }
 }

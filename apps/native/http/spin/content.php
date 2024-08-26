@@ -1,4 +1,4 @@
-<?php
+<?php 
 # @*************************************************************************@
 # @ Software author: Mansur Terla (Mansur_TL)                               @
 # @ UI/UX Designer & Web developer ;)                                       @
@@ -16,54 +16,20 @@
 # @ ColibriSM - The Ultimate Social Network PHP Script                      @
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
-// global $db, $cl, $me;
-// function get_id($me)
-// {
-//     $id = $me['id'];
-//     return $id;
-// }
-function cl_get_store($args = array())
-{
-    global $db, $cl, $me;
-    $args        = (is_array($args)) ? $args : array();
-    $options     = array(
-        "offset" => false,
-        "limit"  => 10,
-        "type"   => "notifs",
-        "id" => $me['id']
-    );
 
-    $args   = array_merge($options, $args);
-    $offset = $args['offset'];
-    $limit  = $args['limit'];
-    $type   = $args['type'];
+if (empty($cl['is_logged'])) {
+	cl_redirect("guest");
 }
-function add_store($id, $store, $address, $city, $phone, $mail)
-{
-    global $db, $cl, $me;
-    // $id = $me['id'];
-    // var_dump($get_store);
-    $data = array();
-    $sql_exist = cl_sqltepmlate("apps/store/sql/exist", array(
-        't_store' => T_STORE,
-        'store' => $store,
-        'address' => $address,
-        'city' => $city,
-        'phone' => $phone,
-        'mail' => $mail,
-    ));
-    $exist = $db->rawQuery($sql_exist);
-    if (cl_queryset($exist)) {
-        $data['status'] = 500;
-        return $data;
-    } else {
-        $data['status'] = 200;
-        return $data;
-    }
 
-    // return $args;
+else {
+	require_once(cl_full_path("core/apps/subscriptions/app_ctrl.php"));
+
+	$cl["page_title"] = cl_translate("Subscriptions");
+	$cl["page_desc"] = $cl["config"]["description"];
+	$cl["page_kw"] = $cl["config"]["keywords"];
+	$cl["pn"] = "subscriptions";
+	$cl["sbr"] = true;
+	$cl["sbl"] = true;
+	$cl["subscriptions"] = cl_get_my_subscriptions();
+	$cl["http_res"] = cl_template("subscriptions/content");
 }
-function delete_store() {}

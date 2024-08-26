@@ -54,9 +54,9 @@
 	<!-- tags input -->
 	<link rel="stylesheet" href="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.css">
 	<!-- Datatables -->
-	<link href="https://cdn.datatables.net/v/dt/dt-2.1.4/datatables.min.css" rel="stylesheet">
-
-	<!--  -->
+	<link href="{%config theme_url%}/statics/DataTables/datatables.min.css" rel="stylesheet">
+	<!-- icon -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 	<?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y") : ?>
 		<link rel="stylesheet" href="{%config theme_url%}/statics/css/master.styles.rtl.css?v={%config update_date%}">
 
@@ -226,6 +226,8 @@
 
 	<?php echo cl_template('custom/header_tags'); ?>
 </head>
+<!-- check expires -->
+<?php echo cl_template('main/includes/expires/check'); ?>
 
 <body <?php if ($cl["curr_lang"]["lang_data"]["is_rtl"] == "Y") {
 			echo ('dir="rtl"');

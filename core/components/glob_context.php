@@ -24,6 +24,7 @@ $applications       = array(
   "game"          => true,
   "store"         => true,
   "manager"       => true,
+  "spin"          => true,
   "guest"         => true,
   "404"           => true,
   "auth"          => true,

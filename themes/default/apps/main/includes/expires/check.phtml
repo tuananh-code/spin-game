@@ -1,0 +1,27 @@
+<?php
+if (@$me['id']) {
+    $date = date('Y-m-d');
+    $get_store = get_store_id($me['id']);
+    if (count($get_store) > 0) {
+        foreach ($get_store as $s) {
+            $get_game[] = get_game_data($s);
+        }
+        if ($get_game) {
+            foreach ($get_game as $get_data) {
+                if (count($get_data) > 0) {
+                    $id = $get_data['id'];
+                    $expires = $get_data['expires_date'];
+                    for ($e = 0; $e < count($expires); $e++) {
+                        if ($expires[$e]) {
+                            $expires_date = date('Y-m-d', strtotime($expires[$e]));
+                            if ($date == $expires_date || $date > $expires_date) {
+                                $ids = $id[$e];
+                                cl_db_update(T_GAME, array('id' => $ids), array('status' => 0));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

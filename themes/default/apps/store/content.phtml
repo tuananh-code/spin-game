@@ -3,24 +3,36 @@ $id = $me['id'];
 $sql = "SELECT * FROM cl_store WHERE user_id = $id";
 $result = conn()->query($sql);
 if ($result->num_rows > 0) {
+    $check = true;
     foreach ($result as $row) {
         $store_id[] = $row['id'];
+        $shop_name[] = $row['shop_name'];
+        $address[] = $row['address'];
+        $city[] = $row['city'];
+        $phone[] = $row['phone'];
+        $mail[] = $row['mail'];
     }
-}
-foreach ($store_id as $id) {
-    $game_id = get_game_id($id);
-    foreach ($game_id as $g) {
-        $game[] = get_game_name($g);
-        $store[] = get_store_name($id);
-        $sql_game = "SELECT * FROM cl_game WHERE id = $g";
-        $result_game = conn()->query(($sql_game));
-        if ($result_game->num_rows > 0) {
-            foreach ($result_game as $row_game) {
-                $status[] = $row_game['status'];
-                $expires_date[] = $row_game['expires_date'];
+    foreach ($store_id as $id) {
+        $game_id = get_game_id($id);
+        foreach ($game_id as $g) {
+            $game[] = get_game_name($g);
+            if (count($game) > 0) {
+                $store[] = get_store_name($id);
+                $sql_game = "SELECT * FROM cl_game WHERE id = $g";
+                $result_game = conn()->query(($sql_game));
+                if ($result_game->num_rows > 0) {
+                    foreach ($result_game as $row_game) {
+                        $id_game[] = $row_game['id'];
+                        $status[] = $row_game['status'];
+                        $expires_date[] = $row_game['expires_date'];
+                        $created_at[] = $row_game['created_at'];
+                    }
+                }
             }
         }
     }
+} else {
+    $check = false;
 }
 ?>
 <style>
@@ -28,6 +40,25 @@ foreach ($store_id as $id) {
         background: #e9e9e9 !important;
     }
 
+    .dt-type-date {
+        text-align: center !important;
+    }
+
+    .dt-input {
+        margin: 0 5px !important;
+    }
+
+    .edit,
+    .delete,
+    .edit-store,
+    .delete-store,
+    .save-store {
+        padding: .75em;
+    }
+
+    tbody>tr>td {
+        padding: 8px 4px !important;
+    }
 
     tr {
         border-top: 1px solid #ccc;
@@ -43,7 +74,6 @@ foreach ($store_id as $id) {
         background-color: #ffffff !important;
         /* Color for even rows */
     }
-
 </style>
 <div class="timeline-container" data-app="store">
     <div class="timeline-header" data-el="tl-header">
@@ -73,119 +103,200 @@ foreach ($store_id as $id) {
     ?>
     <!-- Add translate in json -->
     <form action="" class="p-2">
-        <h2 class="text-center text-success">
+        <h1 class="text-center text-success">
             <?php echo cl_translate("Add Store"); ?>
-        </h2>
+        </h1>
         <div class="d-flex align-items-center justify-content-center">
             <label for="store" class="col-2 text-end"><?php echo cl_translate("Store Name:"); ?></label>
             <div class="require-store col-9">
-                <input type="text" id="store" class="p-2 m-2 form-control" required>
+                <input type="text" id="store" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Store name"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="address" class="col-2 text-end"><?php echo cl_translate("Address:"); ?></label>
             <div class="require-address col-9">
-                <input type="text" id="address" class="p-2 m-2 form-control" required>
+                <input type="text" id="address" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Address"); ?>" >
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="city" class="col-2 text-end"><?php echo cl_translate("City:"); ?></label>
             <div class="require-city col-9">
-                <input name="city" id="city" class="form-control m-2 p-2" required>
+                <input name="city" id="city" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter City"); ?>" >
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="phone" class="col-2 text-end"><?php echo cl_translate("Phone:"); ?></label>
             <div class="require-phone col-9">
-                <input name="phone" id="phone" class="form-control m-2 p-2" required>
+                <input name="phone" id="phone" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter Phone"); ?>" >
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="mail" class="col-2 text-end"><?php echo cl_translate("Mail:"); ?></label>
             <div class="require-mail col-9">
-                <input name="mail" id="mail" class="form-control m-2 p-2">
+                <input name="mail" id="mail" class="form-control m-2 p-2" placeholder="<?php echo cl_translate("Enter Mail, Optional"); ?>">
             </div>
         </div>
 
         <div class="text-center">
-            <button class="col-2 p-2 m-2 text-white btn-success border-0 rounded-pill add-store"><?php echo cl_translate("Add store"); ?></button>
-            <button class="col-2 p-2 m-2 text-white btn-danger border-0 rounded-pill managed-store"><?php echo cl_translate("Managed"); ?></button>
+            <button class="p-2 px-3 m-2 text-white btn-success border-0 rounded-pill add-store"><?php echo cl_translate("Add store"); ?></button>
         </div>
 
     </form>
     <?php //endif; 
     ?>
-    <center>
-        <div class="table-responsive-md u-datatable p-2">
-            <table id="storeTable">
-                <thead>
-                    <tr class="text-uppercase font-size-1">
-                        <th scope="col" class="font-weight-medium">
-                            <div class="d-flex justify-content-center align-items-center">
-                                Store
-                                <div class="ml-2">
-                                    <span class="fas fa-angle-up u-datatable__thead-icon"></span>
-                                    <span class="fas fa-angle-down u-datatable__thead-icon"></span>
+
+    <?php if ($check) { ?>
+        <center class="px-2 refresh">
+            <span class="fs-2 text-primary">Store Manager</span>
+            <div class="table-responsive-md u-datatable">
+                <table id="storeTable">
+                    <thead>
+                        <tr class="text-uppercase font-size-1">
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Store') ?>
+                                    <div class="ml-2">
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                        <th scope="col" class="font-weight-medium">
-                            <div class="d-flex justify-content-center align-items-center">
-                                Event
-                                <div class="ml-2">
-                                    <span class="fas fa-angle-up u-datatable__thead-icon"></span>
-                                    <span class="fas fa-angle-down u-datatable__thead-icon"></span>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Address') ?>
+                                    <div class="ml-2">
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                        <th scope="col" class="font-weight-medium">
-                            <div class="d-flex justify-content-center align-items-center">
-                                Status
-                                <div class="ml-2">
-                                    <span class="fas fa-angle-up u-datatable__thead-icon"></span>
-                                    <span class="fas fa-angle-down u-datatable__thead-icon"></span>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('City') ?>
+                                    <div class="ml-2">
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                        <th scope="col" class="font-weight-medium">
-                            <div class="d-flex justify-content-center align-items-center">
-                                Date
-                                <div class="ml-2">
-                                    <span class="fas fa-angle-up u-datatable__thead-icon"></span>
-                                    <span class="fas fa-angle-down u-datatable__thead-icon"></span>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Phone') ?>
+                                    <div class="ml-2">
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                        <th scope="col" class="font-weight-medium">
-                            <div class="d-flex justify-content-center align-items-center">
-                                Attr
-                                <div class="ml-2">
-                                    <span class="fas fa-angle-up u-datatable__thead-icon"></span>
-                                    <span class="fas fa-angle-down u-datatable__thead-icon"></span>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Mail') ?>
+                                    <div class="ml-2">
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="font-size-1">
-                    <?php for ($i = 0; $i < count($game); $i++) { ?>
-                        <tr class="tr text-center">
-                            <td class="align-middle text-dark font-weight-normal"><b><?= $store[$i] ?></b></td>
-                            <td>
-                                <span><?= $game[$i] ?></span>
-                            </td>
-                            <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? 'Publish' : 'Draft' ?></td>
-                            <td class="align-middle text-secondary"><?= $expires_date[$i] ?></td>
-                            <td class="align-middle text-danger">Rejected</td>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Action') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
                         </tr>
-                    <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </center>
+                    </thead>
+                    <tbody class="font-size-1 store-tr">
+                        <?php for ($s = 0; $s < count($store_id); $s++) { ?>
+                            <tr class="tr text-center">
+                                <td class="align-middle text-dark font-weight-normal store-field"><b><?= $shop_name[$s] ?></b></td>
+                                <td class="address-field">
+                                    <span><?= $address[$s] ?></span>
+                                </td>
+                                <td class="align-middle city-field"><?= $city[$s] ?></td>
+                                <td class="align-middle text-success phone-field"><?= $phone[$s] ?></td>
+                                <td class="align-middle text-primary mail-field"><?= $mail[$s] ?></td>
+                                <td>
+                                    <div>
+                                        <button class="edit-store text-white border-0 rounded-3 btn-primary" data-id="<?= $store_id[$s] ?>" data-store="<?= $shop_name[$s] ?>" data-address="<?= $address[$s] ?>" data-city="<?= $city[$s] ?>" data-phone="<?= $phone[$s] ?>" data-mail="<?= $mail[$s] ?>"><i class="fas fs-5 fa-edit text-white"></i></button>
+                                        <button class="save-store text-white border-0 rounded-3 btn-success" data-id="<?= $store_id[$s] ?>" style="display:none;"><i class="fas fs-5 fa-save text-white"></i></button>
+                                        <button class="delete-store text-white border-0 rounded-3 btn-danger" data-id="<?= $store_id[$s] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+            <!--  -->
+            <span class="fs-2 text-primary">Event Manager</span>
+            <div class="table-responsive-md u-datatable">
+                <table id="eventTable">
+                    <thead>
+                        <tr class="text-uppercase font-size-1">
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Store') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Event') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Status') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Created') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Expires') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Action') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="font-size-1">
+                        <?php if (count($game) > 0) { ?>
+                            <?php for ($i = 0; $i < count($game); $i++) { ?>
+                                <tr class="tr text-center">
+                                    <td class="align-middle text-dark font-weight-normal"><b><?= $store[$i] ?></b></td>
+                                    <td>
+                                        <span><?= $game[$i] ?></span>
+                                    </td>
+                                    <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? 'Publish' : 'Draft' ?></td>
+                                    <td class="align-middle text-success"><?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></td>
+                                    <td class="align-middle text-danger"><?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></td>
+                                    <td>
+                                        <div>
+                                            <button class="delete text-white border-0 rounded-3 btn-danger" data-id="<?= $id_game[$i] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        <?php } ?>
+                    </tbody>
+                </table>
+            </div>
+        </center>
+    <?php } ?>
 </div>
 <?php echo cl_template('store/scripts/app_master_script'); ?>
-<script src="https://cdn.datatables.net/v/dt/dt-2.1.4/datatables.min.js"></script>
+<script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
+
 <script>
     new DataTable('#storeTable');
+    new DataTable('#eventTable');
 </script>
