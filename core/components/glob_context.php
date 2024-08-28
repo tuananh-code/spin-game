@@ -159,6 +159,10 @@ $cl['site_currencies'] = array(
     'name' => 'Malaysian Ringgit',
     'symbol' => 'MYR'
   ),
+  'cheery' => array(
+    'name' => 'Cheery',
+    'symbol' => '^^D'
+  ),
 );
 
 $cl["ui_rand_colors"] = array(

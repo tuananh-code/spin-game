@@ -1,3 +1,48 @@
+<style>
+	.form-group .form-control {
+		width: 100%;
+		border: none;
+		border-bottom: 3px solid rgb(230, 236, 240);
+		box-shadow: none;
+		padding: 12px 15px;
+		color: #14171a;
+		font-size: 14px;
+		background-color: #f5f9fd;
+		border-radius: 0px;
+		height: 52px;
+		outline: none !important;
+		word-wrap: normal;
+		text-transform: none;
+		margin: 0;
+	}
+
+	.form-group div.form-select {
+		position: relative;
+		padding: 0px;
+		border: none;
+		cursor: pointer;
+	}
+
+	.form-select {
+		display: block;
+		width: 100%;
+		padding: 0.375rem 2.25rem 0.375rem 0.75rem;
+		-moz-padding-start: calc(0.75rem - 3px);
+		font-size: 1rem;
+		font-weight: 400;
+		line-height: 1.5;
+		color: #212529;
+		background-color: #fff;
+		background-image: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e);
+		background-repeat: no-repeat;
+		background-position: right 0.75rem center;
+		background-size: 16px 12px;
+		border: 1px solid #ced4da;
+		border-radius: 0.25rem;
+		transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+		appearance: none;
+	}
+</style>
 <div class="timeline-container" data-app="wallet_add">
 	<div class="timeline-header" data-el="tl-header">
 		<div class="timeline-header__botline">
@@ -26,174 +71,203 @@
 	<div class="wallet-add">
 		<div class="wallet-add__form">
 			<form class="form" id="vue-wallet-topup-app" v-on:submit="submit_form($event)">
-	            <div class="form-group no-mb">
-	                <label>
-	                    <?php echo cl_translate("Select a top-up value"); ?> (Min. <?php echo cl_money($cl["config"]["wallet_min_amount"]); ?>)
-	                </label>
-	                <input v-model.trim="$v.topup_amount.$model" type="text" class="form-control" placeholder="<?php echo("0.00"); ?>">
-	                <div v-if="is_invalid_amount" class="invalid-main-feedback">
-	                    <?php echo cl_translate("The value of the top-up amount you entered is invalid"); ?>
-	                </div>
-	            </div>
-	            <div class="form-group">
-	            	<div class="form-info-label">
-	            		<?php echo cl_translate("Enter the amount to replenish your wallet, and then select the payment method and click (Continue) button ") ?>
-	            	</div>
-	            </div>
-	            <div class="form-divider"></div>
-	            <div class="form-group">
-	                <label>
-	                    <?php echo cl_translate("Select payment method"); ?>
-	                </label>
-	                <div class="form-paymethods">
-                        <?php if ($cl['config']['paypal_method_status'] == 'on'): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'paypal'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/paypal.png", $cl["config"]["theme"])); ?>" alt="PayPal">
-                                </div>
-                                <div class="paym-name">
-                                	PayPal
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'paypal'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+				<div class="form-group no-mb">
+					<label>
+						<?php echo cl_translate("Select a top-up value"); ?> (Min. <?php echo $cl["config"]["wallet_min_amount"]; ?>$), 1$≈<?php echo cl_money(1); ?>
+					</label>
+					<input v-model.trim="$v.topup_amount.$model" type="text" class="form-control" placeholder="<?php echo ("0.00"); ?>">
+					<div v-if="is_invalid_amount" class="invalid-main-feedback">
+						<?php echo cl_translate("The value of the top-up amount you entered is invalid"); ?>
+					</div>
+				</div>
+				<!-- <div class="form-group no-mb" style="display: flex;flex-wrap: wrap;">
+					<div class="form-group" data-an="site_currency-input">
+						<label>
+							Default site currency
+						</label>
+						<div class="form-line form-select">
+							<select name="site_currency" data-size="5" class="form-control">
+								<?php foreach ($cl['site_currencies'] as $k => $v): ?>
+									<?php if ($k != 'Cheery') : ?>
+										<option value="<?php echo ($k); ?>" <?php if ($k == $cl['config']['site_currency']) {
+																				echo ('selected');
+																			} ?>>
+											<?php echo ($v['name']); ?> (<?php echo ($v['symbol']); ?>)
+										</option>
+									<?php endif ?>
+								<?php endforeach; ?>
+							</select>
+						</div>
+					</div>
+					<div class="">
+						<label>
+							<?php echo cl_translate("Exchange rate:"); ?>
+						</label>
+						<input v-model.trim="$v.topup_amount.$model" type="text" class="form-control" placeholder="<?php echo ("0.00"); ?>">
+						<div v-if="is_invalid_amount" class="invalid-main-feedback">
+							<?php echo cl_translate("The value of the top-up amount you entered is invalid"); ?>
+						</div>
+					</div>
+				</div> -->
+				<div class="form-group">
+					<div class="form-info-label">
+						<?php echo cl_translate("Enter the amount to replenish your wallet, and then select the payment method and click (Continue) button ") ?>
+					</div>
+				</div>
+				<div class="form-divider"></div>
+				<div class="form-group">
+					<label>
+						<?php echo cl_translate("Select payment method"); ?>
+					</label>
+					<div class="form-paymethods">
+						<?php if ($cl['config']['paypal_method_status'] == 'on'): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'paypal'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/paypal.png", $cl["config"]["theme"])); ?>" alt="PayPal">
+								</div>
+								<div class="paym-name">
+									PayPal
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'paypal'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
+						<?php endif; ?>
 
-                        <?php if ($cl['config']['paystack_method_status'] == 'on'): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'paystack'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/paystack.png", $cl["config"]["theme"])); ?>" alt="PayStack">
-                                </div>
-                                <div class="paym-name">
-                                	PayStack
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'paystack'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+						<?php if ($cl['config']['paystack_method_status'] == 'on'): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'paystack'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/paystack.png", $cl["config"]["theme"])); ?>" alt="PayStack">
+								</div>
+								<div class="paym-name">
+									PayStack
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'paystack'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
+						<?php endif; ?>
 
-                        <?php if ($cl['config']['coinpayments_method_status'] == 'on' && 0): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'coinpayments'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/coinpayments.png", $cl["config"]["theme"])); ?>" alt="Coinpayments">
-                                </div>
-                                <div class="paym-name">
-                                	Coinpayments (Crypt)
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'coinpayments'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+						<?php if ($cl['config']['coinpayments_method_status'] == 'on' && 0): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'coinpayments'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/coinpayments.png", $cl["config"]["theme"])); ?>" alt="Coinpayments">
+								</div>
+								<div class="paym-name">
+									Coinpayments (Crypt)
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'coinpayments'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
+						<?php endif; ?>
 
-                        <?php if ($cl['config']['rzp_method_status'] == 'on'): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'razorpay'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/razorpay.png", $cl["config"]["theme"])); ?>" alt="RazorPay">
-                                </div>
-                                <div class="paym-name">
-                                	RazorPay
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'razorpay'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
+						<?php if ($cl['config']['rzp_method_status'] == 'on'): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'razorpay'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/razorpay.png", $cl["config"]["theme"])); ?>" alt="RazorPay">
+								</div>
+								<div class="paym-name">
+									RazorPay
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'razorpay'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
+						<?php endif; ?>
 
-                        <?php if ($cl['config']['stripe_method_status'] == 'on'): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'stripe'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/stripe.png", $cl["config"]["theme"])); ?>" alt="Stripe">
-                                </div>
-                                <div class="paym-name">
-                                	Stripe
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'stripe'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
+						<?php if ($cl['config']['stripe_method_status'] == 'on'): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'stripe'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/stripe.png", $cl["config"]["theme"])); ?>" alt="Stripe">
+								</div>
+								<div class="paym-name">
+									Stripe
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'stripe'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
 
-                            <?php if ($cl['config']['alipay_method_status'] == 'on'): ?>
-                                <div class="form-paymethods__item" v-on:click="topup_method = 'stripe_alipay'">
-                                    <div class="paym-logo">
-	                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/alipay.png", $cl["config"]["theme"])); ?>" alt="AliPay">
-	                                </div>
-	                                <div class="paym-name">
-	                                	AliPay
-	                                </div>
-	                                <div class="paym-checkmark" v-if="topup_method == 'stripe_alipay'">
-	                                	<?php echo cl_ficon("checkmark"); ?>
-	                                </div>
-	                                <div class="paym-checkmark" v-else>
-	                                	<?php echo cl_ficon("circle"); ?>
-	                                </div>
-                                </div>
-                            <?php endif; ?>
-                        <?php endif; ?>
+							<?php if ($cl['config']['alipay_method_status'] == 'on'): ?>
+								<div class="form-paymethods__item" v-on:click="topup_method = 'stripe_alipay'">
+									<div class="paym-logo">
+										<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/alipay.png", $cl["config"]["theme"])); ?>" alt="AliPay">
+									</div>
+									<div class="paym-name">
+										AliPay
+									</div>
+									<div class="paym-checkmark" v-if="topup_method == 'stripe_alipay'">
+										<?php echo cl_ficon("checkmark"); ?>
+									</div>
+									<div class="paym-checkmark" v-else>
+										<?php echo cl_ficon("circle"); ?>
+									</div>
+								</div>
+							<?php endif; ?>
+						<?php endif; ?>
 
-                        <?php if ($cl['config']['bank_method_status'] == 'on'): ?>
-                            <div class="form-paymethods__item" v-on:click="topup_method = 'bank'">
-                                <div class="paym-logo">
-                                	<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/bank.png", $cl["config"]["theme"])); ?>" alt="Bank transfer">
-                                </div>
-                                <div class="paym-name">
-                                	Bank Transfer
-                                </div>
-                                <div class="paym-checkmark" v-if="topup_method == 'bank'">
-                                	<?php echo cl_ficon("checkmark"); ?>
-                                </div>
-                                <div class="paym-checkmark" v-else>
-                                	<?php echo cl_ficon("circle"); ?>
-                                </div>
-                            </div>
-                        <?php endif; ?>
-	                </div>
-	                <div class="invalid-main-feedback" v-if="invalid_feedback_pgw && topup_method == false">
-	                    {{invalid_feedback_pgw}}
-	                </div>
-	            </div>
-	            <div class="form-group">
-	                <button v-if="submitting" disabled="true" class="btn btn-custom main-inline lg btn-block">
-	                    <?php echo cl_translate('Please wait'); ?>
-	                </button>
-	                <button v-else v-bind:disabled="is_invalid_form" class="btn btn-custom main-inline lg btn-block">
-	                    <?php echo cl_translate("Continue"); ?>
-	                </button>
-	            </div>
-	            <div class="form-group no-mb">
-	                <div class="form-tos">
-	                    <div class="form-check">
-	                        <input v-model="tos_agree" id="tos-agree" type="checkbox" checked="true" class="form-check-input">
-	                        <label for="tos-agree" class="form-check-label">
-	                            <span>
-	                                <?php echo cl_translate("By continuing, you agree to {@site_name@}",array(
-	                                    "site_name" => $cl["config"]["name"]
-	                                )); ?>
-	                            </span>
-	                            <a href="<?php echo cl_link('terms_of_use'); ?>"><?php echo cl_translate("Terms of Use"); ?></a> <?php echo cl_translate("And"); ?> <a href="<?php echo cl_link('privacy_policy'); ?>"><?php echo cl_translate("Privacy policy"); ?></a>
-	                        </label>
-	                    </div>
-	                </div>
-	            </div>
-	        </form>
-        </div>
+						<?php if ($cl['config']['bank_method_status'] == 'on'): ?>
+							<div class="form-paymethods__item" v-on:click="topup_method = 'bank'">
+								<div class="paym-logo">
+									<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/bank.png", $cl["config"]["theme"])); ?>" alt="Bank transfer">
+								</div>
+								<div class="paym-name">
+									Bank Transfer
+								</div>
+								<div class="paym-checkmark" v-if="topup_method == 'bank'">
+									<?php echo cl_ficon("checkmark"); ?>
+								</div>
+								<div class="paym-checkmark" v-else>
+									<?php echo cl_ficon("circle"); ?>
+								</div>
+							</div>
+						<?php endif; ?>
+					</div>
+					<div class="invalid-main-feedback" v-if="invalid_feedback_pgw && topup_method == false">
+						{{invalid_feedback_pgw}}
+					</div>
+				</div>
+				<div class="form-group">
+					<button v-if="submitting" disabled="true" class="btn btn-custom main-inline lg btn-block">
+						<?php echo cl_translate('Please wait'); ?>
+					</button>
+					<button v-else v-bind:disabled="is_invalid_form" class="btn btn-custom main-inline lg btn-block">
+						<?php echo cl_translate("Continue"); ?>
+					</button>
+				</div>
+				<div class="form-group no-mb">
+					<div class="form-tos">
+						<div class="form-check">
+							<input v-model="tos_agree" id="tos-agree" type="checkbox" checked="true" class="form-check-input">
+							<label for="tos-agree" class="form-check-label">
+								<span>
+									<?php echo cl_translate("By continuing, you agree to {@site_name@}", array(
+										"site_name" => $cl["config"]["name"]
+									)); ?>
+								</span>
+								<a href="<?php echo cl_link('terms_of_use'); ?>"><?php echo cl_translate("Terms of Use"); ?></a> <?php echo cl_translate("And"); ?> <a href="<?php echo cl_link('privacy_policy'); ?>"><?php echo cl_translate("Privacy policy"); ?></a>
+							</label>
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
 	<?php echo cl_template("wallet_add/scripts/app_master_script"); ?>
 </div>

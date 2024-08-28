@@ -1858,7 +1858,7 @@ function conn()
     $servername = "localhost";
     $username = "root"; //mych_managed
     $password = "root"; //Toidayhoc123
-    $dbname = "social"; //mych_managed
+    $dbname = "soci_edata"; //mych_managed
 
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     mysqli_set_charset($conn, "utf8mb4");

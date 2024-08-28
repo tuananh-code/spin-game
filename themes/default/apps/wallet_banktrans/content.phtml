@@ -86,71 +86,72 @@
 					</div>
 					<div class="timeline-alert__text">
 						<?php echo cl_translate("After the transfer, attach a photo of the payment receipt. Your request will be processed within 3 business days"); ?>
+						<?php echo cl_translate("Please transfer the correct amount, if it is an equivalent foreign currency, convert it according to the exchange rate in USD, with rounding rules accepted (not deviating more than $0.05). Please check carefully before making the transfer. In case of any errors, please contact customer support at Toidayhoc@datdia.com."); ?>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="wallet-banktrans__form">
 			<form class="form" id="vue-wallet_banktrans-app" v-on:submit="submit_form($event)">
-                <div class="form-group">
-                    <label>
-                        <?php echo cl_translate("Receipt photo"); ?>
-                    </label>
-                    <div class="form-dropzone" v-on:click="select_image">
-                    	<div class="form-dropzone__text" v-if="is_file_selected">
-                    		{{selected_file_name}}
-                    	</div>
-                    	<div class="form-dropzone__empty" v-else>
-                        	<div class="form-dropzone__header">
-                        		<div class="form-dropzone__icon">
-                        			<?php echo cl_ficon("receipt"); ?>
-                        		</div>
-                        	</div>
-                        	<div class="form-dropzone__body">
-                        		<?php echo cl_translate("Please attach your bank receipt"); ?>
-                        	</div>
-                        	<div class="form-dropzone__footer">
-                        		<button type="button" class="btn btn-custom lg main-grey">
-                                    <?php echo cl_translate("Click to select file"); ?>
-                                </button>
-                        	</div>
-                    	</div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>
-                        <?php echo cl_translate("Message to reviewer"); ?>
-                        <small v-if="text_message.length" v-bind:class="{'col-red': (text_message.length > 1200)}">({{text_message.length}})</small>
-                    </label>
+				<div class="form-group">
+					<label>
+						<?php echo cl_translate("Receipt photo()"); ?>
+					</label>
+					<div class="form-dropzone" v-on:click="select_image">
+						<div class="form-dropzone__text" v-if="is_file_selected">
+							{{selected_file_name}}
+						</div>
+						<div class="form-dropzone__empty" v-else>
+							<div class="form-dropzone__header">
+								<div class="form-dropzone__icon">
+									<?php echo cl_ficon("receipt"); ?>
+								</div>
+							</div>
+							<div class="form-dropzone__body">
+								<?php echo cl_translate("Please attach your bank receipt"); ?>
+							</div>
+							<div class="form-dropzone__footer">
+								<button type="button" class="btn btn-custom lg main-grey">
+									<?php echo cl_translate("Click to select file"); ?>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="form-group">
+					<label>
+						<?php echo cl_translate("Message to reviewer, please leave your phone number or email for support if needed."); ?>
+						<small v-if="text_message.length" v-bind:class="{'col-red': (text_message.length > 1200)}">({{text_message.length}})</small>
+					</label>
 
-                    <textarea v-model.trim="$v.text_message.$model" name="text_message" rows="2" class="form-control" placeholder="<?php echo cl_translate("Enter message to reviewer (Optional)"); ?>"></textarea>
-                    <div class="invalid-main-feedback" v-if="is_valid_text_message">
-                        {{invalid_feedback_text_message}}
-                    </div>
-                </div>
-                <div class="form-group" v-if="unsuccessful_attempt">
-                    <div class="invalid-main-feedback">
-                        <?php echo cl_translate("An error occurred while processing your request. Please try again later."); ?>
-                    </div>
-                </div>
-                <div class="form-group" v-else>
-                    <div class="form-info-label">
-                        <?php echo cl_translate("Please note that this information is required to verify the authenticity of the payment and will not be published or shared with third parties"); ?>
-                    </div>
-                </div>
-                <input v-on:change="display_filename($event)" type="file" name="receipt" class="d-none" accept="image/*" data-an="image-message-input">
-                <input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'],'none'); ?>" name="hash">
-                <div class="form-group no-mb">
-                	<button v-if="submitting != true" v-bind:disabled="is_valid_form != true" type="submit" class="btn btn-block btn-custom main-inline lg">
-                        <?php echo cl_translate("Submit request"); ?>
-                    </button>
-                    <button v-else disabled="true" type="button" class="btn btn-block btn-custom main-inline lg">
-                        <?php echo cl_translate("Please wait"); ?>
-                    </button>
-                </div>
+					<textarea v-model.trim="$v.text_message.$model" name="text_message" rows="2" class="form-control" placeholder="<?php echo cl_translate("Enter message to reviewer (Optional)"); ?>"></textarea>
+					<div class="invalid-main-feedback" v-if="is_valid_text_message">
+						{{invalid_feedback_text_message}}
+					</div>
+				</div>
+				<div class="form-group" v-if="unsuccessful_attempt">
+					<div class="invalid-main-feedback">
+						<?php echo cl_translate("An error occurred while processing your request. Please try again later."); ?>
+					</div>
+				</div>
+				<div class="form-group" v-else>
+					<div class="form-info-label">
+						<?php echo cl_translate("Please note that this information is required to verify the authenticity of the payment and will not be published or shared with third parties"); ?>
+					</div>
+				</div>
+				<input v-on:change="display_filename($event)" type="file" name="receipt" class="d-none" accept="image/*" data-an="image-message-input">
+				<input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
+				<div class="form-group no-mb">
+					<button v-if="submitting != true" v-bind:disabled="is_valid_form != true" type="submit" class="btn btn-block btn-custom main-inline lg">
+						<?php echo cl_translate("Submit request"); ?>
+					</button>
+					<button v-else disabled="true" type="button" class="btn btn-block btn-custom main-inline lg">
+						<?php echo cl_translate("Please wait"); ?>
+					</button>
+				</div>
 			</form>
-		</div> 
-	</div> 
+		</div>
+	</div>
 
 	<?php echo cl_template("wallet_banktrans/scripts/app_master_script"); ?>
 </div>

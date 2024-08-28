@@ -40,11 +40,11 @@
 					</div>
 					<div class="wallet-balance__icon">
 						<?php echo cl_ficon("wallet"); ?>
-					</div> 
+					</div>
 				</div>
 
-                <?php if (in_array("on", array($cl['config']['paypal_method_status'], $cl['config']['paystack_method_status'], $cl['config']['stripe_method_status'], $cl['config']['bank_method_status']))): ?>
-                    <div class="wallet-footer">
+				<?php if (in_array("on", array($cl['config']['paypal_method_status'], $cl['config']['paystack_method_status'], $cl['config']['stripe_method_status'], $cl['config']['bank_method_status']))): ?>
+					<div class="wallet-footer">
 						<div class="wallet-footer__text">
 							<?php echo cl_translate("You may withdraw funds or use them in your account for advertising, subscription or other purposes"); ?>
 						</div>
@@ -62,8 +62,8 @@
 							</a>
 						</div>
 					</div>
-                <?php else: ?>
-                	<div class="wallet-footer">
+				<?php else: ?>
+					<div class="wallet-footer">
 						<div class="wallet-footer__text">
 							<?php echo cl_translate("Wallet replenishment is temporarily unavailable"); ?>
 						</div>
@@ -73,9 +73,9 @@
 							</button>
 						</div>
 					</div>
-                <?php endif; ?>
+				<?php endif; ?>
 			</div>
-			<div class="account-wallet__withdrawal">
+			<div class="account-wallet__withdrawal hide">
 				<a href="<?php echo cl_link("wallet_withdrawal"); ?>" data-spa="true">
 					<?php echo cl_translate("Submit a withdrawal request"); ?>
 				</a>
@@ -97,12 +97,12 @@
 									<?php if (in_array($row["operation"], array("paypal_wallet_tup", "stripe_wallet_tup", "razorpay_wallet_tup", "paystack_wallet_tup", "banktrans_wallet_tup", "affiliate_wallet_tup", "wallet_local_receipt"))): ?>
 										<?php if ($row["status"] == "success"): ?>
 											<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/avatars/income-success.png", $cl["config"]["theme"])); ?>" alt="IMG">
-										<?php elseif($row["status"] == "declined"): ?>
+										<?php elseif ($row["status"] == "declined"): ?>
 											<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/avatars/income-error.png", $cl["config"]["theme"])); ?>" alt="IMG">
-										<?php elseif($row["status"] == "pending_approval"): ?>
+										<?php elseif ($row["status"] == "pending_approval"): ?>
 											<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/avatars/income-pending.png", $cl["config"]["theme"])); ?>" alt="IMG">
 										<?php endif; ?>
-									<?php elseif(in_array($row["operation"], array("wallet_local_transfer", "premium_account_purchase", "wallet_withdrawal_req"))): ?>
+									<?php elseif (in_array($row["operation"], array("wallet_local_transfer", "premium_account_purchase", "wallet_withdrawal_req"))): ?>
 										<img src="<?php echo cl_link(cl_strf("themes/%s/statics/img/pgws/avatars/outgo-success.png", $cl["config"]["theme"])); ?>" alt="IMG">
 									<?php endif; ?>
 								</div>
@@ -112,9 +112,13 @@
 									<div class="flex-item-left">
 										<?php if ($row["status"] == "declined"): ?><s><?php endif; ?>
 
-										<?php if (in_array($row["operation"], array("paypal_wallet_tup", "stripe_wallet_tup", "paystack_wallet_tup", "banktrans_wallet_tup", "affiliate_wallet_tup", "razorpay_wallet_tup", "wallet_local_receipt"))) {echo "+";} else {echo "-";} ?><?php echo cl_money($row['amount']); ?>
+											<?php if (in_array($row["operation"], array("paypal_wallet_tup", "stripe_wallet_tup", "paystack_wallet_tup", "banktrans_wallet_tup", "affiliate_wallet_tup", "razorpay_wallet_tup", "wallet_local_receipt"))) {
+												echo "+";
+											} else {
+												echo "-";
+											} ?><?php echo cl_money($row['amount']); ?>
 
-										<?php if ($row["status"] == "declined"): ?></s><?php endif; ?>
+											<?php if ($row["status"] == "declined"): ?></s><?php endif; ?>
 									</div>
 									<div class="flex-item-right">
 										<?php echo $row['time']; ?>
@@ -123,31 +127,31 @@
 								<div class="mp__text">
 									<?php if ($row["operation"] == "paypal_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via PayPal"); ?>
-									<?php elseif($row["operation"] == "stripe_wallet_tup"): ?>
+									<?php elseif ($row["operation"] == "stripe_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via Stripe"); ?>
-									<?php elseif($row["operation"] == "paystack_wallet_tup"): ?>
+									<?php elseif ($row["operation"] == "paystack_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via PayStack"); ?>
-									<?php elseif($row["operation"] == "razorpay_wallet_tup"): ?>
+									<?php elseif ($row["operation"] == "razorpay_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via RazorPay"); ?>
-									<?php elseif($row["operation"] == "banktrans_wallet_tup"): ?>
+									<?php elseif ($row["operation"] == "banktrans_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via Bank transfer"); ?>
-									<?php elseif($row["operation"] == "affiliate_wallet_tup"): ?>
+									<?php elseif ($row["operation"] == "affiliate_wallet_tup"): ?>
 										<?php echo cl_translate("Account replenishment via affiliate bonuses transfer"); ?>
-									<?php elseif($row["operation"] == "wallet_local_transfer"): ?>
+									<?php elseif ($row["operation"] == "wallet_local_transfer"): ?>
 										<?php if (not_empty($row["json_data"])): ?>
 											<?php echo cl_translate("Local transfer to {@user_name@}", array("user_name" => $row["json_data"]["username"])); ?>
 										<?php else: ?>
 											<?php echo cl_translate("Local transfer to {@user_name@}", array("user_name" => "X")); ?>
 										<?php endif; ?>
-									<?php elseif($row["operation"] == "wallet_local_receipt"): ?>
+									<?php elseif ($row["operation"] == "wallet_local_receipt"): ?>
 										<?php if (not_empty($row["json_data"])): ?>
 											<?php echo cl_translate("Local translation from {@user_name@}", array("user_name" => $row["json_data"]["username"])); ?>
 										<?php else: ?>
 											<?php echo cl_translate("Local translation from {@user_name@}", array("user_name" => "X")); ?>
 										<?php endif; ?>
-									<?php elseif($row["operation"] == "premium_account_purchase"): ?>
+									<?php elseif ($row["operation"] == "premium_account_purchase"): ?>
 										<?php echo cl_translate("Payment for the premium account subscription"); ?>
-									<?php elseif($row["operation"] == "wallet_withdrawal_req"): ?>
+									<?php elseif ($row["operation"] == "wallet_withdrawal_req"): ?>
 										<?php echo cl_translate("Money withdrawal from wallet to {@pmethod@}", array("pmethod" => $row["json_data"]["withdrawal_method"])); ?>
 									<?php endif; ?>
 								</div>

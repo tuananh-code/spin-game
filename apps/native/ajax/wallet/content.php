@@ -28,6 +28,7 @@ else if($action == 'topup_wallet') {
     $topup_amount     = fetch_or_get($_POST['amount'], false);
     $topup_method     = fetch_or_get($_POST['method'], false);
     $topup_min_amount = intval($cl["config"]["wallet_min_amount"]);
+    $cl['config']['site_currency'] = $cl['config']['site_currency'] == 'cheery' ? 'usd' : $cl['config']['site_currency'];
 
     if (empty($topup_amount) || is_numeric($topup_amount) != true) {
         $data['err_code'] = 'invalid_topup_amount';

@@ -22,7 +22,7 @@ RewriteEngine On
 # RewriteCond %{HTTPS} off
 # RewriteCond %{HTTP:X-Forwarded-Proto} !https
 # RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-     
+                                            
 RewriteRule ^manage(\/|)$ index.php?app=manage&page=inv [QSA]
 RewriteRule ^list(\/|)$ index.php?app=manage&page=list [QSA]
 RewriteRule ^edit_invoice/([0-9]+)(\/|)$ index.php?app=manage&page=edit_invoice&id=$1 [QSA]
@@ -156,4 +156,3 @@ ErrorDocument 404 /index.php?app=err404
     ExpiresByType image/x-icon "access plus 1 year"
     ExpiresDefault "access plus 190 days"
 </IfModule>
-
