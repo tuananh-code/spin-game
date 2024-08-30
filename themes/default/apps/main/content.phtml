@@ -234,9 +234,6 @@
 		} else {
 			echo ('dir="ltr"');
 		} ?> class="cl-app-<?php echo fetch_or_get($cl["pn"], "none"); ?> <?php echo (($cl["is_logged"]) ? "" : "body-guest-mode"); ?>" data-page-tab="<?php echo fetch_or_get($cl["page_tab"], "none"); ?>" data-skin="<?php echo ($cl["display_set"]["color_scheme"]); ?>" data-bg="<?php echo ($cl["display_set"]["background"]); ?>">
-	<div class="position-absolute gif" style="width: 24%;z-index: 12;top: 100%;left: 32%; display:none;">
-		<img class="lozad col-12" src="<?php echo cl_link("themes/default/statics/img/fire.gif"); ?>">
-	</div>
 	<div class="main-preloader-holder" id="main-preloader-holder">
 		<div class="main-preloader">
 			<div class="loading">
@@ -246,7 +243,7 @@
 	</div>
 	<div data-el="main-content-holder">
 		<main class="main-content-container <?php echo (($cl["is_logged"]) ? "" : "guest-mode"); ?>">
-			<?php if ($cl["pn"] == "guest") : ?>
+			<?php if ($cl["pn"] == "guest") :  ?>
 				<?php echo $cl["http_res"]; ?>
 			<?php else : ?>
 				<div class="main-content-container-inner">

@@ -1,0 +1,111 @@
+<?php
+// $ticket = get_ticket_data($me['id']);
+$store_id = get_store_id($me['id']);
+if ($store_id) {
+    foreach ($store_id as $s) {
+        $game_id = get_game_id($s);
+        if ($game_id) {
+            foreach ($game_id as $g) {
+                $is_owner = is_owner($g);
+                $ticket = get_ticket($g);
+                if (@count($ticket) > 0) {
+                    $get_ticket[] = $ticket;
+                }
+            }
+        }
+    }
+} else {
+    $is_owner = null;
+}
+?>
+<h2 class="p-2 m-2 text-primary"> <?= cl_translate('Ticket manager') ?></h2>
+<?php if (@$is_owner) { ?>
+    <div class="table-responsive-md u-datatable px-2">
+        <table id="ticketTable">
+            <thead>
+                <tr class="text-uppercase font-size-1">
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Customer') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Store') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Event') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Ticket') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Created') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Expired') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Action') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($get_ticket as $t) { ?>
+                    <tr class="tr text-center">
+                        <td>
+                            <?= get_user_data($t['user_id'])['username']; ?>
+                        </td>
+                        <td class="text-primary">
+                            <?= get_store_name(get_store_game_id($t['game_id'])) ?>
+                        </td>
+                        <td>
+                            <?= get_game_name($t['game_id']) ?>
+                        </td>
+                        <td class="text-success text-center">
+                            <?= $t['ticket'] ?>
+                        </td>
+                        <td>
+                            <?= $date = date('Y-m-d', strtotime($t['created_at'])) ?>
+                        </td>
+                        <td class="text-success">
+                            <?= $date = date('Y-m-d', strtotime($t['expires_date'])) ?>
+                        </td>
+                        <td>
+                            <div>
+                                <button class="tick p-2 m-2 border-0 rounded-3 btn-success" data-id="<?= $t['user_id'] ?>" data-store="<?= get_store_game_id($t['game_id']) ?>" data-game="<?= $t['game_id'] ?>"><?php echo cl_translate("Claimed"); ?></button>
+                            </div>
+                        </td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
+    </div>
+<?php } else { ?>
+    <h4 class="text-danger"><?= cl_translate('No ticket available. Try to add store, customer and event') ?></h4>
+<?php } ?>

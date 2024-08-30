@@ -445,13 +445,13 @@
 					_self.preventDefault();
 
 					var _app_ = this;
-
 					$(_self.target).ajaxSubmit({
 						url: "<?php echo cl_link("native_api/manage/save_invoice"); ?>",
 						type: 'POST',
 						dataType: 'json',
 						beforeSend: function() {
 							_app_.submitting = true;
+							console.log(_app_);
 							// _app_.qty_taken = false;
 							// _app_.qty_denied = false;
 						},

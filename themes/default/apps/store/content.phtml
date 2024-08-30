@@ -26,6 +26,7 @@ if ($result->num_rows > 0) {
                         $status[] = $row_game['status'];
                         $expires_date[] = $row_game['expires_date'];
                         $created_at[] = $row_game['created_at'];
+                        $props[] = $row_game['props'];
                     }
                 }
             }
@@ -50,6 +51,7 @@ if ($result->num_rows > 0) {
 
     .edit,
     .delete,
+    .save,
     .edit-store,
     .delete-store,
     .save-store {
@@ -115,19 +117,19 @@ if ($result->num_rows > 0) {
         <div class="d-flex align-items-center justify-content-center">
             <label for="address" class="col-2 text-end"><?php echo cl_translate("Address:"); ?></label>
             <div class="require-address col-9">
-                <input type="text" id="address" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Address"); ?>" >
+                <input type="text" id="address" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Address"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="city" class="col-2 text-end"><?php echo cl_translate("City:"); ?></label>
             <div class="require-city col-9">
-                <input name="city" id="city" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter City"); ?>" >
+                <input name="city" id="city" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter City"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="phone" class="col-2 text-end"><?php echo cl_translate("Phone:"); ?></label>
             <div class="require-phone col-9">
-                <input name="phone" id="phone" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter Phone"); ?>" >
+                <input name="phone" id="phone" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter Phone"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
@@ -204,7 +206,7 @@ if ($result->num_rows > 0) {
                                     <span><?= $address[$s] ?></span>
                                 </td>
                                 <td class="align-middle city-field"><?= $city[$s] ?></td>
-                                <td class="align-middle text-success phone-field"><?= $phone[$s] ?></td>
+                                <td class="align-middle text-center text-success phone-field"><?= $phone[$s] ?></td>
                                 <td class="align-middle text-primary mail-field"><?= $mail[$s] ?></td>
                                 <td>
                                     <div>
@@ -221,7 +223,7 @@ if ($result->num_rows > 0) {
             <!--  -->
             <span class="fs-2 text-primary">Event Manager</span>
             <div class="table-responsive-md u-datatable">
-                <table id="eventTable">
+                <table id="eventTable" class="refresh">
                     <thead>
                         <tr class="text-uppercase font-size-1">
                             <th scope="col" class="font-weight-medium">
@@ -241,6 +243,13 @@ if ($result->num_rows > 0) {
                             <th scope="col" class="font-weight-medium">
                                 <div class="d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Status') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Props') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
@@ -269,7 +278,7 @@ if ($result->num_rows > 0) {
                         </tr>
                     </thead>
                     <tbody class="font-size-1">
-                        <?php if (count($game) > 0) { ?>
+                        <?php if (@count($game) > 0) { ?>
                             <?php for ($i = 0; $i < count($game); $i++) { ?>
                                 <tr class="tr text-center">
                                     <td class="align-middle text-dark font-weight-normal"><b><?= $store[$i] ?></b></td>
@@ -277,10 +286,40 @@ if ($result->num_rows > 0) {
                                         <span><?= $game[$i] ?></span>
                                     </td>
                                     <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? 'Publish' : 'Draft' ?></td>
+                                    <td>
+                                        <?php
+                                        $prop = json_decode($props[$i], true);
+                                        if (@count($prop) > 0) {
+                                            $value = [];
+                                            $prize = [];
+                                            $percent = [];
+                                            $stock = [];
+                                            $show = [];
+                                            foreach ($prop as $p) {
+                                                $value[] = $p['value'];
+                                                $prize[] = $p['prize'];
+                                                $percent[] = $p['percent'];
+                                                $stock[] = $p['stock'];
+                                                $show[] = $p['percent'] . '%';
+                                            }
+                                            $values = implode(', ', $value);
+                                            $prizes = implode(', ', $prize);
+                                            $stocks = implode(', ', $stock);
+                                            $percents = implode(', ', $percent);
+                                            $shows = implode(', ', $show);
+                                            echo '<span class="prizes">Prize: ' . $prizes . '</span><br>'; // Outputs: prize1, prize2, prize3
+                                            echo '<span class="stocks">Stock: ' . $stocks . '</span><br>';
+                                            echo '<span class="percents">Percent: ' . $shows . '</span>'; // Outputs: percent1, percent2, percent3
+                                            // echo 'Prize: ' . $prizes . '<br> Percent: ' . $percents . '<br> Stock: ' . $stocks;
+                                        }
+                                        ?>
+                                    </td>
                                     <td class="align-middle text-success"><?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></td>
                                     <td class="align-middle text-danger"><?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></td>
                                     <td>
                                         <div>
+                                            <button class="edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>"><i class="fas fs-5 fa-edit text-white"></i></button>
+                                            <button class="save text-white border-0 rounded-3 btn-success" data-id="<?= $id_game[$i] ?>" style="display:none;"><i class="fas fs-5 fa-save text-white"></i></button>
                                             <button class="delete text-white border-0 rounded-3 btn-danger" data-id="<?= $id_game[$i] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
                                         </div>
                                     </td>
@@ -295,6 +334,7 @@ if ($result->num_rows > 0) {
 </div>
 <?php echo cl_template('store/scripts/app_master_script'); ?>
 <script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
+<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>
 
 <script>
     new DataTable('#storeTable');

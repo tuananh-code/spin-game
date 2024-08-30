@@ -63,7 +63,9 @@
 	<div class="timeline-navbar">
 		<div class="timeline-navbar__item">
 			<a href="<?php echo cl_link("notifications"); ?>" data-spa="true">
-				<button class="timeline-navbar__item-btn <?php if($cl['page_tab'] == 'notifs') {echo('active');} ?>">
+				<button class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'notifs') {
+																echo ('active');
+															} ?>">
 					<span class="btn-flex-inner">
 						<?php echo cl_translate("Notifications"); ?>
 					</span>
@@ -72,7 +74,9 @@
 		</div>
 		<div class="timeline-navbar__item">
 			<a href="<?php echo cl_link("mentions"); ?>" data-spa="true">
-				<button class="timeline-navbar__item-btn <?php if($cl['page_tab'] == 'mentions') {echo('active');} ?>">
+				<button class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'mentions') {
+																echo ('active');
+															} ?>">
 					<span class="btn-flex-inner">
 						<?php echo cl_translate("Mentions"); ?>
 					</span>
@@ -92,7 +96,6 @@
 				<?php echo cl_template('notifications/includes/no_notifs'); ?>
 			<?php endif; ?>
 		</div>
-
 		<?php if (count($cl["notifs"]) >= 45): ?>
 			<div class="timeline-data-loader">
 				<button v-if="loading" class="timeline-data-loader__btn" disabled="true">

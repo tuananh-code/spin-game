@@ -83,19 +83,38 @@ if (empty($cl['is_logged'])) {
         }
         $props = json_encode($attr);
         $data = add_game($store_id, $event, $themes, $props, $status, $date, $expires_event);
+        //create notify
+        $store_id = cl_db_get_items(T_STORE, array('user_id' => $me['id']));
+        if ($store_id) {
+            foreach ($store_id as $s) {
+                $game_id = get_game_id($s['id']);
+                foreach ($game_id as $g) {
+                    $all = get_all_user_game_id($g);
+                    if ($all) {
+                        $notify = cl_db_insert(T_NOTIFS, array(
+                            "notifier_id" => $me['id'],
+                            "recipient_id" => $all['user_id'],
+                            "entry_id" => $me['id'],
+                            "status" => '0',
+                            "subject" => 'event',
+                            "game_id" => $all['game_id'],
+                            "json" => 1,
+                            "time" => strtotime($date)
+                        ));
+                    }
+                }
+            }
+        }
         return $data;
     } else if ($action == 'add_condition') {
         $event = $_POST['event'];
-        $event = $_POST['event'];
         $buy = $_POST['buy'];
         $limit = $_POST['limit'];
-        $quantity = $_POST['quantity'];
         $expires = $_POST['expires'];
         $join =  $_POST['join'];
         $store_condition =  $_POST['store_condition'];
         //handle game
-
-        $data = add_condition($event, $store_condition, $buy, $limit, $quantity, $expires, $join);
+        $data = add_condition($event, $store_condition, $buy, $limit, $expires, $join);
         if ($data['status'] == 500) {
             return $data;
         } else {
@@ -104,9 +123,8 @@ if (empty($cl['is_logged'])) {
                 "game_name" => $event,
                 "buy" => $buy,
                 "limit" => $limit,
-                "quantity" => $quantity,
                 "expires" => $expires,
-                "join" => $join,
+                "join" => $join
             ));
             if ($id) {
                 $data['status'] = 200;
@@ -124,6 +142,9 @@ if (empty($cl['is_logged'])) {
         $user = $_POST['user'];
         $store = $_POST['store'];
         $game = $_POST['game'];
+        if (@$_POST['keys']) {
+            $ticket = $_POST['keys'] - 1;
+        }
         $check = true;
         $is_store = cl_db_get_items(T_STORE, array('user_id' => $me['id']));
         if ($is_store) {
@@ -142,6 +163,12 @@ if (empty($cl['is_logged'])) {
         if ($check) {
             $update = update_prize($game, $prize);
             $status = cl_db_update(T_GAME, array('store_id' => $store), array('props' => $update));
+            if ($_POST['keys']) {
+                $status = cl_db_update(T_TICKET, array(
+                    'user_id' => $user,
+                    'game_id' => $game,
+                ), array('ticket' => $ticket));
+            }
             $id = cl_db_insert(T_PRIZE, array(
                 // "user_id" => $me['id'],
                 "prize" => $prize,

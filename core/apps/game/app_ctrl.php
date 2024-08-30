@@ -54,11 +54,12 @@ function add_game($id, $event, $themes, $props, $status, $date, $expires_event)
     ));
     $sql_game = $db->rawQuery($sql_game);
     if (!cl_queryset($sql_game)) {
+        // $data['id'] = $sql_game['id'];
         $data['status'] = 200;
         return $data;
     }
 }
-function add_condition($event, $store_condition, $buy, $limit, $quantity, $expires, $join)
+function add_condition($event, $store_condition, $buy, $limit, $expires, $join)
 {
     global $db, $cl, $me;
     // $id = $me['id'];
