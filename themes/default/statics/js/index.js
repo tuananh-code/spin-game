@@ -1,6 +1,5 @@
 import { Wheel } from "./spin/spin-wheel-esm.js";
 import { loadFonts, loadImages } from "./spin/util.js";
-var path = window.location.pathname;
 import { setupWheel } from "./props.js";
 
 let props = setupWheel();

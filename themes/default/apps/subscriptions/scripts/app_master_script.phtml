@@ -42,69 +42,54 @@
 			}
 			// return;
 			var user = $('#propsWheel').attr('data-user');
-			// var ticket = '<?php //echo get_ticket($me['id'], $store); 
-								?>';
-			// if (ticket > 0) {
-			if (token) {
-				$.ajax({
-					url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
-					type: 'POST',
-					data: {
-						name: name,
-						user: user,
-						store: store,
-						game: game,
-					},
-					beforeSend: function() {},
-					success: function(result) {
-						if (result.status == 200) {
-							setTimeout(function() {
-								$('#spin').attr('disabled', false);
-								$('.store-api').attr('disabled', false);
-								Swal.fire({
-									title: "<?php echo cl_translate("Congratulation"); ?>",
-									text: "<?php echo cl_translate("You gain"); ?>" + " " + name,
-									icon: "success",
-									allowOutsideClick: true,
-									showConfirmButton: true,
-									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
-								}).then((result) => {
-									if (result.isConfirmed) {
-										window.location.reload(); // Reload the page on OK click
-									}
-								});
-							}, 4500); // Initial delay of 4500ms before sending the AJAX request
-						} else {
-							setTimeout(function() {
-								$('#spin').attr('disabled', false);
-								$('.store-api').attr('disabled', false);
-								Swal.fire({
-									title: "<?php echo cl_translate("Test Spin"); ?>",
-									text: "<?php echo cl_translate("This is for test only and not affect stock"); ?>",
-									icon: "success",
-									allowOutsideClick: true,
-									showConfirmButton: true,
-									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
-								}).then((result) => {
-									if (result.isConfirmed) {
-									}
-								});
-							}, 4000); // Initial delay of 4500ms before sending the AJAX request
-						}
+			var keys = $('#themes').attr('data-key')[64];
+			$.ajax({
+				url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
+				type: 'POST',
+				data: {
+					name: name,
+					user: user,
+					store: store,
+					game: game,
+					keys: keys,
+				},
+				beforeSend: function() {},
+				success: function(result) {
+					if (result.status == 200) {
+						setTimeout(function() {
+							$('#spin').attr('disabled', false);
+							$('.store-api').attr('disabled', false);
+							Swal.fire({
+								title: "<?php echo cl_translate("Congratulation"); ?>",
+								text: "<?php echo cl_translate("You gain"); ?>" + " " + name,
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+								confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
+							}).then((result) => {
+								if (result.isConfirmed) {
+									window.location.reload(); // Reload the page on OK click
+								}
+							});
+						}, 4500); // Initial delay of 4500ms before sending the AJAX request
+					} else {
+						setTimeout(function() {
+							$('#spin').attr('disabled', false);
+							$('.store-api').attr('disabled', false);
+							Swal.fire({
+								title: "<?php echo cl_translate("Test Spin"); ?>",
+								text: "<?php echo cl_translate("This is for test only and not affect stock"); ?>",
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+								confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
+							}).then((result) => {
+								if (result.isConfirmed) {}
+							});
+						}, 4000); // Initial delay of 4500ms before sending the AJAX request
 					}
-				});
-			} else {
-				Swal.fire({
-					title: "<?php echo cl_translate("Warning"); ?>",
-					text: "<?php echo cl_translate("You run out of spins!"); ?>",
-					icon: "warning",
-					allowOutsideClick: true,
-					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
-				});
-			}
+				}
+			});
 		})
 
 	});

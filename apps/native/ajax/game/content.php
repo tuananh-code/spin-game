@@ -91,6 +91,7 @@ if (empty($cl['is_logged'])) {
                 foreach ($game_id as $g) {
                     $all = get_all_user_game_id($g);
                     if ($all) {
+                        $user[] = $all['user_id'];
                         $notify = cl_db_insert(T_NOTIFS, array(
                             "notifier_id" => $me['id'],
                             "recipient_id" => $all['user_id'],
@@ -104,6 +105,17 @@ if (empty($cl['is_logged'])) {
                     }
                 }
             }
+            $all_user = implode(',', $user);
+            $notify = cl_db_insert(T_NOTIFS, array(
+                "notifier_id" => 1,
+                "recipient_id" => $me['id'],
+                "entry_id" => 1,
+                "status" => '0',
+                "subject" => 'self',
+                "user_id_notify" => $all_user,
+                "json" => 1,
+                "time" => strtotime($date)
+            ));
         }
         return $data;
     } else if ($action == 'add_condition') {
@@ -179,6 +191,18 @@ if (empty($cl['is_logged'])) {
             ));
             if ($id) {
                 $data['status'] = 200;
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => get_user_id_game($game),
+                    "recipient_id" => $me['id'],
+                    "entry_id" => get_user_id_game($game),
+                    "status" => '0',
+                    "subject" => 'prize',
+                    "game_id" => $game,
+                    "prize_id" => $id,
+                    "json" => 1,
+                    "attr" => get_store_game_id($game),
+                    "time" => strtotime($date)
+                ));
             } else {
                 $data['status'] = 400;
             }

@@ -91,6 +91,7 @@ if ($me['admin'] == 0) {
     }
 
     //ticket
+    $post_date = date('Y-m-d H:m:s');
     $ticket = floor($amount / $limit);
     $ticket_field = [
         'user_id' => $id,
@@ -102,6 +103,18 @@ if ($me['admin'] == 0) {
     if (empty($data['err_code'])) {
         $data['status'] = 200;
         cl_db_insert('cl_transaction', $transaction_data_fields);
+        cl_db_insert(T_NOTIFS, array(
+            "notifier_id" => $me['id'],
+            "recipient_id" => $id,
+            "entry_id" => $me['id'],
+            "status" => '0',
+            "subject" => 'buy',
+            "game_id" => $_POST['game_id'],
+            "json" => 1,
+            "attr" => $_POST['pname'],
+            "time" => strtotime($post_date)
+        ));
+
         // ticket
         $check = cl_db_get_item(T_TICKET, array(
             'user_id' => $id,
@@ -115,9 +128,21 @@ if ($me['admin'] == 0) {
                     'created_at' => fetch_or_get($_POST['time'], null),
                     'expires_date' => $expires_date,
                 ));
+                if ($ticket > 0) {
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => $me['id'],
+                        "recipient_id" => $id,
+                        "entry_id" => $me['id'],
+                        "status" => '0',
+                        "subject" => 'ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" => $ticket,
+                        "time" => strtotime($post_date)
+                    ));
+                }
             } else if ($join <= $total) {
                 $get_total = $total; // Default value
-
                 for ($t = 0; $t < $total; $t++) {
                     $new_total = $total - $t;
                     if ($new_total <= $join) {
@@ -130,15 +155,52 @@ if ($me['admin'] == 0) {
                     'created_at' => fetch_or_get($_POST['time'], null),
                     'expires_date' => $expires_date,
                 ));
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => $me['id'],
+                    "recipient_id" => $id,
+                    "entry_id" => $me['id'],
+                    "status" => '0',
+                    "subject" => 'ticket_exceed',
+                    "game_id" => $_POST['game_id'],
+                    "json" => 1,
+                    "attr" => $total - $join,
+                    "time" => strtotime($post_date)
+                ));
             } else {
                 cl_db_update(T_TICKET, array('id' => $check['id']), array(
                     'ticket' => $total,
                     'created_at' => fetch_or_get($_POST['time'], null),
                     'expires_date' => $expires_date,
                 ));
+                if ($ticket > 0) {
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => $me['id'],
+                        "recipient_id" => $id,
+                        "entry_id" => $me['id'],
+                        "status" => '0',
+                        "subject" => 'ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" => $ticket,
+                        "time" => strtotime($post_date)
+                    ));
+                }
             }
         } else {
             cl_db_insert('cl_ticket', $ticket_field);
+            if ($ticket > 0) {
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => $me['id'],
+                    "recipient_id" => $id,
+                    "entry_id" => $me['id'],
+                    "status" => '0',
+                    "subject" => 'ticket',
+                    "game_id" => $_POST['game_id'],
+                    "json" => 1,
+                    "attr" => $ticket,
+                    "time" => strtotime($post_date)
+                ));
+            }
         }
     }
 } else if ($action == "save_profile_email") {

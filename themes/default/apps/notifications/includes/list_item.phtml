@@ -52,11 +52,19 @@
 								<?php elseif ($cl['li']['subject'] == 'event'): ?>
 									<?php echo cl_translate('Create new event with store <b class="text-dark">' . $cl['li']['game'] . '</b>. Contact <b class="text-dark">' . $cl['li']['name'] . '</b> to get ticket'); ?>
 								<?php elseif ($cl['li']['subject'] == 'buy'): ?>
-									<?php echo cl_translate('You buy at store'); ?>
+									<?php echo cl_translate('You buy ') . '<b class="text-primary">' . $cl['li']['product'] . '</b>' . cl_translate(' at ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>'; ?>
 								<?php elseif ($cl['li']['subject'] == 'prize'): ?>
-									<?php echo cl_translate('Congratulation. You gain at'); ?>
+									<?php echo cl_translate('Congratulation. You receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at ') . '<b class="text-dark">' . $cl['li']['product'] . '</b>'; ?>
 								<?php elseif ($cl['li']['subject'] == 'ticket'): ?>
-									<?php echo cl_translate('You have ticket from. Spin now'); ?>
+									<?php echo cl_translate('You have receive ') . '<b class="text-success">' . $cl['li']['ticket'] . '</b>' . cl_translate(' ticket from store ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>' . cl_translate('. Spin now'); ?>
+								<?php elseif ($cl['li']['subject'] == 'self'):
+									$all = explode(',', $cl['li']['all_user']);
+									foreach ($all as $u) {
+										$username[] = get_user_by_id($u);
+									}
+									$all_user = implode(', ', $username);
+								?>
+									<?php echo cl_translate('You have send notifications after create an event to ') . "<b class='text-dark' style='line-height: 1.4;'>" . $all_user . "</b>";  ?>
 									<!--  -->
 								<?php elseif ($cl['li']['subject'] == 'wallet_local_receipt'): ?>
 									<?php echo cl_translate('Transferred {@trans_amount@} to your wallet', array(

@@ -22,6 +22,7 @@ export function setupWheel() {
         var key = null;
         var checkKey = false;
       }
+      console.log(proper);
       for (var i = 0; i < proper.length; i++) {
         prop = JSON.parse(proper[i]);
         themes = JSON.parse(themess[i]);

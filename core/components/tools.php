@@ -1723,6 +1723,11 @@ function get_prize($id, $store_id = null)
     }
     return $data;
 }
+function get_prize_name($prize_id){
+    $prize = cl_db_get_item(T_PRIZE, array('id'=>$prize_id));
+    $name = $prize['prize'];
+    return $name;
+}
 function get_store_name($store_id)
 {
     $sql = "SELECT * FROM cl_store WHERE id = $store_id";
@@ -2013,6 +2018,40 @@ function get_user_data($user_id)
         'username' => $user_query['username']
     ];
     return $data;
+}
+function get_user_id_game($game_id)
+{
+    $game_query = cl_db_get_item(T_GAME, array('id' => $game_id));
+    $store_id = $game_query['store_id'];
+    $user = cl_db_get_item(T_STORE, array('id' => $store_id));
+    $user_id = $user['id'];
+    return $user_id;
+}
+function hexToUtf8($hex)
+{
+    // Convert hex to integer
+    $decimal = hexdec($hex);
+    // Convert integer to UTF-8 character
+    return mb_convert_encoding(pack('H*', str_pad(dechex($decimal), 4, '0', STR_PAD_LEFT)), 'UTF-8', 'UCS-2BE');
+}
+function decode_json($encoded_string)
+{
+    // Function to convert hex to UTF-8 characters
+
+    // Replace Unicode sequences in the format \uXXXX
+    $decoded_string = preg_replace_callback('/u([0-9a-fA-F]{4})/', function ($matches) {
+        return hexToUtf8($matches[1]);
+    }, $encoded_string);
+
+    return $decoded_string;
+}
+function get_user_by_id($user_id)
+{
+    $user  = cl_db_get_item(T_USERS, array(
+        'id' => $user_id
+    ));
+    $name = $user['fname'];
+    return $name;
 }
 function conn()
 {

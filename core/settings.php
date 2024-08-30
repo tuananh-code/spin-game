@@ -1,4 +1,7 @@
 <?php
+// mych_managed
+// Toidayhoc123
+// mych_managed
 # MySQL db host name
 $sql_db_host = "localhost";
 

@@ -1,4 +1,4 @@
-SELECT n.`id`, n.`notifier_id`, n.`recipient_id`, n.`status`, n.`subject`, n.`entry_id`, n.`json`, n.`time`, u.`username`, u.`avatar`, u.`verified`,  n.`game_id`, n.`ticket_id`, n.`prize_id`,CONCAT(u.`fname`, ' ', u.`lname`) AS name FROM `<?php echo($data['t_notifs']); ?>` n
+SELECT n.`id`, n.`notifier_id`, n.`recipient_id`, n.`status`, n.`subject`, n.`entry_id`, n.`json`, n.`time`, u.`username`, u.`avatar`, u.`verified`,  n.`game_id`, n.`ticket_id`, n.`prize_id`, n.`user_id_notify`, n.`attr`,CONCAT(u.`fname`, ' ', u.`lname`) AS name FROM `<?php echo($data['t_notifs']); ?>` n
 	
 	INNER JOIN `<?php echo($data['t_users']); ?>` u ON n.`notifier_id` = u.`id`
 
@@ -12,7 +12,7 @@ SELECT n.`id`, n.`notifier_id`, n.`recipient_id`, n.`status`, n.`subject`, n.`en
 
 	<?php if($data['type'] == "notifs"): ?>
 		--  add notify to user when shop add event
-		AND n.`subject` IN ('reply','subscribe', 'like', 'repost', 'verified', 'visit', 'subscribe_request', 'subscribe_accept', 'wallet_local_receipt', 'content_subscription', 'ad_approval', 'event', 'buy', 'prize', 'ticket', 'self')
+		AND n.`subject` IN ('reply','subscribe', 'like', 'repost', 'verified', 'visit', 'subscribe_request', 'subscribe_accept', 'wallet_local_receipt', 'content_subscription', 'ad_approval', 'event', 'buy', 'prize', 'ticket', 'ticket_exceed', 'self')
 	<?php else: ?>
 		AND n.`subject` = 'mention'
 	<?php endif; ?>

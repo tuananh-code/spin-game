@@ -297,7 +297,7 @@ if ($result->num_rows > 0) {
                                             $show = [];
                                             foreach ($prop as $p) {
                                                 $value[] = $p['value'];
-                                                $prize[] = $p['prize'];
+                                                $prize[] = decode_json($p['prize']);
                                                 $percent[] = $p['percent'];
                                                 $stock[] = $p['stock'];
                                                 $show[] = $p['percent'] . '%';
