@@ -2056,9 +2056,9 @@ function get_user_by_id($user_id)
 function conn()
 {
     $servername = "localhost";
-    $username = "root"; //mych_managed
-    $password = "root"; //Toidayhoc123
-    $dbname = "social"; //mych_managed
+    $username = "mych_managed"; //mych_managed
+    $password = "Toidayhoc123"; //Toidayhoc123
+    $dbname = "mych_managed"; //mych_managed
 
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     mysqli_set_charset($conn, "utf8mb4");
