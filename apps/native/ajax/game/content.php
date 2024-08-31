@@ -203,6 +203,18 @@ if (empty($cl['is_logged'])) {
                     "attr" => get_store_game_id($game),
                     "time" => strtotime($date)
                 ));
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => 1,
+                    "recipient_id" => get_user_id_game($game),
+                    "entry_id" => 1,
+                    "status" => '0',
+                    "subject" => 'self_prize',
+                    "game_id" => $game,
+                    "prize_id" => $id,
+                    "json" => 1,
+                    "attr" => $me['id'],
+                    "time" => strtotime($date)
+                ));
             } else {
                 $data['status'] = 400;
             }

@@ -60,7 +60,7 @@ function cl_get_notifications($args = array())
 				$row['url'] = cl_link(cl_strf("ads/%d", $row['entry_id']));
 			}
 			// add notify to user when shop add event
-			else if (in_array($row['subject'], array('subscribe_accept', 'subscribe', 'wallet_local_receipt', 'subscribe_request', 'visit', 'event', 'buy', 'prize', 'ticket', 'self'))) {
+			else if (in_array($row['subject'], array('subscribe_accept', 'subscribe', 'wallet_local_receipt', 'subscribe_request', 'visit', 'event', 'buy', 'prize', 'ticket', 'self', 'self_prize', 'self_ticket'))) {
 				$row['user_id'] = $row['entry_id'];
 				if (in_array($row['subject'], array('event'))) {
 					$row['game'] = get_store_name_game($row['game_id']);
@@ -85,6 +85,21 @@ function cl_get_notifications($args = array())
 					$row['game'] = get_game_name($row['game_id']);
 					$row['store'] = get_store_name_game($row['game_id']);
 					$row['prize'] = get_prize_name($row['prize_id']);
+				}
+				if (in_array($row['subject'], array('self_prize'))) {
+					$row['game'] = get_game_name($row['game_id']);
+					$row['store'] = get_store_name_game($row['game_id']);
+					$row['prize'] = get_prize_name($row['prize_id']);
+					$row['customer'] = get_user_by_id($row['attr']);
+					$row['url'] = cl_link('manager');
+				}
+				if (in_array($row['subject'], array('self_ticket'))) {
+					$attr = explode(',', $row['attr']);
+					$row['game'] = get_game_name($row['game_id']);
+					$row['store'] = get_store_name_game($row['game_id']);
+					$row['customer'] = get_user_by_id($attr[0]);
+					$row['ticket'] = $attr[1];
+					$row['url'] = cl_link('manager');
 				}
 			}
 			if ($row['status'] == '0') {

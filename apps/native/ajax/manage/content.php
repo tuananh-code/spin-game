@@ -140,6 +140,18 @@ if ($me['admin'] == 0) {
                         "attr" => $ticket,
                         "time" => strtotime($post_date)
                     ));
+                    //
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => 1,
+                        "recipient_id" => $me['id'],
+                        "entry_id" => 1,
+                        "status" => '0',
+                        "subject" => 'self_ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" =>  $id . ',' . $ticket,
+                        "time" => strtotime($post_date)
+                    ));
                 }
             } else if ($join <= $total) {
                 $get_total = $total; // Default value
@@ -163,7 +175,19 @@ if ($me['admin'] == 0) {
                     "subject" => 'ticket_exceed',
                     "game_id" => $_POST['game_id'],
                     "json" => 1,
-                    "attr" => $total - $join,
+                    "attr" => $t,
+                    "time" => strtotime($post_date)
+                ));
+                //self
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => 1,
+                    "recipient_id" => $me['id'],
+                    "entry_id" => 1,
+                    "status" => '0',
+                    "subject" => 'self_ticket',
+                    "game_id" => $_POST['game_id'],
+                    "json" => 1,
+                    "attr" => $id . ',' . $t,
                     "time" => strtotime($post_date)
                 ));
             } else {
@@ -182,6 +206,18 @@ if ($me['admin'] == 0) {
                         "game_id" => $_POST['game_id'],
                         "json" => 1,
                         "attr" => $ticket,
+                        "time" => strtotime($post_date)
+                    ));
+                    //self
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => 1,
+                        "recipient_id" => $me['id'],
+                        "entry_id" => 1,
+                        "status" => '0',
+                        "subject" => 'self_ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" =>  $id . ',' . $ticket,
                         "time" => strtotime($post_date)
                     ));
                 }

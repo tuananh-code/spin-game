@@ -54,9 +54,13 @@
 								<?php elseif ($cl['li']['subject'] == 'buy'): ?>
 									<?php echo cl_translate('You buy ') . '<b class="text-primary">' . $cl['li']['product'] . '</b>' . cl_translate(' at ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>'; ?>
 								<?php elseif ($cl['li']['subject'] == 'prize'): ?>
-									<?php echo cl_translate('Congratulation. You receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at ') . '<b class="text-dark">' . $cl['li']['product'] . '</b>'; ?>
+									<?php echo cl_translate('Congratulation. You receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>'; ?>
+								<?php elseif ($cl['li']['subject'] == 'self_prize'): ?>
+									<?php echo '<b class="text-dark">' . $cl['li']['customer'] . '</b>' .  cl_translate(' receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at your store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>' . cl_translate('. Check now.'); ?>
 								<?php elseif ($cl['li']['subject'] == 'ticket'): ?>
 									<?php echo cl_translate('You have receive ') . '<b class="text-success">' . $cl['li']['ticket'] . '</b>' . cl_translate(' ticket from store ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>' . cl_translate('. Spin now'); ?>
+								<?php elseif ($cl['li']['subject'] == 'self_ticket'): ?>
+									<?php echo '<b class="text-dark">' . $cl['li']['customer'] . '</b>' . cl_translate(' receive ') . '<b class="text-success">' . $cl['li']['ticket'] . '</b>' . cl_translate(' ticket from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>'  . cl_translate(' at your store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>' . cl_translate('. Check now'); ?>
 								<?php elseif ($cl['li']['subject'] == 'self'):
 									$all = explode(',', $cl['li']['all_user']);
 									foreach ($all as $u) {

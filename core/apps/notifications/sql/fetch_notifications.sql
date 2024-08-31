@@ -12,7 +12,7 @@ SELECT n.`id`, n.`notifier_id`, n.`recipient_id`, n.`status`, n.`subject`, n.`en
 
 	<?php if($data['type'] == "notifs"): ?>
 		--  add notify to user when shop add event
-		AND n.`subject` IN ('reply','subscribe', 'like', 'repost', 'verified', 'visit', 'subscribe_request', 'subscribe_accept', 'wallet_local_receipt', 'content_subscription', 'ad_approval', 'event', 'buy', 'prize', 'ticket', 'ticket_exceed', 'self')
+		AND n.`subject` IN ('reply','subscribe', 'like', 'repost', 'verified', 'visit', 'subscribe_request', 'subscribe_accept', 'wallet_local_receipt', 'content_subscription', 'ad_approval', 'event', 'buy', 'prize', 'ticket', 'ticket_exceed', 'self','self_prize', 'self_ticket')
 	<?php else: ?>
 		AND n.`subject` = 'mention'
 	<?php endif; ?>

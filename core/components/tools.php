@@ -2024,7 +2024,7 @@ function get_user_id_game($game_id)
     $game_query = cl_db_get_item(T_GAME, array('id' => $game_id));
     $store_id = $game_query['store_id'];
     $user = cl_db_get_item(T_STORE, array('id' => $store_id));
-    $user_id = $user['id'];
+    $user_id = $user['user_id'];
     return $user_id;
 }
 function hexToUtf8($hex)
