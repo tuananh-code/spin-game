@@ -188,7 +188,7 @@
 	<script src="{%config theme_url%}/statics/js/libs/bootstrap.v4.0.0.min.js?v={%config update_date%}"></script>
 	<script src="{%config theme_url%}/statics/js/libs/sticky-sidebar/source/jquery.sticky-sidebar.js?v={%config update_date%}"></script>
 	<script src="{%config theme_url%}/statics/js/master.script.js?v={%config update_date%}"></script>
-	<script src="{%config theme_url%}/statics/js/custom.js?v={%config update_date%}"></script>
+
 	<script src="{%config theme_url%}/statics/js/libs/clipboard.min.js?v={%config update_date%}"></script>
 	<script src="{%config theme_url%}/statics/js/libs/jquery-plugins/jquery.fancybox.min.js?v={%config update_date%}"></script>
 	<script src="{%config theme_url%}/statics/js/libs/lozad.min.js"></script>
@@ -333,7 +333,7 @@
 			<?php endif; ?>
 		<?php endif; ?>
 	<?php endif; ?>
-
+	<?php echo cl_template("wallet_banktrans/scripts/app_master_script"); ?>
 	<script>
 		<?php echo (cl_get_custom_code("footerjs")); ?>
 	</script>

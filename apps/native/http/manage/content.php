@@ -23,6 +23,8 @@ if (empty($cl["is_logged"])) {
 	else{
 		cl_redirect("feed");
 	}
+} else if (empty($cl['is_admin'])) {
+	require_once cl_full_path("apps/native/http/err404/content.php");
 }
 else {
 	require_once(cl_full_path("core/apps/manage/app_ctrl.php"));

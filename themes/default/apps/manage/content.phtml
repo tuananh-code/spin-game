@@ -25,8 +25,8 @@
 		cursor: pointer;
 		border-radius: 100%;
 		position: absolute;
-		right: 2%;
-		top: 35px;
+		right: 3%;
+		top: 12px;
 	}
 
 	h6 {
@@ -165,7 +165,9 @@
 			</div>
 
 		<?php endif ?>
-		<div class="timeline-navbar__item <?php if ($cl['page_tab'] == 'edit_invoice') {echo ('hide');} ?>">
+		<div class="timeline-navbar__item <?php if ($cl['page_tab'] == 'edit_invoice') {
+												echo ('hide');
+											} ?>">
 			<a href="<?php echo cl_link("list"); ?>" data-spa="true">
 				<button id='list' class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'list') {
 																		echo ('active');

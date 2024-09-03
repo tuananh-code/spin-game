@@ -17,13 +17,10 @@
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
 
-if (empty($cl["is_logged"])) {
+if (empty($cl["is_logged"]) || empty($cl['is_admin'])) {
 	require_once cl_full_path("apps/native/http/err404/content.php");
 }
 
-else if(empty($cl['is_admin'])) {
-	require_once cl_full_path("apps/native/http/err404/content.php");
-}
 else{
 	$cl["page_title"] = cl_translate("Control panel");
 	$cl["page_desc"]  = $cl["config"]["description"];

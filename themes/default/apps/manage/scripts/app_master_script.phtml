@@ -9,6 +9,7 @@
 		var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
 		Vue.use(window.vuelidate.default);
 		var VueValids = window.validators;
+		console.log(VueValids);
 
 		SMColibri.PS.manage = new Vue({
 			el: "#vue-manage-app",
@@ -29,19 +30,23 @@
 				invalid_feedback_ccode: "",
 				invalid_feedback_pcode: "",
 				invalid_feedback_email: "",
+				invalid_feedback_points: "",
 				id: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['id'] : ''; ?>",
 				cname: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['cname'] : ''; ?>",
 				pname: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['pname'] : ''; ?>",
 				qty: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['qty'] : ''; ?>",
-				amount: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['amount'] : ''; ?>",
+				amount: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['amount'] : 0; ?>",
 				phone: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['phone'] : ''; ?>",
 				email: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['email'] : ''; ?>",
+				points: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['points'] : 0; ?>",
 				ccode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['ccode'] : ''; ?>",
 				weight: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['weight'] : ''; ?>",
 				ccode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['ccode'] : ''; ?>",
 				pcode: "<?php echo $cl["edit_details"] ? $cl["edit_details"]['pcode'] : ''; ?>",
 				time: formattedTime,
 				ccode_exist: false,
+				points_format: false,
+				points_owned: false,
 				ccode_format: false
 			},
 			mounted() {
@@ -55,6 +60,18 @@
 						return true;
 					} else {
 						this.invalid_feedback_email = "";
+						return false;
+					}
+				},
+				is_valid_points: function() {
+					if (this.$v.points.$error || this.points_format == true) {
+						this.invalid_feedback_points = "<?php echo cl_translate("Points are numbers, other symbols are not accepted."); ?>";
+						return true;
+					} else if (this.points_owned == true) {
+						this.invalid_feedback_points = "<?php echo cl_translate("You are not cheery enough."); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_points = "";
 						return false;
 					}
 				},
@@ -192,16 +209,16 @@
 				},
 				is_valid_pcode: function() {
 					var _app_ = this;
-					if (!this.ccode) {
-						this.ccode_exist == false
-						$('#if-val1').find('input').prop('readonly', false);
-						if (!(!this.cname && !this.phone)) {
-							$('#if-val2').find('input').prop('readonly', true);
-						}
-					} else {
-						$('#if-val1').find('input').prop('readonly', true);
-						$('#if-val2').find('input').prop('readonly', false);
-					}
+					// if (!this.ccode) {
+					// 	this.ccode_exist == false
+					// 	$('#if-val1').find('input').prop('readonly', false);
+					// 	if (!(!this.cname && !this.phone)) {
+					// 		$('#if-val2').find('input').prop('readonly', true);
+					// 	}
+					// } else {
+					// 	$('#if-val1').find('input').prop('readonly', true);
+					// 	$('#if-val2').find('input').prop('readonly', false);
+					// }
 					if (this.$v.ccode.$error) {
 						this.invalid_feedback_ccode = "<?php echo cl_translate("Please enter your customer code, which is from 10 to 25 characters'"); ?>";
 						return true;
@@ -254,8 +271,10 @@
 					min_length: VueValids.minLength(8),
 					max_length: VueValids.maxLength(55),
 				},
-				time: {
-
+				time: {},
+				points: {
+					is_num: VueValids.decimal,
+					min_val: VueValids.minValue(0.1)
 				},
 				cname: {
 					// required: VueValids.required,
@@ -271,16 +290,21 @@
 					max_length: VueValids.maxLength(25),
 				},
 				qty: {
+					is_num: VueValids.decimal,
+					min_val: VueValids.minValue(0.1)
 					// required: VueValids.required,
 					// min_length: VueValids.minLength(3),
 					// max_length: VueValids.maxLength(25),
 				},
 				amount: {
 					required: VueValids.required,
+					// amount: VueValids.decimal,
 					// min_length: VueValids.minLength(3),
 					// max_length: VueValids.maxLength(25),
 				},
 				weight: {
+					is_num: VueValids.decimal,
+					min_val: VueValids.minValue(0.1)
 					// required: VueValids.required,
 					// min_length: VueValids.minLength(3),
 					// max_length: VueValids.maxLength(25),
@@ -297,7 +321,7 @@
 				},
 				pcode: {
 					// required: VueValids.required,
-					min_length: VueValids.minLength(10),
+					min_length: VueValids.minLength(3),
 					max_length: VueValids.maxLength(25),
 				}
 			},
@@ -463,20 +487,29 @@
 								_app_.qty = ''
 								_app_.pcode = ''
 								_app_.amount = ''
-								// } else if (data.err_code && data.err_code == 'invalid_phone') {
-								// 	_app_.qty_taken = true;
+							} else if (data.err_code && data.err_code == 'invalid_points') {
+								_app_.points_format = true;
 
-								// 	delay(function() {
-								// 		_app_.qty_taken = false;
-								// 	}, 5000);
-								// } else if (data.err_code && data.err_code == 'denied_qty') {
-								// 	_app_.qty_denied = true;
+								delay(function() {
+									_app_.points_format = false;
+								}, 5000);
+							} else if (data.err_code && data.err_code == 'lack_points') {
+								_app_.points_owned = true;
 
-								// 	delay(function() {
-								// 		_app_.qty_denied = false;
-								// 	}, 5000);
-								// } else {
-								// 	_app_.unsuccessful_attempt = true;
+								delay(function() {
+									_app_.points_owned = false;
+								}, 5000);
+							} else if (data.err_code && data.err_code == 'invalid_ccode') {
+								_app_.ccode_format = true;
+
+								delay(function() {
+									_app_.ccode_format = false;
+								}, 5000);
+							}
+							if (data.err_code && data.err_code == 'yourself') {
+								cl_bs_notify("<?php echo cl_translate("You can't sell to yourself!"); ?>", 5000, "error");
+							} else {
+								_app_.unsuccessful_attempt = true;
 							}
 						},
 						complete: function() {

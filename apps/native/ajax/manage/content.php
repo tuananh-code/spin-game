@@ -34,14 +34,21 @@ else if ($action == "ccode_exists") {
 else if ($action == "cread_invoice") {
 	$data['err_code'] =  0;
     $data['status']   =  400;
-    $user = cl_get_user_by_code($_POST['ccode']);
+    $user = ($_POST['ccode'] || $_POST['phone']) ? cl_get_user_by_code($_POST['ccode'], $_POST['phone']) : null;
+    $user_id = $user ? $user["id"] : null;
+    $send_amount      = fetch_or_get($_POST['points'], null);
+    $cname= fetch_or_get($_POST['cname'], null);
+    if ($user_id == $me["id"]) {
+        $data['err_code'] =  "yourself";
+    }
     $transaction_data_fields =  array(
-        'cname'       => fetch_or_get($_POST['cname'],null),
+        'cname'       => $cname,
         'pname'       => fetch_or_get($_POST['pname'], null),
         'business_id'       => $me["id"],
-        'customer_id'       => $user ? $user["id"] : null,
+        'customer_id'       => $user_id,
         'phone'       => fetch_or_get($_POST['phone'],null),
         'ccode'       => fetch_or_get($_POST['ccode'], null),
+        'points'       => $send_amount,
         'pcode'       => fetch_or_get($_POST['pcode'], null),
         'qty'       => fetch_or_get($_POST['qty'], null),
         'email'       => fetch_or_get($_POST['email'], null),
@@ -49,9 +56,8 @@ else if ($action == "cread_invoice") {
         'amount'       => str_replace(',', '', $_POST['amount']),
         'weight'       => fetch_or_get($_POST['weight'],null)
 	);
-    
 	foreach ($transaction_data_fields as $field_name => $field_val) {
-        if ($field_name == 'code') {
+        if ($field_name == 'ccode') {
             if (empty($field_val)) {
                 // $data['err_code'] = "invalid_ccode"; break;
             }
@@ -65,14 +71,115 @@ else if ($action == "cread_invoice") {
 			if (empty($field_val) || len_between($field_val,3,25) != true) {
 	            $data['err_code'] = "invalid_phone"; break;
 	        }
-		} else if ($field_name == 'amount') {
+		} else if ($field_name == 'points' && $field_val != 0) {
+            if (empty($field_val) || !is_numeric($field_val)) {
+                $data['err_code'] = "invalid_points";
+                break;
+            }
 
-            if (empty($field_val) && ($field_val != 0)) {
+            if ($field_val > $send_amount) {
+                $data['err_code'] = "lack_points";
+                break;
+            }
+            
+        } else if ($field_name == 'amount') {
+
+
+            if ((empty($field_val) && ($field_val != 0) || !is_numeric($field_val))) {
                 $data['err_code'] = "invalid_amount";
                 break;
             }
         }
 	}
+
+
+    if (is_numeric($send_amount)) {
+        
+        if (is_posnum($user_id)) {
+            $recipient_data = cl_raw_user_data($user_id);
+            if (not_empty($recipient_data)) {
+
+                $trans_id = cl_strf("TID_%s", sha1(microtime()));
+
+                cl_update_user_data($user_id, array(
+                    "wallet" => ($recipient_data["wallet"] += $send_amount)
+                ));
+
+                cl_update_user_data($me["id"], array(
+                    "wallet" => ($me["wallet"] -= $send_amount)
+                ));
+
+                $db->insert(T_WALLET_HISTORY, array(
+                    "user_id" => $me["id"],
+                    "operation" => "wallet_local_transfer",
+                    "amount" => $send_amount,
+                    "time" => time(),
+                    "status" => "success",
+                    "trans_id" => $trans_id,
+                    "json_data" => cl_minify_js(json(array("username" => cl_strf("%s %s", $recipient_data["fname"], $recipient_data["lname"])), true))
+                ));
+
+                $db->insert(T_WALLET_HISTORY, array(
+                    "user_id" => $user_id,
+                    "operation" => "wallet_local_receipt",
+                    "amount" => $send_amount,
+                    "time" => time(),
+                    "status" => "success",
+                    "trans_id" => $trans_id,
+                    "json_data" => cl_minify_js(json(array("username" => $me["name"]), true))
+                ));
+
+                cl_notify_user(array(
+                    'subject'  => 'wallet_local_receipt',
+                    'user_id'  => $recipient_data["id"],
+                    'entry_id' => $me["id"],
+                    'json' => cl_minify_js(json(array(
+                        "trans_amount" => cl_money($send_amount)
+                    ), true))
+                ));
+            }
+        } else {
+            $trans_id = cl_strf("TID_%s", sha1(microtime()));
+
+            // cl_update_user_data($user_id, array(
+            //     "wallet" => ($recipient_data["wallet"] += $send_amount)
+            // ));
+
+            cl_update_user_data($me["id"], array(
+                "wallet" => ($me["wallet"] -= $send_amount)
+            ));
+
+            $db->insert(T_WALLET_HISTORY, array(
+                "user_id" => $me["id"],
+                "operation" => "wallet_local_transfer",
+                "amount" => $send_amount,
+                "time" => time(),
+                "status" => "success",
+                "trans_id" => $trans_id,
+                "json_data" => cl_minify_js(json(array("username" => $cname), true))
+            ));
+
+            $db->insert(T_WALLET_HISTORY, array(
+                "user_id" => 0,
+                "operation" => "wallet_local_receipt",
+                "amount" => $send_amount,
+                "time" => time(),
+                "status" => "success",
+                "trans_id" => $trans_id,
+                "json_data" => cl_minify_js(json(array("username" => $me["name"]), true))
+            ));
+
+            // cl_notify_user(array(
+            //     'subject'  => 'wallet_local_receipt',
+            //     'user_id'  => $recipient_data["id"],
+            //     'entry_id' => $me["id"],
+            //     'json' => cl_minify_js(json(array(
+            //         "trans_amount" => cl_money($send_amount)
+            //     ), true))
+            // ));
+        }
+
+    }
 
 	if (empty($data['err_code'])) {
         $data['status'] = 200;
@@ -83,7 +190,7 @@ else if ($action == "cread_invoice") {
 else if ($action == "save_invoice") {
     $data['err_code'] =  0;
     $data['status']   =  400;
-    $user = $_POST['ccode'] ? cl_get_user_by_code($_POST['ccode']) : null;
+    $user = ($_POST['ccode'] || $_POST['phone']) ? cl_get_user_by_code($_POST['ccode'], $_POST['phone']) : null;
     $id = fetch_or_get($_POST['id'], null);
     $transaction_data_fields =  array(
         'cname'       => fetch_or_get($_POST['cname'], null),
@@ -127,7 +234,7 @@ else if ($action == "save_invoice") {
             }
         } else if ($field_name == 'amount') {
 
-            if (empty($field_val) && ($field_val != 0)) {
+            if ((empty($field_val) && ($field_val != 0) || !is_numeric($field_val))) {
                 $data['err_code'] = "invalid_amount";
                 break;
             }
