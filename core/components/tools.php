@@ -1229,7 +1229,6 @@ function cl_db_update($table = false, $data = array(), $fields = array())
     foreach ($data as $k => $v) {
         $db = $db->where($k, $v);
     }
-
     return $db->update($table, $fields);
 }
 
@@ -1666,13 +1665,19 @@ function get_ticket($game_id)
     $query_ticket = cl_db_get_items(T_TICKET, array('game_id' => $game_id));
     if ($query_ticket) {
         foreach ($query_ticket as $ticket) {
+            $id[] = $ticket['id'];
+            $user_id[] = $ticket['user_id'];
+            $game_ids[] = $ticket['game_id'];
+            $tickets[] = $ticket['ticket'];
+            $created_at[] = $ticket['created_at'];
+            $expires_date[] = $ticket['expires_date'];
             $data = [
-                'id' => $ticket['id'],
-                'user_id' => $ticket['user_id'],
-                'game_id' => $ticket['game_id'],
-                'ticket' => $ticket['ticket'],
-                'created_at' => $ticket['created_at'],
-                'expires_date' => $ticket['expires_date'],
+                'id' => $id,
+                'user_id' => $user_id,
+                'game_id' => $game_ids,
+                'ticket' => $tickets,
+                'created_at' => $created_at,
+                'expires_date' => $expires_date,
             ];
         }
     } else {
@@ -1723,8 +1728,9 @@ function get_prize($id, $store_id = null)
     }
     return $data;
 }
-function get_prize_name($prize_id){
-    $prize = cl_db_get_item(T_PRIZE, array('id'=>$prize_id));
+function get_prize_name($prize_id)
+{
+    $prize = cl_db_get_item(T_PRIZE, array('id' => $prize_id));
     $name = $prize['prize'];
     return $name;
 }
@@ -2015,7 +2021,9 @@ function get_user_data($user_id)
 {
     $user_query = cl_db_get_item(T_USERS, array('id' => $user_id));
     $data = [
-        'username' => $user_query['username']
+        'username' => $user_query['username'],
+        'email' => $user_query['email'],
+        'smtp_mail' => $user_query['smtp_mail']
     ];
     return $data;
 }
@@ -2056,9 +2064,9 @@ function get_user_by_id($user_id)
 function conn()
 {
     $servername = "localhost";
-    $username = "mych_managed"; //mych_managed
-    $password = "Toidayhoc123"; //Toidayhoc123
-    $dbname = "mych_managed"; //mych_managed
+    $username = "root"; //mych_managed
+    $password = "root"; //Toidayhoc123
+    $dbname = "social"; //mych_managed
 
     $conn = mysqli_connect($servername, $username, $password, $dbname);
     mysqli_set_charset($conn, "utf8mb4");
@@ -2067,4 +2075,35 @@ function conn()
         die("Connection failed: " . mysqli_connect_error());
     }
     return $conn;
+}
+
+function send_mail($mailbox, $mail_pass, $mail_reply, $body)
+{
+    require_once(cl_full_path('core/libs/PHPMailer/PHPMailerAutoload.php'));
+    $mail = new PHPMailer(true);
+    // $mailbox = $me['email'];
+    // $mail_pass = 'qdshksprkgcshynz';
+    $mail = new PHPMailer;
+    $mail->isSMTP();
+    $mail->Host = 'smtp.gmail.com';
+    $mail->SMTPAuth = true;
+    $mail->Username = $mailbox;
+    $mail->Password = $mail_pass;
+    $mail->SMTPSecure = 'ssl';
+    $mail->Port = 465;
+    // $mail->SMTPDebug = SMTP::DEBUG_CONNECTION;
+
+    $mail->setFrom($mailbox, 'Mycheery.com');
+    $mail->addAddress($mail_reply);
+    $mail->Subject = 'Mycheery new event';
+    // Set the HTML body
+    $mail->isHTML(true);
+
+    $mail->Body = $body;
+    if ($mail->send()) {
+        $data = true;
+    } else {
+        $data = false;
+    }
+    return $data;
 }

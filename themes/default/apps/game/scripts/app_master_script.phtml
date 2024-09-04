@@ -42,6 +42,52 @@
 				$('.required-stock').remove();
 			}
 		});
+		let total = 0;
+		let addedValues = [];
+
+		$('.require-percent').find('.bootstrap-tagsinput').find('input').on('keypress', function(e) {
+			if (e.which === 13) { // 13 is the Enter key
+				// Get the value from the input
+				e.preventDefault();
+				let value = parseFloat($(this).val());
+				this.value = this.value.replace(/[^0-9]/g, '');
+
+				var required = '<?php echo cl_translate("Total percent: "); ?>';
+				// Check if the value is a number
+				if (!isNaN(value)) {
+					// Check if the value has already been added
+					if (!addedValues.includes(value)) {
+						total += value; // Add the value to the total
+						addedValues.push(value); // Store the value to avoid duplicates
+					}
+					console.log($('.required-percent').length > 0);
+					if ($('.required-percent').length > 0) {
+						// If elements with the class exist, update their content
+						$('.required-percent').text(required + total + '%');
+					} else {
+						// If no such elements exist, create and append a new one
+						var b = `<b class='text-primary p-2 required-percent'>${required + total + '%'}</b>`;
+						$('.require-percent').append(b);
+					}
+				} else {}
+			}
+		});
+		$('.require-stock').find('.bootstrap-tagsinput').find('input').on('keypress', function(e) {
+			if (e.which === 13) { // 13 is the Enter key
+				// Get the value from the input
+				e.preventDefault();
+				let value = parseFloat($(this).val());
+				this.value = this.value.replace(/[^0-9]/g, '');
+				var required = '<?php echo cl_translate("Number only"); ?>';
+				// Check if the value is a number
+				if (!isNaN(value)) {
+					$('.required-stock').remove();
+				} else {
+					var b = `<b class='text-danger p-2 required-stock'>${required}</b>`;
+					$('.require-stock').append(b);
+				}
+			}
+		})
 		$('.add-prize').on('click', function(e) {
 			e.preventDefault();
 			if (!($("#event").val() && $("#prize").val() && $("#percent").val() && $("#stock").val())) {
@@ -214,6 +260,16 @@
 			}
 		});
 		$("#limit").on("input", function(e) {
+			let value = $(this).val().replace(/[^0-9.]/g, '');
+
+			// Convert the value to a float and format it with commas
+			let formattedValue = parseFloat(value).toLocaleString('en-US', {
+				maximumFractionDigits: 2
+			});
+
+			// Set the formatted value back to the input
+			$(this).val(formattedValue);
+
 			var currentValue = $(this).val();
 			var required = '<?php echo cl_translate("This field is required"); ?>';
 			if (!currentValue) {
@@ -245,7 +301,6 @@
 		});
 		$('.add-condition').on('click', function(e) {
 			e.preventDefault();
-
 			if (!($("#event").val() && $("#buy").val() && $("#limit").val() && $("#expires").val() && $("#join").val())) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
@@ -259,9 +314,11 @@
 				});
 				return;
 			}
+
 			var event = $('#event').val();
 			var buy = $('#buy').val();
 			var limit = $('#limit').val();
+			limit = limit.replace(/,/g, '');
 			var quantity = $('#quantity').val();
 			var expires = $('#expires').val();
 			var join = $('#join').val();
@@ -292,6 +349,11 @@
 								Swal.showLoading();
 							},
 						});
+						$("#event").attr('readonly', true);
+						$("#buy").attr('readonly', true);
+						$("#limit").attr('readonly', true);
+						$("#expires").attr('readonly', true);
+						$("#join").attr('readonly', true);
 					} else if (result.status == 500) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Warning"); ?>",

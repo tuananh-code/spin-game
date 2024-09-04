@@ -5,8 +5,11 @@
 
 		$('.claim').on('click', function() {
 			var id = $(this).attr('data-id');
+			var prize = $(this).attr('data-prize');
 			var store = $(this).attr('data-store');
 			var game = $(this).attr('data-game');
+			var td = $(this).closest('tr').find('.claimed');
+			console.log(td);
 			Swal.fire({
 				title: "<?php echo cl_translate("Reward"); ?>",
 				text: "<?php echo cl_translate("Confirm prize award for this customer?"); ?>",
@@ -30,7 +33,63 @@
 							game: game,
 						},
 						success: function(result) {
-							console.log(result);
+							Swal.fire({
+								title: "<?php echo cl_translate("Success"); ?>",
+								text: "<?php echo cl_translate("Reward success!"); ?>",
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+								onBeforeOpen: () => {
+									Swal.showLoading();
+								},
+							});
+							td.html(result.date)
+						}
+					})
+				}
+			})
+		})
+		$('.ticket').on('click', function() {
+			var id = $(this).attr('data-id');
+			var store = $(this).attr('data-store');
+			var game = $(this).attr('data-game');
+			var ticket = $(this).attr('data-ticket');
+			var tr = $(this).closest('tr');
+			Swal.fire({
+				title: "<?php echo cl_translate("Warning"); ?>",
+				text: "<?php echo cl_translate("Delete this customer and all ticket?"); ?>",
+				icon: "warning",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/manager/ticket"); ?>',
+						type: 'POST',
+						data: {
+							id: id,
+							store: store,
+							game: game,
+							ticket: ticket
+						},
+						success: function(result) {
+							Swal.fire({
+								title: "<?php echo cl_translate("Success"); ?>",
+								text: "<?php echo cl_translate("Delete success!"); ?>",
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+								onBeforeOpen: () => {
+									Swal.showLoading();
+								},
+							});
+							tr.fadeOut();
 						}
 					})
 				}

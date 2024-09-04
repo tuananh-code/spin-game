@@ -334,6 +334,8 @@
 			var prizes = $(this).attr('data-prizes');
 			var stocks = $(this).attr('data-stocks');
 			var percents = $(this).attr('data-percents');
+			var limit = $(this).attr('data-limit');
+			var join = $(this).attr('data-join');
 			$(this).parent().find(".save").show();
 			$(this).hide();
 			var inputPrize = `
@@ -348,20 +350,34 @@
             <div class='d-flex justify-content-center'>
               <input type='text' class='save-percent form-control' data-id='' value='${percents}' data-role="tagsinput">
             </div>`;
+			var inputLimit = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-limit form-control' data-id='' value='${limit}' data-role="tagsinput">
+            </div>`;
+			var inputJoin = `
+            <div class='d-flex justify-content-center'>
+              <input type='text' class='save-join form-control' data-id='' value='${join}' data-role="tagsinput">
+            </div>`;
 
 			var prizeField = $(this).closest("tr").find(".prizes");
 			var stockField = $(this).closest("tr").find(".stocks");
 			var percentField = $(this).closest("tr").find(".percents");
+			var limitField = $(this).closest("tr").find(".limit");
+			var joinField = $(this).closest("tr").find(".join");
 
 			prizeField.html(inputPrize);
 			stockField.html(inputStock);
 			percentField.html(inputPercent);
+			limitField.html(inputLimit);
+			joinField.html(inputJoin);
 		})
 		$(document).on('click', '.save', function() {
 
 			var prize = $(this).closest("tr").find(".save-prize").val();
 			var stock = $(this).closest("tr").find(".save-stock").val();
 			var percent = $(this).closest("tr").find(".save-percent").val();
+			var limit = $(this).closest("tr").find(".save-limit").val();
+			var join = $(this).closest("tr").find(".save-join").val();
 			// check condition
 			var checkPrize = prize.split(', ');
 			var checkStock = stock.split(', ');
@@ -443,12 +459,20 @@
 			var prizeField = $(this).closest("tr").find(".prizes");
 			var stockField = $(this).closest("tr").find(".stocks");
 			var percentField = $(this).closest("tr").find(".percents");
+			var limitField = $(this).closest("tr").find(".limit");
+			var joinField = $(this).closest("tr").find(".join");
+
 			prizeField.html('Prize: ' + prize);
 			stockField.html('Stock: ' + stock);
 			percentField.html('Percent: ' + percent);
+			limitField.html(limit);
+			joinField.html(join);
+
 			dataEdit.attr('data-prizes', prize);
 			dataEdit.attr('data-stocks', stock);
 			dataEdit.attr('data-percents', percent);
+			dataEdit.attr('data-limit', limit);
+			dataEdit.attr('data-join', join);
 			$.ajax({
 				url: "<?php echo cl_link("native_api/store/save_event"); ?>",
 				type: 'POST',
@@ -457,6 +481,8 @@
 					prize: prize,
 					stock: stock,
 					percent: percent,
+					limit: limit,
+					join: join,
 				},
 				success: function(result) {
 					Swal.fire({

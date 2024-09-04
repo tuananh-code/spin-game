@@ -114,7 +114,20 @@ if ($me['admin'] == 0) {
             "attr" => $_POST['pname'],
             "time" => strtotime($post_date)
         ));
-
+        $mess = cl_translate('You buy ') . '<b>' . $_POST['pname'] . '</b>' . cl_translate(' at store ') . '<b>' . get_store_name_game($_POST['game_id']) . '</b>';
+        cl_db_insert(T_MSGS, array(
+            'sent_by' => $me['id'],
+            'sent_to' => $id,
+            'owner' => $me['id'],
+            'message' => $mess,
+            'media_file' => '',
+            'audio_record' => '',
+            'media_type' => 'none',
+            'seen' => 0,
+            'deleted_fs1' => 'N',
+            'deleted_fs2' => 'N',
+            'time' => strtotime($post_date)
+        ));
         // ticket
         $check = cl_db_get_item(T_TICKET, array(
             'user_id' => $id,
@@ -152,6 +165,20 @@ if ($me['admin'] == 0) {
                         "attr" =>  $id . ',' . $ticket,
                         "time" => strtotime($post_date)
                     ));
+                    $mess = cl_translate('Congratulation. You receive ') . '<b>' . $ticket . '</b>' . cl_translate(' from store ') . '<b>' . get_store_name_game($_POST['game_id']) . '</b>' . cl_translate('. Spin now');
+                    cl_db_insert(T_MSGS, array(
+                        'sent_by' => $me['id'],
+                        'sent_to' => $id,
+                        'owner' => $me['id'],
+                        'message' => $mess,
+                        'media_file' => '',
+                        'audio_record' => '',
+                        'media_type' => 'none',
+                        'seen' => 0,
+                        'deleted_fs1' => 'N',
+                        'deleted_fs2' => 'N',
+                        'time' => strtotime($post_date)
+                    ));
                 }
             } else if ($join <= $total) {
                 $get_total = $total; // Default value
@@ -167,29 +194,46 @@ if ($me['admin'] == 0) {
                     'created_at' => fetch_or_get($_POST['time'], null),
                     'expires_date' => $expires_date,
                 ));
-                cl_db_insert(T_NOTIFS, array(
-                    "notifier_id" => $me['id'],
-                    "recipient_id" => $id,
-                    "entry_id" => $me['id'],
-                    "status" => '0',
-                    "subject" => 'ticket_exceed',
-                    "game_id" => $_POST['game_id'],
-                    "json" => 1,
-                    "attr" => $t,
-                    "time" => strtotime($post_date)
-                ));
-                //self
-                cl_db_insert(T_NOTIFS, array(
-                    "notifier_id" => 1,
-                    "recipient_id" => $me['id'],
-                    "entry_id" => 1,
-                    "status" => '0',
-                    "subject" => 'self_ticket',
-                    "game_id" => $_POST['game_id'],
-                    "json" => 1,
-                    "attr" => $id . ',' . $t,
-                    "time" => strtotime($post_date)
-                ));
+                if ($t > 0) {
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => $me['id'],
+                        "recipient_id" => $id,
+                        "entry_id" => $me['id'],
+                        "status" => '0',
+                        "subject" => 'ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" => $t,
+                        "time" => strtotime($post_date)
+                    ));
+                    //self
+                    cl_db_insert(T_NOTIFS, array(
+                        "notifier_id" => 1,
+                        "recipient_id" => $me['id'],
+                        "entry_id" => 1,
+                        "status" => '0',
+                        "subject" => 'self_ticket',
+                        "game_id" => $_POST['game_id'],
+                        "json" => 1,
+                        "attr" => $id . ',' . $t,
+                        "time" => strtotime($post_date)
+                    ));
+                    //msg
+                    $mess = cl_translate('Congratulation. You receive ') . '<b>' . $t . '</b>' . cl_translate(' ticket from store ') . '<b>' . get_store_name_game($_POST['game_id']) . '</b>' . cl_translate('. Spin now');
+                    cl_db_insert(T_MSGS, array(
+                        'sent_by' => $me['id'],
+                        'sent_to' => $id,
+                        'owner' => $me['id'],
+                        'message' => $mess,
+                        'media_file' => '',
+                        'audio_record' => '',
+                        'media_type' => 'none',
+                        'seen' => 0,
+                        'deleted_fs1' => 'N',
+                        'deleted_fs2' => 'N',
+                        'time' => strtotime($post_date)
+                    ));
+                }
             } else {
                 cl_db_update(T_TICKET, array('id' => $check['id']), array(
                     'ticket' => $total,
@@ -220,6 +264,20 @@ if ($me['admin'] == 0) {
                         "attr" =>  $id . ',' . $ticket,
                         "time" => strtotime($post_date)
                     ));
+                    $mess = cl_translate('Congratulation. You receive ') . '<b>' . $ticket . '</b>' . cl_translate(' from store ') . '<b>' . get_store_name_game($_POST['game_id']) . '</b>' . cl_translate('. Spin now');
+                    cl_db_insert(T_MSGS, array(
+                        'sent_by' => $me['id'],
+                        'sent_to' => $id,
+                        'owner' => $me['id'],
+                        'message' => $mess,
+                        'media_file' => '',
+                        'audio_record' => '',
+                        'media_type' => 'none',
+                        'seen' => 0,
+                        'deleted_fs1' => 'N',
+                        'deleted_fs2' => 'N',
+                        'time' => strtotime($post_date)
+                    ));
                 }
             }
         } else {
@@ -235,6 +293,21 @@ if ($me['admin'] == 0) {
                     "json" => 1,
                     "attr" => $ticket,
                     "time" => strtotime($post_date)
+                ));
+
+                $mess = cl_translate('Congratulation. You receive ') . '<b>' . $ticket . '</b>' . cl_translate(' from store ') . '<b>' . get_store_name_game($_POST['game_id']) . '</b>' . cl_translate('. Spin now');
+                cl_db_insert(T_MSGS, array(
+                    'sent_by' => $me['id'],
+                    'sent_to' => $id,
+                    'owner' => $me['id'],
+                    'message' => $mess,
+                    'media_file' => '',
+                    'audio_record' => '',
+                    'media_type' => 'none',
+                    'seen' => 0,
+                    'deleted_fs1' => 'N',
+                    'deleted_fs2' => 'N',
+                    'time' => strtotime($post_date)
                 ));
             }
         }

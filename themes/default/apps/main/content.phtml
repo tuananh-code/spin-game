@@ -83,12 +83,10 @@
 
 	<?php if (not_empty($cl["is_logged"]) && $cl["config"]["push_notifs"] == 'on') : ?>
 		<script src="{%config theme_url%}/statics/js/libs/OneSignal/OneSignalSDK.js?v={%config update_date%}"></script>
-
 		<script>
 			window.OneSignal = window.OneSignal || [];
 			var cl_web_push_user_id = "<?php echo $cl["me"]["web_device_id"]; ?>";
 			var onesig_push_user_id = "";
-
 			OneSignal.push(function() {
 				OneSignal.init({
 					appId: "<?php echo $cl["config"]["onesignal_app_id"]; ?>",
@@ -119,7 +117,6 @@
 
 				OneSignal.getUserId(function(onesig_user_id) {
 					onesig_push_user_id = onesig_user_id;
-
 					if (onesig_user_id != cl_web_push_user_id) {
 						$.ajax({
 							url: "<?php echo cl_link("native_api/main/update_web_device_id"); ?>",
