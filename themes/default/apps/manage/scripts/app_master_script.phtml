@@ -9,7 +9,6 @@
 		var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
 		Vue.use(window.vuelidate.default);
 		var VueValids = window.validators;
-		console.log(VueValids);
 
 		SMColibri.PS.manage = new Vue({
 			el: "#vue-manage-app",
@@ -118,8 +117,9 @@
 					var value = this.amount;
 					if (value) {
 						var cleanValue = parseInt(value.replace(/\,/g, ''));
-
-						var formattedValue = cleanValue.toLocaleString('zh-TW')
+						if (typeof cleanValue === 'number' && !isNaN(cleanValue)) {
+							var formattedValue = cleanValue.toLocaleString('zh-TW')
+						}
 					} else {
 						var formattedValue = 0
 					}
@@ -274,7 +274,7 @@
 				time: {},
 				points: {
 					is_num: VueValids.decimal,
-					min_val: VueValids.minValue(0.1)
+					min_val: VueValids.minValue(0)
 				},
 				cname: {
 					// required: VueValids.required,
@@ -304,7 +304,7 @@
 				},
 				weight: {
 					is_num: VueValids.decimal,
-					min_val: VueValids.minValue(0.1)
+					min_val: VueValids.minValue(0)
 					// required: VueValids.required,
 					// min_length: VueValids.minLength(3),
 					// max_length: VueValids.maxLength(25),
@@ -467,7 +467,7 @@
 					_self.preventDefault();
 
 					var _app_ = this;
-					url = _app_.id ? "<?php echo cl_link("native_api/manage/save_invoice"); ?>" : "<?php echo cl_link("native_api/manage/cread_invoice"); ?>"
+					url = _app_.id ? "<?php echo cl_link("native_api/manage/save_invoice"); ?>" : "<?php echo cl_link("native_api/manage/create_invoice"); ?>"
 
 					$(_self.target).ajaxSubmit({
 						url: url,
@@ -475,7 +475,6 @@
 						dataType: 'json',
 						beforeSend: function() {
 							_app_.submitting = true;
-							console.log(_app_);
 							// _app_.qty_taken = false;
 							// _app_.qty_denied = false;
 						},
@@ -506,8 +505,7 @@
 								delay(function() {
 									_app_.ccode_format = false;
 								}, 5000);
-							}
-							if (data.err_code && data.err_code == 'yourself') {
+							} else if (data.err_code && data.err_code == 'yourself') {
 								cl_bs_notify("<?php echo cl_translate("You can't sell to yourself!"); ?>", 5000, "error");
 							} else {
 								_app_.unsuccessful_attempt = true;

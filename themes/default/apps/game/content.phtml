@@ -125,8 +125,8 @@ $result = conn()->query($sql);
             <label for="status" class="col-2 text-end"><?php echo cl_translate("Status:"); ?></label>
             <div class="col-9">
                 <select class="form-select status m-2 p-2" id="status">
-                    <option value="0"><?php echo cl_translate("Draft"); ?></option>
                     <option value="1"><?php echo cl_translate("Publish"); ?></option>
+                    <option value="0"><?php echo cl_translate("Draft"); ?></option>
                 </select>
             </div>
         </div>
@@ -182,6 +182,5 @@ $result = conn()->query($sql);
         </button>
     </center>
 </div>
-<?php echo cl_template('game/scripts/app_master_script');
-?>
 <script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>
+<?php echo cl_template('game/scripts/app_master_script'); ?>

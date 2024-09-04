@@ -1,6 +1,7 @@
 <?php
 $id = $me['id'];
 $sql = "SELECT * FROM cl_store WHERE user_id = $id";
+$game = [];
 $result = conn()->query($sql);
 if ($result->num_rows > 0) {
 	$check = true;
@@ -53,62 +54,72 @@ if ($result->num_rows > 0) {
 					{{invalid_feedback_ccode}}
 				</div>
 			</div>
-			<div class="row" id='if-val1'>
-				<!-- config use id -->
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Username"); ?></label>
-						<input name="username" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter user name customer"); ?>">
-					</div>
+		</div>
+		<div class="row" id='if-val1'>
+			<!-- config use id -->
+			<!-- <div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Username"); ?></label>
+					<input name="username" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter user name customer"); ?>">
 				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Select store and event"); ?></label>
-						<select name="game_id" id="game" class="form-select">
-							<?php if (count($game) > 0) { ?>
-								<?php for ($i = 0; $i < count($game); $i++) { ?>
-									<option value="<?= $id_game[$i] ?>"><?= $store[$i] ?>: <?= $game[$i] ?></option>
-								<?php } ?>
-							<?php } else { ?>
-								<option value="0"><?php echo cl_translate("No store available, try to add store first"); ?></option>
-							<?php } ?>
-						</select>
-					</div>
-				</div>
-				<!--  -->
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Name"); ?></label>
-						<input v-model.trim="$v.cname.$model" name="cname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter customer name"); ?>">
-						<div class="invalid-main-feedback" v-if="is_valid_cname">
-							{{invalid_feedback_cname}}
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Phone number:*"); ?></label>
-						<input v-model.trim="$v.phone.$model" name="phone" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 0357172737"); ?>">
-						<div class="invalid-main-feedback" v-if="is_valid_phone">
-							{{invalid_feedback_phone}}
-						</div>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Email:"); ?></label>
-						<input v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: example@gmail.com"); ?>">
-						<div class="invalid-main-feedback" v-if="is_valid_email">
-							{{invalid_feedback_email}}
-						</div>
-					</div>
-				</div>
+			</div> -->
 
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Name"); ?></label>
+					<input v-model.trim="$v.cname.$model" name="cname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter customer name"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_cname">
+						{{invalid_feedback_cname}}
+					</div>
+				</div>
 			</div>
-			<div class="row">
-				<h6><?php echo cl_translate("PRODUCT"); ?></label></h6>
-				<div class="form-group" style="position: relative;">
-					<label><?php echo cl_translate("Product code(Please leave blank if none):"); ?></label>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Phone number:*"); ?></label>
+					<input v-model.trim="$v.phone.$model" name="phone" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 0357172737"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_phone">
+						{{invalid_feedback_phone}}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Email:"); ?></label>
+					<input v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: example@gmail.com"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_email">
+						{{invalid_feedback_email}}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Gift points(") . $cl["site_currencies"][$cl['config']['site_currency']]["name"] . '):'; ?></label>
+					<input v-model.trim="$v.points.$model" min='0' name="points" type="number" class="form-control" step="any" placeholder="<?php echo cl_translate("Enter Gift Points here"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_points">
+						{{invalid_feedback_points}}
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Select store and event"); ?></label>
+					<select name="game_id" id="game" class="form-select">
+						<?php if ($game && count($game) > 0) { ?>
+							<?php for ($i = 0; $i < count($game); $i++) { ?>
+								<option value="<?= $id_game[$i] ?>"><?= $store[$i] ?>: <?= $game[$i] ?></option>
+							<?php } ?>
+						<?php } else { ?>
+							<option value="0"><?php echo cl_translate("No store available, try to add store first"); ?></option>
+						<?php } ?>
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<h6><?php echo cl_translate("PRODUCT"); ?></label></h6>
+			<div class="form-group">
+				<label><?php echo cl_translate("Product code(Please leave blank if none):"); ?></label>
+				<div class="" style="position: relative;">
 					<span class="publication-repost__icon dismiss_p">
 						<svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
 							<path style="fill: #3470b1;" d="m14.61 2.47-.077-.067a.748.748 0 0 0-.983.067l-.068.078a.755.755 0 0 0 .068.987l1.971 1.977H8.5l-.233.004C4.785 5.639 2 8.51 2 12.036c0 1.69.64 3.23 1.692 4.39l.072.069a.751.751 0 0 0 1.08-1.033l-.2-.231A5.009 5.009 0 0 1 3.5 12.035c0-2.771 2.239-5.018 5-5.018h6.881l-1.832 1.84-.067.078a.755.755 0 0 0 .068.987.748.748 0 0 0 1.06 0l3.182-3.193.067-.078a.755.755 0 0 0-.067-.987L14.61 2.47Zm5.62 5.101a.751.751 0 0 0-1.05 1.066 5.01 5.01 0 0 1 1.32 3.398c0 2.772-2.239 5.019-5 5.019H8.558l1.905-1.911.074-.086a.755.755 0 0 0-.007-.902l-.067-.077-.084-.073a.748.748 0 0 0-.9.006l-.076.067-3.182 3.194-.073.085a.755.755 0 0 0 .006.902l.067.077 3.182 3.194.084.072c.293.22.71.195.976-.073a.755.755 0 0 0 .068-.987l-.068-.077-1.899-1.906H15.5l.233-.004C19.215 18.432 22 15.56 22 12.035a6.513 6.513 0 0 0-1.697-4.395l-.073-.069Z" fill="#212121"></path>
@@ -117,460 +128,57 @@ if ($result->num_rows > 0) {
 					<div class="invalid-main-feedback" v-if="is_valid_pcode">
 						{{invalid_feedback_pcode}}
 					</div>
-
 				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Product name:*"); ?></label>
-						<input v-model.trim="$v.pname.$model" name="pname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter product name"); ?>">
-						<div class="invalid-main-feedback" v-if="is_valid_pname">
-							{{invalid_feedback_pname}}
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label><?php echo cl_translate("Gift points(") . $cl["site_currencies"][$cl['config']['site_currency']]["name"] . '):'; ?></label>
-							<input v-model.trim="$v.points.$model" name="points" type="number" class="form-control" step="any" placeholder="<?php echo cl_translate("Enter Gift Points here"); ?>">
-							<div class="invalid-main-feedback" v-if="is_valid_points">
-								{{invalid_feedback_points}}
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="row">
-					<h6><?php echo cl_translate("PRODUCT"); ?></label></h6>
-					<div class="form-group">
-						<label><?php echo cl_translate("Product code(Please leave blank if none):"); ?></label>
-						<div class="" style="position: relative;">
-							<span class="publication-repost__icon dismiss_p">
-								<svg width="24" height="24" fill="none" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-									<path style="fill: #3470b1;" d="m14.61 2.47-.077-.067a.748.748 0 0 0-.983.067l-.068.078a.755.755 0 0 0 .068.987l1.971 1.977H8.5l-.233.004C4.785 5.639 2 8.51 2 12.036c0 1.69.64 3.23 1.692 4.39l.072.069a.751.751 0 0 0 1.08-1.033l-.2-.231A5.009 5.009 0 0 1 3.5 12.035c0-2.771 2.239-5.018 5-5.018h6.881l-1.832 1.84-.067.078a.755.755 0 0 0 .068.987.748.748 0 0 0 1.06 0l3.182-3.193.067-.078a.755.755 0 0 0-.067-.987L14.61 2.47Zm5.62 5.101a.751.751 0 0 0-1.05 1.066 5.01 5.01 0 0 1 1.32 3.398c0 2.772-2.239 5.019-5 5.019H8.558l1.905-1.911.074-.086a.755.755 0 0 0-.007-.902l-.067-.077-.084-.073a.748.748 0 0 0-.9.006l-.076.067-3.182 3.194-.073.085a.755.755 0 0 0 .006.902l.067.077 3.182 3.194.084.072c.293.22.71.195.976-.073a.755.755 0 0 0 .068-.987l-.068-.077-1.899-1.906H15.5l.233-.004C19.215 18.432 22 15.56 22 12.035a6.513 6.513 0 0 0-1.697-4.395l-.073-.069Z" fill="#212121"></path>
-								</svg> </span>
-							<input v-model.trim="$v.pcode.$model" name="pcode" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 12345678910"); ?>">
-							<div class="invalid-main-feedback" v-if="is_valid_pcode">
-								{{invalid_feedback_pcode}}
-							</div>
-						</div>
 
 
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label><?php echo cl_translate("Product name:*"); ?></label>
-							<input v-model.trim="$v.pname.$model" name="pname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter product name"); ?>">
-							<div class="invalid-main-feedback" v-if="is_valid_pname">
-								{{invalid_feedback_pname}}
-							</div>
-						</div>
+			</div>
 
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label><?php echo cl_translate("Weight(gam):"); ?></label>
-							<input v-model.trim="$v.weight.$model" name="weight" type="number" class="form-control " placeholder="<?php echo cl_translate("Ex: 100"); ?>">
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label><?php echo cl_translate("Quantity (piece):"); ?></label>
-							<input v-model.trim="$v.qty.$model" name="qty" type="number" class="form-control " placeholder="<?php echo cl_translate("Ex: 100"); ?>">
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label><?php echo cl_translate("Total amount:*"); ?></label>
-							<input v-model.trim="$v.amount.$model" name="amount" type="text" class="form-control input_number" placeholder="<?php echo cl_translate("Ex: 100"); ?>">
-							<div class="invalid-main-feedback" v-if="is_valid_amount">
-								{{invalid_feedback_amount}}
-							</div>
-						</div>
-					</div>
-
-				</div>
-				<div class="form-group" v-if="unsuccessful_attempt">
-					<div class="invalid-main-feedback">
-						<?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Quantity (piece):"); ?></label>
-						<input v-model.trim="$v.qty.$model" name="qty" type="number" class="form-control " placeholder="<?php echo cl_translate("Ex: 100"); ?>">
-					</div>
-				</div>
-				<div class="col-sm-6">
-					<div class="form-group">
-						<label><?php echo cl_translate("Total amount:*"); ?></label>
-						<input v-model.trim="$v.amount.$model" name="amount" type="text" class="form-control input_number" placeholder="<?php echo cl_translate("Ex: 100"); ?>">
-						<div class="invalid-main-feedback" v-if="is_valid_amount">
-							{{invalid_feedback_amount}}
-						</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Product name:*"); ?></label>
+					<input v-model.trim="$v.pname.$model" name="pname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter product name"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_pname">
+						{{invalid_feedback_pname}}
 					</div>
 				</div>
 
 			</div>
-			<div class="form-group" v-if="unsuccessful_attempt">
-				<div class="invalid-main-feedback">
-					<?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Weight(gam):"); ?></label>
+					<input v-model.trim="$v.weight.$model" min='0' name="weight" type="number" class="form-control " placeholder="<?php echo cl_translate("Ex: 100"); ?>">
 				</div>
 			</div>
-			<input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
-			<div class="form-group no-mb d-flex">
-				<button v-if="submitting != true" v-bind:disabled="$v.$invalid == true" type="submit" class="ml-auto btn btn-custom main-inline lg">
-					<?php echo cl_translate("Save"); ?>
-				</button>
-				<button v-else disabled="true" type="button" class="ml-auto btn btn-custom main-inline lg">
-					<?php echo cl_translate("Please wait"); ?>
-				</button>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Quantity (piece):"); ?></label>
+					<input v-model.trim="$v.qty.$model" min='0' name="qty" type="number" class="form-control " placeholder="<?php echo cl_translate("Ex: 100"); ?>">
+				</div>
 			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label><?php echo cl_translate("Total amount:*"); ?></label>
+					<input v-model.trim="$v.amount.$model" min='0' name="amount" type="text" class="form-control input_number" placeholder="<?php echo cl_translate("Ex: 100"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_amount">
+						{{invalid_feedback_amount}}
+					</div>
+				</div>
+			</div>
+
+		</div>
+		<div class="form-group" v-if="unsuccessful_attempt">
+			<div class="invalid-main-feedback">
+				<?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
+			</div>
+		</div>
+		<input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
+		<div class="form-group no-mb d-flex">
+			<button v-if="submitting != true" v-bind:disabled="$v.$invalid == true" type="submit" class="ml-auto btn btn-custom main-inline lg">
+				<?php echo cl_translate("Save"); ?>
+			</button>
+			<button v-else disabled="true" type="button" class="ml-auto btn btn-custom main-inline lg">
+				<?php echo cl_translate("Please wait"); ?>
+			</button>
+		</div>
 	</form>
 </div>
-<!-- <script>
-		"use strict";
-
-		$(document).ready(function($) {
-			var userDate = new Date();
-			var userTimezoneOffset = userDate.getTimezoneOffset() * 60000; // Chuyển đổi phút sang mili giây
-
-			var userTime = new Date(userDate.getTime() - userTimezoneOffset);
-			var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
-			Vue.use(window.vuelidate.default);
-			var VueValids = window.validators;
- 
-			new Vue({
-				el: "#cl-name-settings-vue-app",
-				data: {
-					submitting: false,
-					unsuccessful_attempt: false,
-					invalid_feedback_cname: "",
-					invalid_feedback_pname: "",
-					invalid_feedback_qty: "",
-					invalid_feedback_amount: "",
-					invalid_feedback_phone: "",
-					invalid_feedback_ccode: "",
-					invalid_feedback_pcode: "",
-					invalid_feedback_email: "",
-					cname: "",
-					pname: "",
-					qty: "",
-					amount: "",
-					phone: "",
-					email: "",
-					ccode: "",
-					weight: "",
-					ccode: "",
-					pcode: "",
-					time: formattedTime,
-					ccode_exist: false,
-					ccode_format: false
-				},
-				mounted() {
-					$('.dismiss').on('click', this.handleDismiss);
-					$('.dismiss_p').on('click', this.handleDismissP);
-				},
-				computed: {
-					is_valid_email: function() {
-						if (this.$v.email.$error) {
-							this.invalid_feedback_email = "<?php echo cl_translate("The email address you entered does not match the valid format."); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_email = "";
-							return false;
-						}
-					},
-					is_valid_cname: function() {
-						if (!this.cname && !this.phone) {
-							$('#if-val2').find('input').prop('readonly', false);
-							if (this.ccode) {
-								$('#if-val1').find('input').prop('readonly', true);
-							}
-						} else {
-							$('#if-val2').find('input').prop('readonly', true);
-							$('#if-val1').find('input').prop('readonly', false);
-						}
-						if (this.$v.cname.$error) {
-							this.invalid_feedback_cname = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_cname = "";
-							return false;
-						}
-
-					},
-					is_valid_pname: function() {
-						if (this.$v.pname.required == true && this.$v.pname.$error) {
-							this.invalid_feedback_pname = "<?php echo cl_translate("Please enter your product name, which is from 3 to 25 characters"); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_pname = "";
-							return false;
-						}
-
-
-					},
-					is_valid_qty: function() {
-						if (this.$v.qty.$error) {
-							this.invalid_feedback_qty = "<?php echo cl_translate("Please enter quantity"); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_qty = "";
-							return false;
-						}
-					},
-					is_valid_amount: function() {
-						var value = this.amount;
-						if (value) {
-							var cleanValue = parseInt(value.replace(/\,/g, ''));
-
-							var formattedValue = cleanValue.toLocaleString('zh-TW')
-						} else {
-							var formattedValue = 0
-						}
-
-						this.amount = formattedValue;
-						if (this.$v.amount.$error) {
-							this.invalid_feedback_amount = "<?php echo cl_translate("Please enter amount"); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_amount = "";
-							return false;
-						}
-					},
-					is_valid_phone: function() {
-						if (!this.cname && !this.phone) {
-							$('#if-val2').find('input').prop('readonly', false);
-							if (this.ccode) {
-								$('#if-val1').find('input').prop('readonly', true);
-							}
-						} else {
-							$('#if-val2').find('input').prop('readonly', true);
-							$('#if-val1').find('input').prop('readonly', false);
-						}
-						if (this.$v.phone.$error) {
-							this.invalid_feedback_phone = "<?php echo cl_translate("Please enter your phone, which is from 3 to 25 characters"); ?>";
-							return true;
-						} else {
-							this.invalid_feedback_phone_taken = "";
-							return false;
-						}
-
-					},
-					is_valid_ccode: function() {
-						var _app_ = this;
-						if (!this.ccode) {
-							this.ccode_exist == false
-							$('#if-val1').find('input').prop('readonly', false);
-							if (!(!this.cname && !this.phone)) {
-								$('#if-val2').find('input').prop('readonly', true);
-							}
-						} else {
-							$('#if-val1').find('input').prop('readonly', true);
-							$('#if-val2').find('input').prop('readonly', false);
-						}
-						if (this.$v.ccode.$error) {
-							this.invalid_feedback_ccode = "<?php echo cl_translate("Please enter your customer code, which is from 10 to 25 characters'"); ?>";
-							return true;
-						} else if (this.ccode_exist == true) {
-							this.invalid_feedback_ccode = "<?php echo cl_translate("This customer code does not exist, please check again"); ?>";
-							_app_.ccode_exist = false
-							return true;
-						} else if (this.ccode) {
-
-							$.ajax({
-								url: '<?php echo cl_link("native_api/manage/ccode_exists"); ?>',
-								type: 'POST',
-								dataType: 'json',
-								data: {
-									ccode: this.ccode,
-								},
-								beforeSend: function() {
-									// _app_.loading = true;
-								}
-							}).done(function(data) {
-								if (data.status == 200) {
-									if (!data.exists) {
-										_app_.ccode_exist = true;
-
-									} else {
-										var name = `${data.user.fname} ${data.user.lname}`
-										_app_.cname = name;
-										_app_.phone = data.user.phone;
-										_app_.email = data.user.email;
-									}
-								} else {
-
-								}
-							}).always(function() {
-								// _app_.loading = false;
-							});
-						} else {
-							this.invalid_feedback_ccode = "";
-							return false;
-						}
-
-
-					},
-					is_valid_pcode: function() {
-						var _app_ = this;
-						if (!this.ccode) {
-							this.ccode_exist == false
-							$('#if-val1').find('input').prop('readonly', false);
-							if (!(!this.cname && !this.phone)) {
-								$('#if-val2').find('input').prop('readonly', true);
-							}
-						} else {
-							$('#if-val1').find('input').prop('readonly', true);
-							$('#if-val2').find('input').prop('readonly', false);
-						}
-						if (this.$v.ccode.$error) {
-							this.invalid_feedback_ccode = "<?php echo cl_translate("Please enter your customer code, which is from 10 to 25 characters'"); ?>";
-							return true;
-						} else if (this.ccode_exist == true) {
-							this.invalid_feedback_ccode = "<?php echo cl_translate("This customer code does not exist, please check again"); ?>";
-							_app_.ccode_exist = false
-							return true;
-						} else if (this.ccode) {
-							this.invalid_feedback_ccode = "";
-							return false;
-							// $.ajax({
-							// 	url: '<?php echo cl_link("native_api/manage/ccode_exists"); ?>',
-							// 	type: 'POST',
-							// 	dataType: 'json',
-							// 	data: {
-							// 		ccode: this.ccode,
-							// 	},
-							// 	beforeSend: function() {
-							// 		// _app_.loading = true;
-							// 	}
-							// }).done(function(data) {
-							// 	if (data.status == 200) {
-							// 		if (!data.exists) {
-							// 			_app_.ccode_exist = true;
-
-							// 		} else {
-							// 			var name = `${data.user.fname} ${data.user.lname}`
-							// 			_app_.cname = name;
-							// 			_app_.phone = data.user.phone;
-							// 			_app_.email = data.user.email;
-							// 		}
-							// 	} else {
-
-							// 	}
-							// }).always(function() {
-							// 	// _app_.loading = false;
-							// });
-						} else {
-							this.invalid_feedback_ccode = "";
-							return false;
-						}
-
-
-					}
-				},
-				validations: {
-					email: {
-						// required: VueValids.required,
-						email: VueValids.email,
-						min_length: VueValids.minLength(8),
-						max_length: VueValids.maxLength(55),
-					},
-					time: {
-
-					},
-					cname: {
-						// required: VueValids.required,
-						min_length: VueValids.minLength(2),
-						max_length: VueValids.maxLength(25),
-					},
-					pname: {
-						required: VueValids.required,
-						min_length: VueValids.minLength(2),
-						max_length: VueValids.maxLength(25),
-					},
-					qty: {
-						// required: VueValids.required,
-						// min_length: VueValids.minLength(3),
-						// max_length: VueValids.maxLength(25),
-					},
-					amount: {
-						required: VueValids.required,
-						// min_length: VueValids.minLength(3),
-						// max_length: VueValids.maxLength(25),
-					},
-					weight: {
-						// required: VueValids.required,
-						// min_length: VueValids.minLength(3),
-						// max_length: VueValids.maxLength(25),
-					},
-					phone: {
-						required: VueValids.required,
-						min_length: VueValids.minLength(3),
-						max_length: VueValids.maxLength(25),
-					},
-					ccode: {
-						// required: VueValids.required,
-						min_length: VueValids.minLength(10),
-						max_length: VueValids.maxLength(25),
-					},
-					pcode: {
-						// required: VueValids.required,
-						min_length: VueValids.minLength(10),
-						max_length: VueValids.maxLength(25),
-					}
-				},
-				methods: {
-					handleDismiss() {
-						this.ccode = ''
-						this.cname = ''
-						this.phone = ''
-						this.email = ''
-					},
-					handleDismissP() {
-						this.pname = ''
-						this.weight = ''
-						this.qty = ''
-						this.amount = ''
-					},
-					submit_form: function(_self = null) {
-						_self.preventDefault();
-
-						var _app_ = this;
-
-						$(_self.target).ajaxSubmit({
-							url: "<?php echo cl_link("native_api/manage/save_invoice"); ?>",
-							type: 'POST',
-							dataType: 'json',
-							beforeSend: function() {
-								_app_.submitting = true;
-								// _app_.qty_taken = false;
-								// _app_.qty_denied = false;
-							},
-							success: function(data) {
-								if (data.status == 200) {
-									handleDismissP();
-									cl_bs_notify("<?php echo cl_translate("Your changes has been successfully saved!"); ?>", 5000, "success");
-									// } else if (data.err_code && data.err_code == 'invalid_phone') {
-									// 	_app_.qty_taken = true;
-
-									// 	delay(function() {
-									// 		_app_.qty_taken = false;
-									// 	}, 5000);
-									// } else if (data.err_code && data.err_code == 'denied_qty') {
-									// 	_app_.qty_denied = true;
-
-									// 	delay(function() {
-									// 		_app_.qty_denied = false;
-									// 	}, 5000);
-									// } else {
-									// 	_app_.unsuccessful_attempt = true;
-								}
-							},
-							complete: function() {
-								_app_.submitting = false;
-							}
-						});
-					}
-				}
-			});
-		});
-	</script> -->

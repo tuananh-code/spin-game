@@ -1239,9 +1239,15 @@ function cl_push_notify_user($data = array()) {
             "visit" => cl_translate('Visited your profile'),
             "mention" => cl_translate('Mentioned you in a post'),
             "post_created" => cl_translate('Posted a new publication'),
-            "chat_message" => cl_translate('Sent you a new message')
+            "chat_message" => cl_translate('Sent you a new message'),
+            "buy" => cl_translate('You buy a product'),
+            "event" => cl_translate('Create new event'),
+            "ticket" => cl_translate('You receive new ticket'),
+            "prize" => cl_translate('You receive new prize'),
+            "self" => cl_translate('You have send notifications after create an event'),
+            "self_ticket" => cl_translate('User receive ticket'),
+            "self_prize" => cl_translate('User receive prize')
         );
-
         if(cl_allow_user_notification($data['recipient_id'], $data['type']) != true) {
            return false; 
         }

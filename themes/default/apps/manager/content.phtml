@@ -75,6 +75,14 @@ $prize = get_prize($me['id']);
 <?php echo cl_template('manager/scripts/app_master_script'); ?>
 <script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
 <script>
-    new DataTable('#prizeTable');
-    new DataTable('#ticketTable');
+    $(document).ready(function() {
+        $('#prizeTable').DataTable({
+            columnDefs: [{
+                    targets: 0,
+                    orderable: false
+                } // Disable sorting for the first column (index 0)
+            ]
+        });
+        new DataTable('#ticketTable');
+    });
 </script>

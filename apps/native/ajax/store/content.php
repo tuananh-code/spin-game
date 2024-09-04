@@ -102,6 +102,8 @@ if (empty($cl['is_logged'])) {
         $prize = $_POST['prize'];
         $stock = $_POST['stock'];
         $percent = $_POST['percent'];
+        $limit = $_POST['limit'];
+        $join = $_POST['join'];
 
         $prizes = explode(', ', $prize);
         $stocks = explode(', ', $stock);
@@ -121,6 +123,8 @@ if (empty($cl['is_logged'])) {
         $props = json_encode($attr);
         $update = cl_db_update(T_GAME, array("id" => $id), array(
             'props' => $props,
+            'limit' => $limit,
+            'join' => $join,
         ));
         if ($update) {
             $data['status'] = 200;

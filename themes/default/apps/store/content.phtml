@@ -27,6 +27,8 @@ if ($result->num_rows > 0) {
                         $expires_date[] = $row_game['expires_date'];
                         $created_at[] = $row_game['created_at'];
                         $props[] = $row_game['props'];
+                        $limit[] = $row_game['limit'];
+                        $join[] = $row_game['join'];
                     }
                 }
             }
@@ -249,6 +251,20 @@ if ($result->num_rows > 0) {
                             </th>
                             <th scope="col" class="font-weight-medium">
                                 <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Buy') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
+                                    <?= cl_translate('Max') ?>
+                                    <div class="ml-2">
+                                    </div>
+                                </div>
+                            </th>
+                            <th scope="col" class="font-weight-medium">
+                                <div class="d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Props') ?>
                                     <div class="ml-2">
                                     </div>
@@ -286,6 +302,8 @@ if ($result->num_rows > 0) {
                                         <span><?= $game[$i] ?></span>
                                     </td>
                                     <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? 'Publish' : 'Draft' ?></td>
+                                    <td class="align-middle text-dark font-weight-normal"><span class="limit"><?= number_format($limit[$i]) ?></span></td>
+                                    <td class="align-middle text-dark text-center font-weight-normal"><span class="join"><?= $join[$i] ?></span></td>
                                     <td>
                                         <?php
                                         $prop = json_decode($props[$i], true);
@@ -318,7 +336,7 @@ if ($result->num_rows > 0) {
                                     <td class="align-middle text-danger"><?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></td>
                                     <td>
                                         <div>
-                                            <button class="edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>"><i class="fas fs-5 fa-edit text-white"></i></button>
+                                            <button class="edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>" data-limit="<?= $limit[$i] ?>" data-join="<?= $join[$i] ?>"><i class="fas fs-5 fa-edit text-white"></i></button>
                                             <button class="save text-white border-0 rounded-3 btn-success" data-id="<?= $id_game[$i] ?>" style="display:none;"><i class="fas fs-5 fa-save text-white"></i></button>
                                             <button class="delete text-white border-0 rounded-3 btn-danger" data-id="<?= $id_game[$i] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
                                         </div>

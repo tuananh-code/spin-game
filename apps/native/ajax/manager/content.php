@@ -29,32 +29,30 @@ if (empty($cl['is_logged'])) {
         require_once(cl_full_path("core/apps/manager/app_ctrl.php"));
         $html_arr[] = cl_template('manager/includes/list_item');
     } elseif ($action === 'claim') {
-        require_once(cl_full_path("core/apps/manager/app_ctrl.php"));
         $id = $_POST['id'];
         $store = $_POST['store'];
-        $game = $_POST['city'];
+        $game = $_POST['game'];
+        $prize = $_POST['prize'];
         $date = date('Y-m-d H:m:s');
         //handle store
-        $data = add_store($me['id'], $store, $address, $city, $phone, $mail);
-        if ($data['status'] == 500) {
-            return $data;
+
+        $update = cl_db_update(T_PRIZE, array(
+            "id" => $prize,
+        ), array('claimed_at' => $date));
+        if ($update) {
+            $data['status'] = 200;
+            $data['date'] = date('Y-m-d', strtotime($date));
         } else {
-            $id = cl_db_insert(T_STORE, array(
-                "user_id" => $me['id'],
-                "shop_name" => $store,
-                "address" => $address,
-                "city" => $city,
-                "phone" => $phone,
-                "mail" => $mail,
-                "created_at" => $date
-            ));
-            if ($id) {
-                $data['status'] = 200;
-                return $data;
-            } else {
-                $data['status'] = 400;
-                return $data;
-            }
+            $data['status'] = 500;
         }
+        return $data;
+    } elseif ($action === 'ticket') {
+        $id = $_POST['id'];
+        $store = $_POST['store'];
+        $game = $_POST['game'];
+        $ticket = $_POST['ticket'];
+        cl_db_delete_item(T_TICKET, array(
+            'id' => $ticket,
+        ));
     }
 }
