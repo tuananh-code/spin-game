@@ -1,16 +1,16 @@
-<div class="notifications-list__item" data-list-item="<?php echo($cl['li']['id']); ?>">
+<div class="notifications-list__item" data-list-item="<?php echo ($cl['li']['id']); ?>">
 	<div class="notif-data">
 		<div class="notifications-list__item-avatar">
-			<a href="<?php echo($cl['li']['user_url']); ?>" data-spa="true" class="block-link">
+			<a href="<?php echo ($cl['li']['user_url']); ?>" data-spa="true" class="block-link">
 				<div class="user-avatar">
-					<img src="<?php echo($cl['li']['avatar']); ?>" alt="Avatar">
+					<img src="<?php echo ($cl['li']['avatar']); ?>" alt="Avatar">
 				</div>
 			</a>
 		</div>
 		<div class="notifications-list__item-data">
 			<div class="notifications-data">
-				<div class="notifications-data__body">
-					<a href="<?php echo($cl['li']['url']); ?>" data-spa="true">
+				<div class="notifications-data__body <?= ($cl['li']['subject'] == 'ticket' ? 'redirect' : '') ?>" id="<?= ($cl['li']['subject'] == 'ticket' ? 'redirect' : '') ?>">
+					<a href="<?php echo ($cl['li']['url']); ?>" data-spa="">
 						<div class="notifications-data__topline">
 							<span class="user-name-holder">
 								<span class="user-name-holder__name">
@@ -23,30 +23,54 @@
 									</span>
 								<?php endif; ?>
 							</span>
-							<span class="notif-text <?php if($cl['li']['status'] == '0') {echo('unseen');}; ?>">
+							<span class="<?php if ($cl['li']['status'] == '0') {
+												echo ('unseen');
+											}; ?>" style="color: #8a96a3;">
 								<?php if ($cl['li']['subject'] == 'verified'): ?>
 									<?php echo cl_translate('Your verification request has been accepted'); ?>
 								<?php elseif ($cl['li']['subject'] == 'reply'): ?>
 									<?php echo cl_translate('Replied to your post'); ?>
-								<?php elseif($cl['li']['subject'] == 'subscribe'): ?>
+								<?php elseif ($cl['li']['subject'] == 'subscribe'): ?>
 									<?php echo cl_translate('Started following you'); ?>
-								<?php elseif($cl['li']['subject'] == 'subscribe_request'): ?>
+								<?php elseif ($cl['li']['subject'] == 'subscribe_request'): ?>
 									<?php echo cl_translate('Wants to follow you'); ?>
-								<?php elseif($cl['li']['subject'] == 'subscribe_accept'): ?>
+								<?php elseif ($cl['li']['subject'] == 'subscribe_accept'): ?>
 									<?php echo cl_translate('Accepted your follow request'); ?>
-								<?php elseif($cl['li']['subject'] == 'mention'): ?>
+								<?php elseif ($cl['li']['subject'] == 'mention'): ?>
 									<?php echo cl_translate('Mentioned you in a post'); ?>
-								<?php elseif($cl['li']['subject'] == 'like'): ?>
+								<?php elseif ($cl['li']['subject'] == 'like'): ?>
 									<?php echo cl_translate('Liked your post'); ?>
-								<?php elseif($cl['li']['subject'] == 'repost'): ?>
+								<?php elseif ($cl['li']['subject'] == 'repost'): ?>
 									<?php echo cl_translate('Shared your publication'); ?>
-								<?php elseif($cl['li']['subject'] == 'visit'): ?>
+								<?php elseif ($cl['li']['subject'] == 'visit'): ?>
 									<?php echo cl_translate('Visited your profile'); ?>
-								<?php elseif($cl['li']['subject'] == 'ad_approval'): ?>
+								<?php elseif ($cl['li']['subject'] == 'ad_approval'): ?>
 									<?php echo cl_translate('Your add has been approved'); ?>
-								<?php elseif($cl['li']['subject'] == 'content_subscription'): ?>
+								<?php elseif ($cl['li']['subject'] == 'content_subscription'): ?>
 									<?php echo cl_translate('Subscribed to your content'); ?>
-								<?php elseif($cl['li']['subject'] == 'wallet_local_receipt'): ?>
+									<!-- add notify event -->
+								<?php elseif ($cl['li']['subject'] == 'event'): ?>
+									<?php echo cl_translate('Create new event with store <b class="text-dark">' . $cl['li']['game'] . '</b>. Contact <b class="text-dark">' . $cl['li']['name'] . '</b> to get ticket'); ?>
+								<?php elseif ($cl['li']['subject'] == 'buy'): ?>
+									<?php echo cl_translate('You buy ') . '<b class="text-primary">' . $cl['li']['product'] . '</b>' . cl_translate(' at ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>'; ?>
+								<?php elseif ($cl['li']['subject'] == 'prize'): ?>
+									<?php echo cl_translate('Congratulation. You receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>'; ?>
+								<?php elseif ($cl['li']['subject'] == 'self_prize'): ?>
+									<?php echo '<b class="text-dark">' . $cl['li']['customer'] . '</b>' .  cl_translate(' receive ') . '<b class="text-success">' . $cl['li']['prize'] . '</b>' . cl_translate(' from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>' . cl_translate(' at your store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>' . cl_translate('. Check now.'); ?>
+								<?php elseif ($cl['li']['subject'] == 'ticket'): ?>
+									<?php echo cl_translate('You have receive ') . '<b class="text-success">' . $cl['li']['ticket'] . '</b>' . cl_translate(' ticket from store ') . '<b class="text-dark">' . $cl['li']['game'] . '</b>' . cl_translate('. Spin now'); ?>
+								<?php elseif ($cl['li']['subject'] == 'self_ticket'): ?>
+									<?php echo '<b class="text-dark">' . $cl['li']['customer'] . '</b>' . cl_translate(' receive ') . '<b class="text-success">' . $cl['li']['ticket'] . '</b>' . cl_translate(' ticket from event ') . '<b class="text-primary">' . $cl['li']['game'] . '</b>'  . cl_translate(' at your store ') . '<b class="text-dark">' . $cl['li']['store'] . '</b>' . cl_translate('. Check now'); ?>
+								<?php elseif ($cl['li']['subject'] == 'self'):
+									$all = explode(',', $cl['li']['all_user']);
+									foreach ($all as $u) {
+										$username[] = get_user_by_id($u);
+									}
+									$all_user = implode(', ', $username);
+								?>
+									<?php echo cl_translate('You have send notifications after create an event to ') . "<b class='text-dark' style='line-height: 1.4;'>" . $all_user . "</b>";  ?>
+									<!--  -->
+								<?php elseif ($cl['li']['subject'] == 'wallet_local_receipt'): ?>
 									<?php echo cl_translate('Transferred {@trans_amount@} to your wallet', array(
 										"trans_amount" => cl_html_el("b", $cl['li']['json']["trans_amount"])
 									)); ?>
@@ -63,16 +87,16 @@
 				<div class="notifications-data__ctrls">
 					<div class="notif-ctrls">
 						<div class="notif-ctrls__delete">
-							<button type="button" class="btn-custom-icon col-red" onclick="SMColibri.PS.notifs.delete_notif(<?php echo($cl['li']['id']); ?>);">
+							<button type="button" class="btn-custom-icon col-red" onclick="SMColibri.PS.notifs.delete_notif(<?php echo ($cl['li']['id']); ?>);">
 								<?php echo cl_ficon("delete"); ?>
 							</button>
 						</div>
 					</div>
 				</div>
 			</div>
-			<?php if($cl['li']['subject'] == 'subscribe_request'): ?>
+			<?php if ($cl['li']['subject'] == 'subscribe_request'): ?>
 				<div class="notif-controls">
-					<button onclick="SMColibri.PS.notifs.accept_follow(<?php echo $cl['li']['json']["follow_request_id"]; ?>, <?php echo($cl['li']['id']); ?>);" class="btn btn-custom main-inline sm">
+					<button onclick="SMColibri.PS.notifs.accept_follow(<?php echo $cl['li']['json']["follow_request_id"]; ?>, <?php echo ($cl['li']['id']); ?>);" class="btn btn-custom main-inline sm">
 						<?php echo cl_translate("Accept request"); ?>
 					</button>
 				</div>

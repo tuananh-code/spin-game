@@ -14,20 +14,6 @@
 						</a>
 					</span>
 				</div>
-				<!-- game -->
-				<div data-navitem="game" class="game sidebar__nav-item <?php if ($cl['pn'] == 'game') {
-																			echo ('active');
-																		} ?>">
-					<span class="icon">
-						<?php echo cl_ficon('premium'); ?>
-					</span>
-					<span class="text">
-						<a href="<?php echo cl_link('game'); ?>" data-spa="true">
-							<?php echo cl_translate('Game'); ?>
-						</a>
-					</span>
-				</div>
-				<!-- game -->
 				<!-- store -->
 				<div data-navitem="store" class="store sidebar__nav-item <?php if ($cl['pn'] == 'store') {
 																				echo ('active');
@@ -42,6 +28,20 @@
 					</span>
 				</div>
 				<!-- store -->
+				<!-- game -->
+				<div data-navitem="game" class="game sidebar__nav-item <?php if ($cl['pn'] == 'game') {
+																			echo ('active');
+																		} ?>">
+					<span class="icon">
+						<?php echo cl_ficon('premium'); ?>
+					</span>
+					<span class="text">
+						<a href="<?php echo cl_link('game'); ?>" data-spa="true">
+							<?php echo cl_translate('Game'); ?>
+						</a>
+					</span>
+				</div>
+				<!-- game -->
 				<!-- spin -->
 				<div data-navitem="subscriptions" id="reload" class="sidebar__nav-item <?php if ($cl['pn'] == 'subscriptions') {
 																							echo ('active');
@@ -51,11 +51,25 @@
 					</span>
 					<span class="text">
 						<a href="<?php echo cl_link("spin"); ?>" data-spa="true">
-							<?php echo cl_translate('Spin'); ?>
+							<?php echo cl_translate('Spin Test'); ?>
 						</a>
 					</span>
 				</div>
 				<!-- spin -->
+				<!-- spin_prize -->
+				<div data-navitem="spin_prize" id="" class="spin_prize sidebar__nav-item <?php if ($cl['pn'] == 'spin_prize') {
+																							echo ('active');
+																						} ?>">
+					<span class="icon">
+						<?php echo cl_ficon('gamepad'); ?>
+					</span>
+					<span class="text">
+						<a href="<?php echo cl_link("spin_prize"); ?>" data-spa="true">
+							<?php echo cl_translate('Spin Event'); ?>
+						</a>
+					</span>
+				</div>
+				<!-- spin_prize -->
 				<!-- manager -->
 				<div data-navitem="manager" class="manager sidebar__nav-item <?php if ($cl['pn'] == 'manager') {
 																					echo ('active');
@@ -65,7 +79,7 @@
 					</span>
 					<span class="text">
 						<a href="<?php echo cl_link('manager'); ?>" data-spa="true">
-							<?php echo cl_translate('Prize Manager'); ?>
+							<?php echo cl_translate('Event Manager'); ?>
 						</a>
 					</span>
 				</div>
@@ -87,7 +101,7 @@
 				<?php //} 
 				?>
 				<!-- manage -->
-				<div data-navitem="notifications" class="sidebar__nav-item <?php if ($cl['pn'] == 'notifications') {
+				<div data-navitem="notifications" class="notify sidebar__nav-item <?php if ($cl['pn'] == 'notifications') {
 																				echo ('active');
 																			} ?>">
 					<span class="icon">

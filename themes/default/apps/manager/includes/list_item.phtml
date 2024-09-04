@@ -1,90 +1,94 @@
 <?php
 $prize = get_prize($me['id']);
 ?>
-<div class="table-responsive-md u-datatable p-2">
-	<h2 class="p-2 m-2 text-primary"> <?= cl_translate('Prize manager') ?></h2>
-	<table id="prizeTable">
-		<thead>
-			<tr class="text-uppercase font-size-1">
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Customer') ?>
-						<div class="ml-2">
+<h2 class="p-2 m-2 text-primary"> <?= cl_translate('Prize manager') ?></h2>
+<?php if (@$prize[0]['username']) { ?>
+	<div class="table-responsive-md u-datatable px-2">
+		<table id="prizeTable">
+			<thead>
+				<tr class="text-uppercase font-size-1">
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Customer') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Store') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Store') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Game') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Event') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Prize') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Prize') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Reward') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Reward') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Claimed') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Claimed') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-				<th scope="col" class="font-weight-medium">
-					<div class="d-flex justify-content-center align-items-center">
-						<?= cl_translate('Action') ?>
-						<div class="ml-2">
+					</th>
+					<th scope="col" class="font-weight-medium">
+						<div class="d-flex justify-content-center align-items-center">
+							<?= cl_translate('Action') ?>
+							<div class="ml-2">
+							</div>
 						</div>
-					</div>
-				</th>
-			</tr>
-		</thead>
-		<tbody>
-			<?php foreach ($prize as $p) { ?>
-				<tr class="tr text-center">
-					<td>
-						<?= $me['name'] ?>
-					</td>
-					<td class="text-primary">
-						<?= get_store_name($p['store_id']) ?>
-					</td>
-					<td>
-						<?= get_game_name($p['game_id']) ?>
-					</td>
-					<td class="text-success">
-						<?= $p['prize'] ?>
-					</td>
-					<td>
-						<?= $date = date('Y-m-d', strtotime($p['created_at'])) ?>
-					</td>
-					<td>
-						<?= $p['claimed_at'] ?>
-					</td>
-					<td>
-						<div>
-							<button class="claim p-2 m-2 border-0 rounded-3 btn-success" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>"><?php echo cl_translate("Claimed"); ?></button>
-						</div>
-					</td>
+					</th>
 				</tr>
-			<?php } ?>
-		</tbody>
-	</table>
-</div>
+			</thead>
+			<tbody>
+				<?php foreach ($prize as $p) { ?>
+					<tr class="tr text-center">
+						<td>
+							<?= (@$p['username']) ? $p['username'] : $me['name'] ?>
+						</td>
+						<td class="text-primary">
+							<?= get_store_name($p['store_id']) ?>
+						</td>
+						<td>
+							<?= get_game_name($p['game_id']) ?>
+						</td>
+						<td class="text-success">
+							<?= $p['prize'] ?>
+						</td>
+						<td>
+							<?= $date = date('Y-m-d', strtotime($p['created_at'])) ?>
+						</td>
+						<td class="text-success">
+							<?= ($p['claimed_at']) ? $p['claimed_at'] : '' ?>
+						</td>
+						<td>
+							<div>
+								<button class="claim p-2 m-2 border-0 rounded-3 btn-success" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>"><?php echo cl_translate("Claimed"); ?></button>
+							</div>
+						</td>
+					</tr>
+				<?php } ?>
+			</tbody>
+		</table>
+	</div>
+<?php } else { ?>
+	<h4 class="text-danger"><?= cl_translate('No prize available. Try to add store, customer and event') ?></h4>
+<?php } ?>

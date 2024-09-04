@@ -42,7 +42,8 @@
 				$('.required-stock').remove();
 			}
 		});
-		$('.add-prize').on('click', function() {
+		$('.add-prize').on('click', function(e) {
+			e.preventDefault();
 			if (!($("#event").val() && $("#prize").val() && $("#percent").val() && $("#stock").val())) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
@@ -242,7 +243,9 @@
 				$('.required-join').remove();
 			}
 		});
-		$('.add-condition').on('click', function() {
+		$('.add-condition').on('click', function(e) {
+			e.preventDefault();
+
 			if (!($("#event").val() && $("#buy").val() && $("#limit").val() && $("#expires").val() && $("#join").val())) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
@@ -315,7 +318,7 @@
 				}
 			})
 		})
-		$('#spin').on('click', function() {
+		$('#spin_test').on('click', function() {
 			var token = $('#tokenApi').val();
 			if (token) {
 				var props = JSON.parse($('#propsWheel').attr('data-prop'));

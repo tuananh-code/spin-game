@@ -19,9 +19,7 @@
 if ($me['admin'] == 0) {
     $data['status'] = 400;
     $data['error']  = 'You do not have access';
-}
-
-else if ($action == "ccode_exists") {
+} else if ($action == "ccode_exists") {
     $user = cl_get_user_by_code($_POST['ccode']);
     $data['status'] = 200;
     $data['exists'] = 0;
@@ -60,10 +58,14 @@ else if ($action == "cread_invoice") {
         if ($field_name == 'ccode') {
             if (empty($field_val)) {
                 // $data['err_code'] = "invalid_ccode"; break;
+            } else if (len_between($field_val, 10, 25) != true) {
+                $data['err_code'] = "invalid_ccode";
+                break;
             }
-
-            else if (len_between($field_val,10, 25) != true) {
-                $data['err_code'] = "invalid_ccode"; break;
+        } else if ($field_name == 'phone') {
+            if (empty($field_val) || len_between($field_val, 3, 25) != true) {
+                $data['err_code'] = "invalid_phone";
+                break;
             }
         }
 
@@ -90,7 +92,13 @@ else if ($action == "cread_invoice") {
                 break;
             }
         }
-	}
+    }
+    //condition
+    $username = fetch_or_get($_POST['username'], null);
+    $amount = fetch_or_get($_POST['amount'], null);
+    $user_id = cl_db_get_item(T_USERS, array('username' => $username));
+    $id = $user_id['id'];
+    $game_data = get_game_attr($_POST['game_id']);
 
 
     if (is_numeric($send_amount)) {

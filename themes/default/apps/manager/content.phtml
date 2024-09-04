@@ -62,6 +62,7 @@ $prize = get_prize($me['id']);
         ?>
         <!-- Add translate in json -->
         <?php if ($prize) { ?>
+            <?php echo cl_template('manager/includes/list_ticket'); ?>
             <?php echo cl_template('manager/includes/list_item'); ?>
         <?php } else { ?>
             <?php echo cl_template('manager/includes/no_prize'); ?>
@@ -75,4 +76,5 @@ $prize = get_prize($me['id']);
 <script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
 <script>
     new DataTable('#prizeTable');
+    new DataTable('#ticketTable');
 </script>

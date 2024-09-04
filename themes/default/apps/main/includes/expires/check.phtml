@@ -1,6 +1,7 @@
 <?php
 if (@$me['id']) {
     $date = date('Y-m-d');
+    // for event
     $get_store = get_store_id($me['id']);
     if (count($get_store) > 0) {
         foreach ($get_store as $s) {
@@ -21,6 +22,16 @@ if (@$me['id']) {
                         }
                     }
                 }
+            }
+        }
+    }
+    //for ticket
+    $get_ticket = get_ticket_data($me['id']);
+    if (count($get_ticket) > 0) {
+        for ($t = 0; $t < count($get_ticket['id']); $t++) {
+            $expires_date = date('Y-m-d', strtotime($get_ticket['expires_date'][$t]));
+            if ($date == $expires_date || $date > $expires_date) {
+                cl_db_update(T_TICKET, array('id' => $get_ticket['id'][$t]), array('ticket' => 0));
             }
         }
     }

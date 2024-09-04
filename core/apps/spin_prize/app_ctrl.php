@@ -17,35 +17,36 @@
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
 
-define("PROJ_RP", dirname(dirname(__FILE__)));
-define("T_USERS", "cl_users");
-define("T_SESSIONS", "cl_sessions");
-define("T_POSTS", "cl_posts");
-define("T_PUBS", "cl_publications");
-define("T_PUBMEDIA", "cl_pubmedia");
-define("T_CONNECTIONS", "cl_connections");
-define("T_HTAGS", "cl_hashtags");
-define("T_CHATS", "cl_chats");
-define("T_MSGS", "cl_messages");
-define("T_LIKES", "cl_publikes");
-define("T_BOOKMARKS", "cl_bookmarks");
-define("T_NOTIFS", "cl_notifications");
-define("T_CONFIGS", "cl_configs");
-define("T_VERIFICATIONS", "cl_verifications");
-define("T_PROF_REPORTS", "cl_profile_reports");
-define("T_BLOCKS", "cl_blocks");
-define("T_AFF_PAYOUTS", "cl_affiliate_payouts");
-define("T_ADS", "cl_ads");
-define("T_WALLET_HISTORY", "cl_wallet_history");
-define("T_PUB_REPORTS", "cl_pub_reports");
-define("T_ACC_VALIDS", "cl_acc_validations");
-define("T_USER_INVITES", "cl_invite_links");
-define("T_UI_LANGS", "cl_ui_langs");
-define("T_BANKTRANS_REQS", "cl_banktrans_requests");
-define("T_WALLET_POUT", "cl_wallet_payout");
-define("T_SUBSCRIPTIONS", "cl_subscriptions");
-define("T_GAME", "cl_game");
-define("T_STORE", "cl_store");
-define("T_PRIZE", "cl_prize");
-define("T_TICKET", "cl_ticket");
-define("T_TRANSACTION", "cl_transaction");
+function cl_get_my_spin() {
+	global $db, $cl;
+
+	$sql_query = cl_sqltepmlate('apps/subscriptions/sql/fetch_subscriptions', array(
+		't_subs' => T_SUBSCRIPTIONS,
+		't_users' => T_USERS,
+		'user_id' => $cl["me"]['id']
+	));
+
+	$subscriptions = $db->rawQuery($sql_query);
+	$data = array();
+
+	if (cl_queryset($subscriptions)) {
+		foreach ($subscriptions as $row) {
+			$row['about'] = cl_rn_strip($row['about']);
+            $row['about'] = stripslashes($row['about']);
+            $row['name'] = cl_strf("%s %s",$row['fname'],$row['lname']);
+            $row['name'] = cl_rn_strip($row['name']);
+            $row['name'] = stripslashes($row['name']);      
+            $row['avatar'] = cl_get_media($row['avatar']);
+            $row['url'] = cl_link($row['username']);
+
+            $diff_date = $row['subscription_end'] - $row['subscription_start'];
+			$left_days = floor($diff_date / (60 * 60 * 24));
+
+			$row["left_days"] = $left_days;
+
+			array_push($data, $row);
+		}
+	}
+
+	return $data;
+}

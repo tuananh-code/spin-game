@@ -48,8 +48,8 @@ $result = conn()->query($sql);
                         <?php } ?>
                     <?php } else { ?>
                         <option value="0"><?php echo cl_translate("No store available, try to add store first"); ?></option>
+                    <?php } ?>
                 </select>
-            <?php } ?>
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
@@ -79,13 +79,13 @@ $result = conn()->query($sql);
         <div class="d-flex align-items-center justify-content-center">
             <label for="expires" class="col-2 text-end"><?php echo cl_translate("Expires Date:"); ?></label>
             <div class="require-expires col-9">
-                <input name="expires" id="expires" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter expires date for ticket"); ?>">
+                <input name="expires" id="expires" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter expires date for ticket, 0 for unlimited"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
             <label for="join" class="col-2 text-end"><?php echo cl_translate("Max Ticket:"); ?></label>
             <div class="require-join col-9">
-                <input name="join" id="join" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter max ticket customer can have"); ?>">
+                <input name="join" id="join" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter max ticket customer can have, 0 for unlimited"); ?>">
             </div>
         </div>
         <div class="text-center">
@@ -150,16 +150,22 @@ $result = conn()->query($sql);
         <div class="col-9">
             <select name="setup" id="setup" class="form-select setup m-2 p-2">
                 <?php
-                for ($i = 0; $i < count($store_id); $i++) {
-                    $id = $store_id[$i];
-                    $store = $store_name[$i];
-                    $sql_draft = "SELECT * FROM cl_game WHERE store_id = $id AND status = 0 ORDER BY id DESC";
-                    $result_draft = conn()->query($sql_draft);
-                    if ($result_draft->num_rows > 0) {
-                        foreach ($result_draft as $row) { ?>
-                            <option value="<?= $row['id'] ?>"><?= $store . ': ' . $row['game_name'] ?></option>
+                if ($result->num_rows > 0) {
+                    for ($i = 0; $i < count($store_id); $i++) {
+                        $id = $store_id[$i];
+                        $store = $store_name[$i];
+                        $sql_draft = "SELECT * FROM cl_game WHERE store_id = $id AND status = 0 ORDER BY id DESC";
+                        $result_draft = conn()->query($sql_draft);
+                        if ($result_draft->num_rows > 0) {
+                            foreach ($result_draft as $row) { ?>
+                                <option value="<?= $row['id'] ?>"><?= $store . ': ' . $row['game_name'] ?></option>
+                            <?php } ?>
+                        <?php } else { ?>
+                            <option value="0"><?php echo cl_translate("Nothing to publish, Try to add event first"); ?></option>
                         <?php } ?>
                     <?php } ?>
+                <?php } else { ?>
+                    <option value="0"><?php echo cl_translate("Nothing to publish, Try to add store first"); ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -170,39 +176,12 @@ $result = conn()->query($sql);
     <?php //endif; 
     ?>
     <center>
-        <?php
-        if (@$store_id) {
-            foreach ($store_id as $id) {
-                $sql_game = "SELECT * FROM cl_game WHERE store_id = $id AND status = 1 ORDER BY id DESC";
-            }
-            $result_game = conn()->query($sql_game);
-        ?>
-            <div class="timeline-game">
-                <div class="">
-                    <div class="">
-                        <div>
-                            <?php if ($result_game->num_rows > 0) {
-                                foreach ($result_game as $row) {
-                                    $attr = json_decode($row['props'], true);
-                                    $value = choose_prize($attr);
-                                    $prize = $value['value'];
-                            ?>
-                                    <input type="hidden" name="" id="propsWheel" data-prop='<?= $row['props']; ?>' data-themes='<?= $row['themes'] ?>'>
-                                    <input type="hidden" id="tokenApi" value="<?= get_random() . $prize . get_random() ?>">
-                                <?php } ?>
-                            <?php } ?>
-                        </div>
-                    </div>
-                <?php } ?>
-                <div class="wheel-wrapper"></div>
-                <button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
-                    <span class="fs-4">Spin</span>
-                </button>
-
-                </div>
-            </div>
+        <div class="wheel-wrapper"></div>
+        <button id="spin_test" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
+            <span class="fs-4">Spin</span>
+        </button>
     </center>
 </div>
-<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>
 <?php echo cl_template('game/scripts/app_master_script');
 ?>
+<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>

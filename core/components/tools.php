@@ -1694,36 +1694,72 @@ function cl_create_user_avatar($text = "", $destination_url = false) {
     return $destination_url;
 }
 
-function get_ticket($id, $store_id)
+function get_ticket($game_id)
 {
-    $sql = "SELECT * FROM cl_ticket WHERE id = $id AND store_id = $store_id";
-    $result = conn()->query($sql);
-    if ($result->num_rows > 0) {
-        foreach ($result as $row) {
-            $ticket['ticket'] = $row['ticket'];
-        }
-    }
-    return $ticket['ticket'];
-}
-function get_prize($id, $store_id = null)
-{
-    $sql = "SELECT * FROM cl_prize WHERE user_id = $id";
-    $result = conn()->query($sql);
-    if ($result->num_rows > 0) {
-        foreach ($result as $row) {
-            $data[] = [
-                'id' => $row['id'],
-                'store_id' => $row['store_id'],
-                'game_id' => $row['game_id'],
-                'prize' => $row['prize'],
-                'created_at' => $row['created_at'],
-                'claimed_at' => $row['claimed_at'],
+    $query_ticket = cl_db_get_items(T_TICKET, array('game_id' => $game_id));
+    if ($query_ticket) {
+        foreach ($query_ticket as $ticket) {
+            $data = [
+                'id' => $ticket['id'],
+                'user_id' => $ticket['user_id'],
+                'game_id' => $ticket['game_id'],
+                'ticket' => $ticket['ticket'],
+                'created_at' => $ticket['created_at'],
+                'expires_date' => $ticket['expires_date'],
             ];
         }
     } else {
-        $data = null;
+        $data = [];
     }
     return $data;
+}
+function get_prize($id, $store_id = null)
+{
+    if (@count(get_store_id($id)) > 0) {
+        $store_id = get_store_id($id);
+        foreach ($store_id as $s) {
+            $sql = "SELECT * FROM cl_prize WHERE store_id = $s";
+            $result = conn()->query($sql);
+            if ($result->num_rows > 0) {
+                foreach ($result as $row) {
+                    $data[] = [
+                        'id' => $row['id'],
+                        'username' => cl_db_get_item(T_USERS, array('id' => $row['user_id']))['username'],
+                        'store_id' => $row['store_id'],
+                        'game_id' => $row['game_id'],
+                        'prize' => $row['prize'],
+                        'created_at' => $row['created_at'],
+                        'claimed_at' => $row['claimed_at'],
+                    ];
+                }
+            } else {
+                $data = null;
+            }
+        }
+    } else {
+        $sql = "SELECT * FROM cl_prize WHERE user_id = $id";
+        $result = conn()->query($sql);
+        if ($result->num_rows > 0) {
+            foreach ($result as $row) {
+                $data[] = [
+                    'id' => $row['id'],
+                    'store_id' => $row['store_id'],
+                    'game_id' => $row['game_id'],
+                    'prize' => $row['prize'],
+                    'created_at' => $row['created_at'],
+                    'claimed_at' => $row['claimed_at'],
+                ];
+            }
+        } else {
+            $data = null;
+        }
+    }
+    return $data;
+}
+function get_prize_name($prize_id){
+    $prize = cl_db_get_item(T_PRIZE, array('id'=>$prize_id));
+    $name = $prize['prize'];
+    return $name;
 }
 function get_store_name($store_id)
 {
@@ -1737,6 +1773,27 @@ function get_store_name($store_id)
     return $name;
 }
 
+function get_store_name_game($game_id)
+{
+    $sql = cl_db_get_item(T_GAME, array(
+        'id' => $game_id
+    ));
+    $store_id = $sql['store_id'];
+    $name = get_store_name($store_id);
+    return $name;
+}
+
+function get_store_event_id($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $id = $row['store_id'];
+        }
+    }
+    return $id;
+}
 function get_game_name($game_id)
 {
     $sql = "SELECT * FROM cl_game WHERE id = $game_id";
@@ -1764,7 +1821,19 @@ function get_game_id($store_id)
     }
     return $name;
 }
-
+function get_game_id_publish($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id AND status = 1";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name[] = $row['id'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
 function get_game_data($store_id)
 {
     $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
@@ -1802,6 +1871,42 @@ function get_game_data($store_id)
     return $data;
 }
 
+function get_game_attr($store_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $store_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $id = $row['id'];
+            $game_name = $row['game_name'];
+            $props = $row['props'];
+            $status = $row['status'];
+            $buy = $row['buy'];
+            $limit = $row['limit'];
+            $quantity = $row['quantity'];
+            $expires = $row['expires'];
+            $join = $row['join'];
+            $created_at = $row['created_at'];
+            $expires_date = $row['expires_date'];
+        }
+        $data = [
+            'id' => $id,
+            'game_name' => $game_name,
+            'props' => $props,
+            'status' => $status,
+            'buy' => $buy,
+            'limit' => $limit,
+            'quantity' => $quantity,
+            'expires' => $expires,
+            'join'  => $join,
+            'created_at'  => $created_at,
+            'expires_date' => $expires_date,
+        ];
+    } else {
+        $data = [];
+    }
+    return $data;
+}
 function get_store_id($user_id)
 {
     $sql = "SELECT * FROM cl_store WHERE user_id = $user_id";
@@ -1814,6 +1919,72 @@ function get_store_id($user_id)
         $name = [];
     }
     return $name;
+}
+function get_store_game_id($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $store_id = $row['store_id'];
+        }
+    } else {
+        $store_id = null;
+    }
+    return $store_id;
+}
+function get_ticket_data($user_id)
+{
+    $sql = "SELECT * FROM cl_ticket WHERE user_id = $user_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $id[] = $row['id'];
+            $game_id[] = $row['game_id'];
+            $ticket[] = $row['ticket'];
+            $expires_date[] = $row['expires_date'];
+        }
+        $data = [
+            'id' => $id,
+            'game_id' => $game_id,
+            'expires_date' => $expires_date,
+            'ticket' => $ticket
+        ];
+    } else {
+        $data = [];
+    }
+    return $data;
+}
+function get_ticket_game($game_id)
+{
+    $query_ticket = cl_db_get_items(T_TICKET, array('game_id' => $game_id));
+    if ($query_ticket) {
+        foreach ($query_ticket as $ticket) {
+            $data = [
+                'id' => $ticket['id'],
+                'user_id' => $ticket['user_id'],
+                'game_id' => $ticket['game_id'],
+                'ticket' => $ticket['ticket'],
+                'created_at' => $ticket['created_at'],
+                'expires_date' => $ticket['expires_date'],
+            ];
+        }
+        return $data;
+    }
+}
+function get_all_user_game_id($game_id)
+{
+    $query_ticket = get_ticket_game($game_id);
+    if ($query_ticket) {
+        $data = $query_ticket;
+        $all = [
+            'game_id' => $data['game_id'],
+            'user_id' => $data['user_id'],
+        ];
+        return $all;
+        // var_dump($data['id']);
+    }
+    // if($data)
 }
 function choose_prize($attr)
 {
@@ -1852,6 +2023,68 @@ function get_random_number()
         $randomString .= $combinedChars[rand(0, strlen($combinedChars) - 1)];
     }
     return $randomString;
+}
+function is_owner($game_id)
+{
+    global $me;
+    $query_store = cl_db_get_items(T_GAME, array('id' => $game_id));
+    foreach ($query_store as $store) {
+        $store_id = $store['store_id'];
+        $query_user = cl_db_get_items(T_STORE, array('id' => $store_id));
+        foreach ($query_user as $user) {
+            $user_id = $user['user_id'];
+            if ($user_id == $me['id']) {
+                $data = true;
+                break;
+            } else {
+                $data = false;
+            }
+        }
+    }
+    return $data;
+}
+
+function get_user_data($user_id)
+{
+    $user_query = cl_db_get_item(T_USERS, array('id' => $user_id));
+    $data = [
+        'username' => $user_query['username']
+    ];
+    return $data;
+}
+function get_user_id_game($game_id)
+{
+    $game_query = cl_db_get_item(T_GAME, array('id' => $game_id));
+    $store_id = $game_query['store_id'];
+    $user = cl_db_get_item(T_STORE, array('id' => $store_id));
+    $user_id = $user['user_id'];
+    return $user_id;
+}
+function hexToUtf8($hex)
+{
+    // Convert hex to integer
+    $decimal = hexdec($hex);
+    // Convert integer to UTF-8 character
+    return mb_convert_encoding(pack('H*', str_pad(dechex($decimal), 4, '0', STR_PAD_LEFT)), 'UTF-8', 'UCS-2BE');
+}
+function decode_json($encoded_string)
+{
+    // Function to convert hex to UTF-8 characters
+
+    // Replace Unicode sequences in the format \uXXXX
+    $decoded_string = preg_replace_callback('/u([0-9a-fA-F]{4})/', function ($matches) {
+        return hexToUtf8($matches[1]);
+    }, $encoded_string);
+
+    return $decoded_string;
+}
+function get_user_by_id($user_id)
+{
+    $user  = cl_db_get_item(T_USERS, array(
+        'id' => $user_id
+    ));
+    $name = $user['fname'];
+    return $name;
 }
 function conn()
 {

@@ -97,5 +97,36 @@ if (empty($cl['is_logged'])) {
             $data['status'] = 500;
         }
         return $data;
+    } elseif ($action === 'save_event') {
+        $id = $_POST['id'];
+        $prize = $_POST['prize'];
+        $stock = $_POST['stock'];
+        $percent = $_POST['percent'];
+
+        $prizes = explode(', ', $prize);
+        $stocks = explode(', ', $stock);
+        $percents = explode(', ', $percent);
+
+        for ($p = 0; $p < count($prizes); $p++) {
+            $prize = $prizes[$p];
+            $percent = $percents[$p];
+            $stock = $stocks[$p];
+            $attr[] = [
+                'value' => $p,
+                'prize' => $prize,
+                'percent' => $percent,
+                'stock' => $stock
+            ];
+        }
+        $props = json_encode($attr);
+        $update = cl_db_update(T_GAME, array("id" => $id), array(
+            'props' => $props,
+        ));
+        if ($update) {
+            $data['status'] = 200;
+        } else {
+            $data['status'] = 500;
+        }
+        return $data;
     }
 }

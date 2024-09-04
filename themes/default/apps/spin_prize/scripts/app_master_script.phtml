@@ -1,0 +1,140 @@
+<script>
+	"use strict";
+
+	$(document).ready(function($) {
+		$('#themes').on('change', function() {
+			var selectedOption = $(this).find(':selected');
+			var dataStore = selectedOption.data('store');
+			var dataGame = selectedOption.data('game');
+		})
+		var token = $('#tokenApi').val();
+		if (token) {
+			if (token.length > 66) {
+				var tokenApi = token[32] + token[33] + token[34];
+			} else if (token.length > 65) {
+				var tokenApi = token[32] + token[33];
+			} else if (token) {
+				var tokenApi = token[32];
+			}
+			var keyApi = $('#propsWheel').attr('data-key');
+			if (keyApi.length > 66) {
+				var key = keyApi[32] + keyApi[33] + keyApi[34];
+			} else if (keyApi.length > 65) {
+				var key = keyApi[32] + keyApi[33];
+			} else if (keyApi) {
+				var key = keyApi[32];
+			}
+		}
+		$('#spin_prize').on('click', function() {
+			// $(this).attr('disabled', true);
+			// $('.store-api').attr('disabled', true);
+			var storeApi = $('.store-api').attr('data-store');
+			if (storeApi == 'undefined') {
+				var store = $('#propsWheel').attr('data-store');
+				var game = $('#propsWheel').attr('data-game');
+				var props = JSON.parse($('#propsWheel').attr('data-prop'));
+				for (var i = 0; i < props.length; i++) {
+					var value = props[i].value;
+					if (value == tokenApi) {
+						var name = props[i].prize;
+						// var name = value;
+					}
+				}
+				var keys = key;
+			} else {
+				var store = $('#themes').attr('data-store');
+				var game = $('#themes').attr('data-game');
+				var multiCheck = $('#themes').val();
+				if (multiCheck.length > 130) {
+					var multi = multiCheck[64] + multiCheck[65] + multiCheck[66];
+				} else if (multiCheck.length > 129) {
+					var multi = multiCheck[64] + multiCheck[65];
+				} else {
+					var multi = multiCheck[64];
+				};
+				var props = JSON.parse($('#themes').attr('data-prop'));
+				for (var i = 0; i < props.length; i++) {
+					var value = props[i].value;
+					if (value == multi) {
+						var name = props[i].prize;
+						// var name = value;
+					}
+				}
+				var keyCheck = $('#themes').attr('data-key');
+				if (keyCheck.length > 130) {
+					var keys = keyCheck[64] + keyCheck[65] + keyCheck[66];
+				} else if (keyCheck.length > 129) {
+					var keys = keyCheck[64] + keyCheck[65];
+				} else {
+					var keys = keyCheck[64];
+				};
+			}
+			var user = $('#propsWheel').attr('data-user');
+			if (keys > 0) {
+				$.ajax({
+					url: '<?php echo cl_link("native_api/game/add_prize"); ?>',
+					type: 'POST',
+					data: {
+						name: name,
+						user: user,
+						store: store,
+						game: game,
+						keys: keys,
+					},
+					beforeSend: function() {},
+					success: function(result) {
+						if (result.status == 200) {
+							setTimeout(function() {
+								$('#spin').attr('disabled', false);
+								$('.store-api').attr('disabled', false);
+								Swal.fire({
+									title: "<?php echo cl_translate("Congratulation"); ?>",
+									text: "<?php echo cl_translate("You gain"); ?>" + " " + name,
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
+								}).then((result) => {
+									if (result.isConfirmed) {
+										window.location.reload(); // Reload the page on OK click
+									}
+								});
+							}, 4500); // Initial delay of 4500ms before sending the AJAX request
+						} else {
+							setTimeout(function() {
+								$('#spin').attr('disabled', false);
+								$('.store-api').attr('disabled', false);
+								Swal.fire({
+									title: "<?php echo cl_translate("Test Spin"); ?>",
+									text: "<?php echo cl_translate("This is for test only and not affect stock"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									confirmButtonText: "<?php echo cl_translate("Ok"); ?>" // Add confirmButtonText
+								}).then((result) => {
+									if (result.isConfirmed) {
+										window.location.reload(); // Reload the page on OK click
+									}
+								});
+							}, 4000); // Initial delay of 4500ms before sending the AJAX request
+						}
+					}
+				});
+			} else {
+				$('#spin').attr('disabled', false);
+				$('.store-api').attr('disabled', false);
+				Swal.fire({
+					title: "<?php echo cl_translate("Warning"); ?>",
+					text: "<?php echo cl_translate("You run out of spins. Please buy or contact store to get ticket!"); ?>",
+					icon: "warning",
+					allowOutsideClick: true,
+					showConfirmButton: true,
+					onBeforeOpen: () => {
+						Swal.showLoading();
+					},
+				});
+			}
+		})
+
+	});
+</script>
