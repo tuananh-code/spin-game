@@ -17,7 +17,7 @@
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
 
-$date = date('Y-m-d H:m:s');
+$post_date = date('Y-m-d H:m:s');
 if (empty($cl['is_logged'])) {
     $data['status'] = 400;
     $data['error']  = 'Invalid access token';
@@ -45,6 +45,7 @@ if (empty($cl['is_logged'])) {
         $prizes = explode(',', $_POST['prize']);
         $percents = explode(',', $_POST['percent']);
         $stocks = explode(',', $_POST['stock']);
+
         //handle game
         if ($themes == 'Workout') {
             $layout = [
@@ -82,7 +83,7 @@ if (empty($cl['is_logged'])) {
             ];
         }
         $props = json_encode($attr);
-        $data = add_game($store_id, $event, $themes, $props, $status, $date, $expires_event);
+        $data = add_game($store_id, $event, $themes, $props, $status, $post_date, $expires_event);
         $game_id_noti = cl_db_get_item(T_GAME, array(
             'store_id' => $store_id,
             'game_name' => $event
@@ -125,7 +126,7 @@ if (empty($cl['is_logged'])) {
                                 "subject" => 'event',
                                 "game_id" => $game_id_noti['id'],
                                 "json" => 1,
-                                "time" => strtotime($date)
+                                "time" => strtotime($post_date)
                             ));
                         }
                         $mess = cl_translate('We create new event with ') . '<b>' . get_store_name_game($game_id_noti['id']) . '</b>' . cl_translate('. Join now');
@@ -146,7 +147,7 @@ if (empty($cl['is_logged'])) {
                                 'seen' => 0,
                                 'deleted_fs1' => 'N',
                                 'deleted_fs2' => 'N',
-                                'time' => strtotime($date)
+                                'time' => strtotime($post_date)
                             ));
                         }
                     } else {
@@ -164,7 +165,7 @@ if (empty($cl['is_logged'])) {
                     "subject" => 'self',
                     "user_id_notify" => $all_user,
                     "json" => 1,
-                    "time" => strtotime($date)
+                    "time" => strtotime($post_date)
                 ));
             }
         }
@@ -238,7 +239,7 @@ if (empty($cl['is_logged'])) {
                 "user_id" => $user,
                 "store_id" => $store,
                 "game_id" => $game,
-                "created_at" => $date
+                "created_at" => $post_date
             ));
             if ($id) {
                 $data['status'] = 200;
@@ -252,7 +253,7 @@ if (empty($cl['is_logged'])) {
                     "prize_id" => $id,
                     "json" => 1,
                     "attr" => get_store_game_id($game),
-                    "time" => strtotime($date)
+                    "time" => strtotime($post_date)
                 ));
                 cl_db_insert(T_NOTIFS, array(
                     "notifier_id" => 1,
@@ -264,7 +265,7 @@ if (empty($cl['is_logged'])) {
                     "prize_id" => $id,
                     "json" => 1,
                     "attr" => $me['id'],
-                    "time" => strtotime($date)
+                    "time" => strtotime($post_date)
                 ));
                 $mess = cl_translate('Congratulation. You receive ') . '<b>' . get_prize_name($id) . '</b>' . cl_translate(' from event ') . '<b>' . get_game_name($game) . '</b>' . cl_translate(' at store ') . '<b>' . get_store_name_game($game) . '</b>';
 
@@ -279,7 +280,7 @@ if (empty($cl['is_logged'])) {
                     'seen' => 0,
                     'deleted_fs1' => 'N',
                     'deleted_fs2' => 'N',
-                    'time' => strtotime($date)
+                    'time' => strtotime($post_date)
                 ));
             } else {
                 $data['status'] = 400;
@@ -295,6 +296,115 @@ if (empty($cl['is_logged'])) {
             $data['status'] = 200;
         } else {
             $data['status'] = 400;
+        }
+        return $data;
+    } elseif ($action == 'check_ticket') {
+        $phone = $_POST['phone'];
+        $ph = cl_db_update(T_USERS, array('id' => $me['id'],), array('phone' => $phone));
+        // if ($ph) {
+        cl_db_update(T_TRANSACTION, array('phone' => $phone), array('customer_id' => $me['id']));
+        // }
+        //trans
+        $trans_data = cl_db_get_item(T_TRANSACTION, array(
+            'phone' => $phone,
+        ));
+        if ($trans_data) {
+            $customer_id = $trans_data['customer_id'];
+            $trans_id = $trans_data['id'];
+            $pname = $trans_data['pname'];
+            $amount = $trans_data['amount'];
+            $qty = $trans_data['qty'];
+            $data['phone'] = 200;
+        }
+
+        //ticket
+        $ticket_data = cl_db_get_item(T_TICKET, array(
+            'phone' => $phone
+        ));
+        if ($ticket_data) {
+            $data['ticket'] = 200;
+            $ticket_id = $ticket_data['id'];
+            $game_id = $ticket_data['game_id'];
+            $ticket = $ticket_data['ticket'];
+            $expires_date = $ticket_data['expires_date'];
+            $owner = get_user_id_game($game_id);
+            cl_db_update(T_TICKET, array('id' => $ticket_id,), array('user_id' => $customer_id));
+            // noti & msg
+            cl_db_insert(T_NOTIFS, array(
+                "notifier_id" => $owner,
+                "recipient_id" => $me['id'],
+                "entry_id" => $owner,
+                "status" => '0',
+                "subject" => 'buy',
+                "game_id" => $game_id,
+                "json" => 1,
+                "attr" => $pname,
+                "time" => strtotime($post_date)
+            ));
+            $mess = cl_translate('You buy ') . '<b>' . $pname . '</b>' . cl_translate(' at store ') . '<b>' . get_store_name_game($game_id) . '</b>';
+            cl_db_insert(T_CHATS, array(
+                'user_one' => $owner,
+                'user_two' => $me['id'],
+                'time' => strtotime($post_date)
+            ));
+            cl_db_insert(T_CHATS, array(
+                'user_one' => $me['id'],
+                'user_two' => $owner,
+                'time' => strtotime($post_date)
+            ));
+            cl_db_insert(T_MSGS, array(
+                'sent_by' => $owner,
+                'sent_to' => $me['id'],
+                'owner' => $owner,
+                'message' => $mess,
+                'media_file' => '',
+                'audio_record' => '',
+                'media_type' => 'none',
+                'seen' => 0,
+                'deleted_fs1' => 'N',
+                'deleted_fs2' => 'N',
+                'time' => strtotime($post_date)
+            ));
+            if ($ticket > 0) {
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => $owner,
+                    "recipient_id" => $me['id'],
+                    "entry_id" => $owner,
+                    "status" => '0',
+                    "subject" => 'ticket',
+                    "game_id" => $game_id,
+                    "json" => 1,
+                    "attr" => $ticket,
+                    "time" => strtotime($post_date)
+                ));
+                //self
+                cl_db_insert(T_NOTIFS, array(
+                    "notifier_id" => 1,
+                    "recipient_id" => $owner,
+                    "entry_id" => 1,
+                    "status" => '0',
+                    "subject" => 'self_ticket',
+                    "game_id" => $game_id,
+                    "json" => 1,
+                    "attr" => $customer_id . ',' . $ticket,
+                    "time" => strtotime($post_date)
+                ));
+                //msg
+                $mess = cl_translate('Congratulation. You receive ') . '<b>' . $ticket . '</b>' . cl_translate(' ticket from store ') . '<b>' . get_store_name_game($game_id) . '</b>' . cl_translate('. Spin now');
+                cl_db_insert(T_MSGS, array(
+                    'sent_by' => $owner,
+                    'sent_to' => $me['id'],
+                    'owner' => $owner,
+                    'message' => $mess,
+                    'media_file' => '',
+                    'audio_record' => '',
+                    'media_type' => 'none',
+                    'seen' => 0,
+                    'deleted_fs1' => 'N',
+                    'deleted_fs2' => 'N',
+                    'time' => strtotime($post_date)
+                ));
+            }
         }
         return $data;
     }

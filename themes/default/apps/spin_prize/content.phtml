@@ -118,17 +118,16 @@ if (count($ticket) > 0) {
 					<?php } ?>
 				</div>
 			</div>
-			<div class="wheel-wrapper"></div>
-			<?php
-			if (@count($ticket['id']) > 0) {
-			?>
+			<?php if (@count($ticket['id']) > 0) { ?>
+				<div class="wheel-wrapper"></div>
 				<div class="text-center">
 					<button id="spin_prize" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
 						<span class="fs-4">Spin</span>
 					</button>
 				</div>
+			<?php } else { ?>
+				<?= cl_template('spin_prize/includes/phone'); ?>
 			<?php } ?>
-
 		</div>
 	</center>
 </div>

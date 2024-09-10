@@ -83,7 +83,8 @@
     "create_new_swift": "Create new swift",
     "add_signature_to_swift_optional": "Add signature to swift (Optional)",
     "publish": "Publish",
-    "home": "Home",
+    "home": "Trang chủ",
+    "game": "Quay thưởng",
     "your_swifts": "Your swifts",
     "no_posts_yet": "No posts yet!",
     "it_looks_like_there_are_no_posts_on_your_feed_yet_all_your_posts_": "It looks like there are no posts on your feed yet. All your posts and publications of people you follow will be displayed here.",
@@ -899,7 +900,7 @@
     "routing_code": "Routing code",
     "country": "Country",
     "account_name": "Account name",
-    "address:": "Address:",
+    "address": "Address",
     "transaction_was_declined": "Transaction was declined",
     "find_out_how_it_works": "Find out how it works?",
     "transfer_earnings_to_my_wallet": "Transfer earnings to my wallet",
@@ -1091,7 +1092,5 @@
     "toggle_to_show_hide_recommended_posts_in_your_feed": "Toggle to show\/hide recommended posts in your feed",
     "enabling_this_option_will_personalize_your_feed_with_featured_pos": "Enabling this option will personalize your feed with featured posts",
     "who_can_see_when_i_m_online": "Who can see when I'm online?",
-    "no_event_available_try_to_add_store_and_event_first": "No event available, try to add store and event first",
     "nobody": "Nobody"
-    
 }

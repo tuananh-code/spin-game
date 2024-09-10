@@ -8,15 +8,17 @@ if ($store_id) {
             foreach ($game_id as $g) {
                 $is_owner = is_owner($g);
                 $ticket = get_ticket($g);
-                // var_dump($ticket);
+                $ticket_check[] = get_ticket($g);
                 if (@count($ticket) > 0) {
                     $get_ticket[] = $ticket;
+                    $check_value = true;
                 }
             }
         }
     }
 } else {
     $is_owner = null;
+    $ticket_check = null;
 }
 ?>
 <h2 class="p-2 m-2 text-primary"> <?= cl_translate('Ticket manager') ?></h2>
@@ -28,6 +30,13 @@ if ($store_id) {
                     <th scope="col" class="font-weight-medium">
                         <div class="d-flex justify-content-center align-items-center">
                             <?= cl_translate('Customer') ?>
+                            <div class="ml-2">
+                            </div>
+                        </div>
+                    </th>
+                    <th scope="col" class="font-weight-medium">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <?= cl_translate('Phone') ?>
                             <div class="ml-2">
                             </div>
                         </div>
@@ -77,33 +86,40 @@ if ($store_id) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($get_ticket as $t) { ?>
-                    <?php for ($e = 0; $e < count($t['user_id']); $e++) { ?>
-                        <tr class="tr text-center">
-                            <td>
-                                <?= get_user_data($t['user_id'][$e])['username']; ?>
-                            </td>
-                            <td class="text-primary">
-                                <?= get_store_name(get_store_game_id($t['game_id'][$e])) ?>
-                            </td>
-                            <td>
-                                <?= get_game_name($t['game_id'][$e]) ?>
-                            </td>
-                            <td class="text-success text-center">
-                                <?= $t['ticket'][$e] ?>
-                            </td>
-                            <td>
-                                <?= $date = date('Y-m-d', strtotime($t['created_at'][$e])) ?>
-                            </td>
-                            <td class="text-success">
-                                <?= $date = date('Y-m-d', strtotime($t['expires_date'][$e])) ?>
-                            </td>
-                            <td>
-                                <div>
-                                    <button class="ticket px-3 py-2 m-2 border-0 rounded-3 btn-danger" data-ticket="<?= $t['id'][$e] ?>" data-id="<?= $t['user_id'][$e] ?>" data-store="<?= get_store_game_id($t['game_id'][$e]) ?>" data-game="<?= $t['game_id'][$e] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
-                                </div>
-                            </td>
-                        </tr>
+                <?php if (count($ticket_check) > 0) { ?>
+                    <?php if (@$check_value) { ?>
+                        <?php foreach ($get_ticket as $t) { ?>
+                            <?php for ($e = 0; $e < count($t['user_id']); $e++) { ?>
+                                <tr class="tr text-center">
+                                    <td>
+                                        <?= @get_user_data($t['user_id'][$e])['username'] ? get_user_data($t['user_id'][$e])['username'] : ''; ?>
+                                    </td>
+                                    <td class="">
+                                        <?= $t['phone'][$e] ?>
+                                    </td>
+                                    <td class="text-primary">
+                                        <?= get_store_name(get_store_game_id($t['game_id'][$e])) ?>
+                                    </td>
+                                    <td>
+                                        <?= get_game_name($t['game_id'][$e]) ?>
+                                    </td>
+                                    <td class="text-success text-center">
+                                        <?= $t['ticket'][$e] ?>
+                                    </td>
+                                    <td>
+                                        <?= $date = date('Y-m-d', strtotime($t['created_at'][$e])) ?>
+                                    </td>
+                                    <td class="text-success">
+                                        <?= $date = date('Y-m-d', strtotime($t['expires_date'][$e])) ?>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <button class="ticket px-3 py-2 m-2 border-0 rounded-3 btn-danger" data-ticket="<?= $t['id'][$e] ?>" data-id="<?= $t['user_id'][$e] ?>" data-store="<?= get_store_game_id($t['game_id'][$e]) ?>" data-game="<?= $t['game_id'][$e] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php } ?>
+                        <?php } ?>
                     <?php } ?>
                 <?php } ?>
             </tbody>

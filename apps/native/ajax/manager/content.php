@@ -46,6 +46,11 @@ if (empty($cl['is_logged'])) {
             $data['status'] = 500;
         }
         return $data;
+    } else if ($action === 'claim_delete') {
+        $prize = $_POST['prize'];
+        cl_db_delete_item(T_PRIZE, array(
+            'id' => $prize,
+        ));
     } elseif ($action === 'ticket') {
         $id = $_POST['id'];
         $store = $_POST['store'];

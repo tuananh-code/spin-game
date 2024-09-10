@@ -1,25 +1,25 @@
 $(document).ready(function () {
   // console.log(window.location.href);
   $("#reload").on("click", function () {
-    //upload file remove social
+    //upload file remove
     window.location.href = window.location.origin + "/social/spin";
   });
   $(".spin_prize").on("click", function () {
-    //upload file remove social
+    //upload file remove
     window.location.href = window.location.origin + "/social/spin_prize";
   });
   $(".game").on("click", function () {
-    //upload file remove social
+    //upload file remove
     window.location.href = window.location.origin + "/social/game";
   });
 
   $(".notify").on("click", function () {
-    //upload file remove social
+    //upload file remove
     window.location.href = window.location.origin + "/social/notifications";
   });
 
   $("#redirect").on("click", function () {
-    //upload file remove social
+    //upload file remove
     window.location.href = window.location.origin + "/social/spin_prize";
   });
 

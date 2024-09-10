@@ -459,6 +459,20 @@
 							if (data.status == 200) {
 								// handleDismissP();
 								cl_bs_notify("<?php echo cl_translate("Your changes has been successfully saved!"); ?>", 5000, "success");
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Add transaction success!"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								}).then((response) => {
+									if (response.isConfirmed) {
+										window.location.reload();
+									}
+								})
 								// } else if (data.err_code && data.err_code == 'invalid_phone') {
 								// 	_app_.qty_taken = true;
 

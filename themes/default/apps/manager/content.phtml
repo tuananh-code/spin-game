@@ -1,5 +1,25 @@
 <?php
 $prize = get_prize($me['id']);
+$store_id = get_store_id($me['id']);
+if ($store_id) {
+    foreach ($store_id as $s) {
+        $game_id = get_game_id($s);
+        if ($game_id) {
+            foreach ($game_id as $g) {
+                $is_owner = is_owner($g);
+                $ticket = get_ticket($g);
+                $ticket_check[] = get_ticket($g);
+                // var_dump($ticket);
+                if (@count($ticket) > 0) {
+                    $get_ticket[] = $ticket;
+                }
+            }
+        }
+    }
+} else {
+    $is_owner = null;
+    $ticket_check = null;
+}
 ?>
 <style>
     tbody>.tr:hover {
@@ -61,7 +81,7 @@ $prize = get_prize($me['id']);
         <?php //if (not_empty($cl['is_admin'])): 
         ?>
         <!-- Add translate in json -->
-        <?php if ($prize) { ?>
+        <?php if ($prize || $ticket_check) { ?>
             <?php echo cl_template('manager/includes/list_ticket'); ?>
             <?php echo cl_template('manager/includes/list_item'); ?>
         <?php } else { ?>

@@ -52,7 +52,7 @@
 				let value = parseFloat($(this).val());
 				this.value = this.value.replace(/[^0-9]/g, '');
 
-				var required = '<?php echo cl_translate("Total percent: "); ?>';
+				var required = '<?php echo cl_translate("Total percent"); ?>: ';
 				// Check if the value is a number
 				if (!isNaN(value)) {
 					// Check if the value has already been added
@@ -60,7 +60,6 @@
 						total += value; // Add the value to the total
 						addedValues.push(value); // Store the value to avoid duplicates
 					}
-					console.log($('.required-percent').length > 0);
 					if ($('.required-percent').length > 0) {
 						// If elements with the class exist, update their content
 						$('.required-percent').text(required + total + '%');
@@ -69,7 +68,7 @@
 						var b = `<b class='text-primary p-2 required-percent'>${required + total + '%'}</b>`;
 						$('.require-percent').append(b);
 					}
-				} else {}
+				} 
 			}
 		});
 		$('.require-stock').find('.bootstrap-tagsinput').find('input').on('keypress', function(e) {
@@ -93,7 +92,7 @@
 			if (!($("#event").val() && $("#prize").val() && $("#percent").val() && $("#stock").val())) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
-					text: "<?php echo cl_translate("Enter all the field required!"); ?>",
+					text: "<?php echo cl_translate("Enter all the field required"); ?>!",
 					icon: "error",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -114,7 +113,7 @@
 			if (store_id == 0) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Error"); ?>",
-					text: "<?php echo cl_translate("Try to add store before add condition!"); ?>",
+					text: "<?php echo cl_translate("Try to add store before add condition"); ?>!",
 					icon: "error",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -131,7 +130,7 @@
 			if (prizes.length !== percents.length) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
-					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+					text: "<?php echo cl_translate("Prize Percent and Stock not match Please check and try again"); ?>",
 					icon: "warning",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -143,7 +142,7 @@
 			} else if (prizes.length !== stocks.length) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
-					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+					text: "<?php echo cl_translate("Prize Percent and Stock not match Please check and try again"); ?>",
 					icon: "warning",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -161,7 +160,7 @@
 				if (parseFloat(arr[p]) < 0.01) {
 					Swal.fire({
 						title: "<?php echo cl_translate("Warning"); ?>",
-						html: "<h4 class='text-danger'><?php echo cl_translate("Percent allow >= 0.01"); ?>: ",
+						html: "<h4 class='text-danger'><?php echo cl_translate("Percent allow"); ?>: >= 0.01",
 						icon: "error",
 						allowOutsideClick: true,
 						showConfirmButton: true,
@@ -175,7 +174,7 @@
 			if (total > 100) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
-					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent > 100%. Please check and try again!"); ?>",
+					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent 100 Please check and try again"); ?>!",
 					icon: "error",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -187,7 +186,7 @@
 			} else if (total < 100) {
 				Swal.fire({
 					title: "<?php echo cl_translate("Failed"); ?>",
-					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent < 100%. Please check and try again!"); ?>",
+					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent below Please check and try again"); ?>!",
 					icon: "error",
 					allowOutsideClick: true,
 					showConfirmButton: true,
@@ -211,10 +210,21 @@
 					themes: themes
 				},
 				success: function(result) {
-					if (result.status == 200) {
+					if (result.status == 200 && result.mail) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Success"); ?>",
-							text: "<?php echo cl_translate("Add event success!"); ?>",
+							text: "<?php echo cl_translate("Add event and send mail success"); ?>!",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else if (result.status == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Add event success Mail failed to send check your app password"); ?>!",
 							icon: "success",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -225,7 +235,7 @@
 					} else if (result.status == 500) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Warning"); ?>",
-							text: "<?php echo cl_translate("Event already exist with store!"); ?>",
+							text: "<?php echo cl_translate("Event already exist with store"); ?>!",
 							icon: "warning",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -236,7 +246,7 @@
 					} else {
 						Swal.fire({
 							title: "<?php echo cl_translate("Failed"); ?>",
-							text: "<?php echo cl_translate("Error occurred, check your info before add!"); ?>",
+							text: "<?php echo cl_translate("Error occurred, check your info before add"); ?>!",
 							icon: "Error",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -341,7 +351,7 @@
 					if (result.status == 200) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Success"); ?>",
-							text: "<?php echo cl_translate("Add condition success!"); ?>",
+							text: "<?php echo cl_translate("Add condition success"); ?>!",
 							icon: "success",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -357,7 +367,7 @@
 					} else if (result.status == 500) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Warning"); ?>",
-							text: "<?php echo cl_translate("Event already exist with store!"); ?>",
+							text: "<?php echo cl_translate("Event already exist with store"); ?>!",
 							icon: "warning",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -368,7 +378,7 @@
 					} else {
 						Swal.fire({
 							title: "<?php echo cl_translate("Failed"); ?>",
-							text: "<?php echo cl_translate("Error occurred, check your info before add!"); ?>",
+							text: "<?php echo cl_translate("Error occurred, check your info before add"); ?>!",
 							icon: "Error",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -415,7 +425,7 @@
 					if (result.status == 200) {
 						Swal.fire({
 							title: "<?php echo cl_translate("Success"); ?>",
-							text: "<?php echo cl_translate("Publish event success!"); ?>",
+							text: "<?php echo cl_translate("Publish event success"); ?>!",
 							icon: "success",
 							allowOutsideClick: true,
 							showConfirmButton: true,
@@ -426,7 +436,7 @@
 					} else {
 						Swal.fire({
 							title: "<?php echo cl_translate("Warning"); ?>",
-							text: "<?php echo cl_translate("Something Wrong, Try again later!"); ?>",
+							text: "<?php echo cl_translate("Something Wrong Try again later"); ?>!",
 							icon: "warning",
 							allowOutsideClick: true,
 							showConfirmButton: true,
