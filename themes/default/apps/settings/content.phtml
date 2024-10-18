@@ -111,6 +111,22 @@
 				</div>
 			</div>
 		</a>
+		<a href="<?php echo cl_link("settings/phone"); ?>" class="profile-settings__link" data-spa="true">
+			<div class="nav-list-item">
+				<div class="lp">
+					<?php echo cl_ficon("phone"); ?>
+				</div>
+				<div class="mp">
+					<span class="preview-label"><?php echo cl_translate("Phone number"); ?></span>
+					<span class="preview-value">
+						<?php echo $me['phone'] ? $me['phone'] : 'Not available'; ?>
+					</span>
+				</div>
+				<div class="rp">
+					<?php echo cl_ficon("open"); ?>
+				</div>
+			</div>
+		</a>
 		<a href="<?php echo cl_link("settings/siteurl"); ?>" class="profile-settings__link" data-spa="true">
 			<div class="nav-list-item">
 				<div class="lp">
@@ -161,11 +177,11 @@
 					<span class="preview-value">
 						<?php if ($me['gender'] == 'M'): ?>
 							<?php echo cl_translate("Male"); ?>
-						<?php elseif($me['gender'] == 'F'): ?>
+						<?php elseif ($me['gender'] == 'F'): ?>
 							<?php echo cl_translate("Female"); ?>
-						<?php elseif($me['gender'] == 'T'): ?>
+						<?php elseif ($me['gender'] == 'T'): ?>
 							<?php echo cl_translate("They"); ?>
-						<?php elseif($me['gender'] == 'O'): ?>
+						<?php elseif ($me['gender'] == 'O'): ?>
 							<?php echo cl_translate("Other"); ?>
 						<?php endif; ?>
 					</span>
@@ -229,7 +245,7 @@
 				<div class="mp">
 					<span class="preview-label"><?php echo cl_translate("The country in which you live"); ?></span>
 					<span class="preview-value">
-						<?php echo($me['country_name']); ?>
+						<?php echo ($me['country_name']); ?>
 					</span>
 				</div>
 				<div class="rp">
@@ -268,7 +284,7 @@
 				<div class="mp">
 					<span class="preview-label"><?php echo cl_translate("Verify my account"); ?></span>
 					<span class="preview-value">
-						<?php echo cl_translate("Click to submit a verification request"); ?> 
+						<?php echo cl_translate("Click to submit a verification request"); ?>
 					</span>
 				</div>
 				<div class="rp">
@@ -369,7 +385,7 @@
 				<div class="mp">
 					<span class="preview-label"><?php echo cl_translate("Download my information"); ?></span>
 					<span class="preview-value">
-						<?php echo cl_translate("Please choose what information you want to download"); ?> 
+						<?php echo cl_translate("Please choose what information you want to download"); ?>
 					</span>
 				</div>
 				<div class="rp">
@@ -388,7 +404,7 @@
 				<div class="mp">
 					<span class="preview-label"><?php echo cl_translate("Delete profile"); ?></span>
 					<span class="preview-value">
-						<?php echo cl_translate("Click to confirm deletion of your profile"); ?> 
+						<?php echo cl_translate("Click to confirm deletion of your profile"); ?>
 					</span>
 				</div>
 				<div class="rp">
@@ -398,6 +414,3 @@
 		</a>
 	</div>
 </div>
-
-
-

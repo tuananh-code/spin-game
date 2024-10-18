@@ -49,3 +49,6 @@ define("T_STORE", "cl_store");
 define("T_PRIZE", "cl_prize");
 define("T_TICKET", "cl_ticket");
 define("T_TRANSACTION", "cl_transaction");
+define("T_POINTS_INFO", "cl_points_information");
+define("T_POINTS_DISTRI", "cl_points_distribution");
+define("T_POINTS_HISTORY", "cl_points_history");

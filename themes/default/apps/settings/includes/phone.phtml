@@ -1,0 +1,221 @@
+<link
+	rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
+<!-- <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script> -->
+<script src="https://apis.google.com/js/api.js"></script>
+<!-- <script>
+	// Initialize Firebase
+	var config = {
+		apiKey: "AIzaSyBhLQMV4xS6TOqAvdivU4zub0ODEoanIYE",
+		authDomain: "mycheery-3c657.firebaseapp.com",
+		projectId: "mycheery-3c657",
+		storageBucket: "mycheery-3c657.appspot.com",
+		messagingSenderId: "396864120602",
+		appId: "1:396864120602:web:ed134502569699c7c0aea3",
+		measurementId: "G-11BZSF2T99"
+	};
+	firebase.initializeApp(config);
+</script> -->
+<!-- <script type="module" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js"></script> -->
+
+<div class="timeline-container">
+	<div class="timeline-header" data-el="tl-header">
+		<div class="timeline-header__botline">
+			<div class="lp">
+				<div class="nav-link-holder">
+					<a href="<?php echo cl_link("settings/phone"); ?>" data-spa="true">
+						<?php echo cl_translate("User Phone number"); ?>
+					</a>
+				</div>
+			</div>
+			<div class="cp">
+				<a href="<?php echo cl_link("home"); ?>">
+					<img src="{%config site_logo%}" alt="Logo">
+				</a>
+			</div>
+			<div class="rp">
+				<div class="nav-link-holder">
+					<span class="go-back" onclick="SMColibri.go_back();">
+						<?php echo cl_ficon('arrow_back'); ?>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="profile-settings">
+		<div class="profile-settings__content">
+			<div class="settings-form">
+				<form class="form" id="cl-phone-settings-vue-app" v-on:submit="submit_form($event)">
+					<div id="recaptcha-container"></div>
+					<div class="form-group no-mb">
+						<label>
+							<?php echo cl_translate("Phone address"); ?>
+						</label>
+						<input id="phone" type="tel" class="form-control" name="phone" placeholder="<?php echo cl_translate("Enter your phone number"); ?>">
+						<div class="invalid-main-feedback" v-if="is_valid_phone">
+							{{invalid_feedback_phone}}
+						</div>
+					</div>
+					<div class="form-group" v-if="unsuccessful_attempt">
+						<div class="invalid-main-feedback">
+							<?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
+						</div>
+					</div>
+					<div class="form-group" v-else>
+						<div class="form-info-label">
+							<?php echo cl_translate("Please note that after changing the phone number, the phone number that you use during authorization will be replaced by a new one"); ?>
+						</div>
+					</div>
+					<input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
+					<div class="form-group no-mb d-flex">
+						<button v-if="submitting != true" v-bind:disabled="$v.$invalid == true" type="submit" class="ml-auto btn btn-custom main-inline lg">
+							<?php echo cl_translate("Verify"); ?>
+						</button>
+						<button v-else disabled="true" type="button" class="ml-auto btn btn-custom main-inline lg">
+							<?php echo cl_translate("Please wait"); ?>
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+	<script>
+		"use strict";
+
+		$(document).ready(function($) {
+
+
+			Vue.use(window.vuelidate.default);
+			var VueValids = window.validators;
+
+			new Vue({
+				el: "#cl-phone-settings-vue-app",
+				data: {
+					submitting: false,
+					unsuccessful_attempt: false,
+					invalid_feedback_phone: "",
+					phone: "",
+					doubling_phone: false,
+					phone_denied: false
+				},
+				computed: {
+					is_valid_phone: function() {
+						if (this.$v.phone.required == true && this.$v.phone.$error) {
+							this.invalid_feedback_phone = "<?php echo cl_translate("The phone number you entered does not match the valid format."); ?>";
+							return true;
+						} else if (this.doubling_phone == true) {
+							this.invalid_feedback_phone = "<?php echo cl_translate("This phone number is already taken"); ?>";
+							return true;
+						} else if (this.phone_denied == true) {
+							this.invalid_feedback_phone = "<?php echo cl_translate("This phone number is reserved and not available for use"); ?>";
+							return true;
+						} else {
+							this.invalid_feedback_phone = "";
+							return false;
+						}
+					}
+				},
+				validations: {
+					phone: {
+						required: VueValids.required,
+						// phone: VueValids.phone,
+						min_length: VueValids.minLength(8),
+						max_length: VueValids.maxLength(55),
+					}
+				},
+				mounted() {
+					const phoneInputField = document.querySelector("#phone");
+					const phoneInput = window.intlTelInput(phoneInputField, {
+						utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
+					});
+					this.phone = phoneInput;
+
+				},
+				methods: {
+					initClient() {
+						gapi.client.init({
+							'apiKey': 'YOUR_API_KEY',
+							'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+							'clientId': 'YOUR_CLIENT_ID',
+							'scope': 'https://www.googleapis.com/auth/contacts.readonly'
+						}).then(function() {
+							// Gọi API và thực hiện xác minh
+							gapi.client.people.people.get({
+								'resourceName': 'people/me',
+								'personFields': 'phoneNumbers,emailAddresses'
+							}).then(function(response) {
+								const userPhoneNumbers = response.result.phoneNumbers;
+								const userEmails = response.result.emailAddresses;
+
+								// Kiểm tra sự liên kết giữa số điện thoại và email
+								const userPhoneNumber = "+84357167898";
+								const userEmail = "toanthien978@gmail.com";
+
+								const isMatch = userPhoneNumbers.some(phone => phone.value === userPhoneNumber) && userEmails.some(email => email.value === userEmail);
+
+								if (isMatch) {
+									console.log('Số điện thoại và email được liên kết.');
+								} else {
+									console.log('Số điện thoại và email không được liên kết.');
+								}
+							});
+						});
+					},
+					submit_form: function(_self = null) {
+						_self.preventDefault();
+						var _app_ = this;
+						// const phoneNumber = this.phone.getNumber();
+						// console.log(phoneNumber);
+
+						gapi.load('client:auth2', () => {
+							gapi.client.init({
+								'apiKey': 'AIzaSyBhLQMV4xS6TOqAvdivU4zub0ODEoanIYE',
+								'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
+								'clientId': '396864120602-62lna41i7qu12neqebqndg59v267r4ka.apps.googleusercontent.com',
+								'scope': 'https://www.googleapis.com/auth/contacts.readonly'
+							}).then(() => {
+								gapi.client.people.people.get({
+									'resourceName': 'people/me',
+									'personFields': 'phoneNumbers,emailAddresses'
+								}).then((response) => {
+									const userPhoneNumbers = response.result.phoneNumbers;
+									const userEmails = response.result.emailAddresses;
+
+									// Kiểm tra sự liên kết giữa số điện thoại và email
+									const userPhoneNumber = "+84357167898";
+									const userEmail = "toanthien978@gmail.com";
+
+									const isMatch = userPhoneNumbers.some(phone => phone.value === userPhoneNumber) && userEmails.some(email => email.value === userEmail);
+
+									if (isMatch) {
+										console.log('Số điện thoại và email được liên kết.');
+									} else {
+										console.log('Số điện thoại và email không được liên kết.');
+									}
+								});
+							});
+						});
+
+						// thanh toán tiền , nhưng ếu có tiền
+						// let appVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+
+						// firebase.auth().signInWithPhoneNumber(phoneNumber, appVerifier)
+						// 	.then(confirmationResult => {
+						// 		let code = prompt('Enter the verification code sent to your phone:');
+						// 		return confirmationResult.confirm(code);
+						// 	})
+						// 	.then(result => {
+						// 		console.log('Phone number verified successfully:', result.user);
+						// 	})
+						// 	.catch(error => {
+						// 		console.error('Error verifying phone number:', error);
+						// 	});
+					}
+				}
+			});
+		});
+	</script>
+</div>

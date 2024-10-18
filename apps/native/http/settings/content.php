@@ -31,7 +31,7 @@ else{
 	$cl["blocked_users"] = cl_get_blocked_users();
 	$cl["settings_app"]  = fetch_or_get($_GET["sapp"], false);
 	$cl["settings_app"]  = (not_empty($cl["settings_app"])) ? cl_text_secure($cl["settings_app"]) : 0;
-	$cl["settings_apps"] = array("name", "email", "siteurl", "bio", "gender", "password", "language", "country", "city", "verification", "privacy", "notifications", "blocked", "delete", "information", "email_notifs", "cont_monetization");
+	$cl["settings_apps"] = array("phone", "name", "email", "siteurl", "bio", "gender", "password", "language", "country", "city", "verification", "privacy", "notifications", "blocked", "delete", "information", "email_notifs", "cont_monetization");
 	$cl["page_tab"] = fetch_or_get($_GET["stab"], false);
 
 

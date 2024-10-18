@@ -1,46 +1,8 @@
-<?php
-$id = $me['id'];
-$sql = "SELECT * FROM cl_store WHERE user_id = $id";
-$game = [];
-$result = conn()->query($sql);
-if ($result->num_rows > 0) {
-	$check = true;
-	foreach ($result as $row) {
-		$store_id[] = $row['id'];
-		$shop_name[] = $row['shop_name'];
-		$address[] = $row['address'];
-		$city[] = $row['city'];
-		$phone[] = $row['phone'];
-		$mail[] = $row['mail'];
-	}
-	foreach ($store_id as $id) {
-		$game_id = get_game_id_publish($id);
-		foreach ($game_id as $g) {
-			$game[] = get_game_name($g);
-			if (count($game) > 0) {
-				$store[] = get_store_name($id);
-				$sql_game = "SELECT * FROM cl_game WHERE id = $g";
-				$result_game = conn()->query(($sql_game));
-				if ($result_game->num_rows > 0) {
-					foreach ($result_game as $row_game) {
-						$id_game[] = $row_game['id'];
-						$status[] = $row_game['status'];
-						$expires_date[] = $row_game['expires_date'];
-						$created_at[] = $row_game['created_at'];
-					}
-				}
-			}
-		}
-	}
-} else {
-	$check = false;
-}
-?>
 <div class="settings-form" style="padding: 0 10px">
 	<form class="form" id="cl-name-settings-vue-app" v-on:submit="submit_form($event)">
 
 		<div class="form-group row" id='if-val2'>
-			<h6><?php echo cl_translate("CUSTOMER"); ?></label></h6>
+			<h6><?php echo cl_translate("CUSTOMER"); ?></h6>
 			<input v-model.trim="$v.time.$model" type="hidden" id="current_time" name="time">
 
 			<label><?php echo cl_translate("Customer code(Please leave blank if none):"); ?></label>
@@ -50,9 +12,9 @@ if ($result->num_rows > 0) {
 						<path style="fill: #3470b1;" d="m14.61 2.47-.077-.067a.748.748 0 0 0-.983.067l-.068.078a.755.755 0 0 0 .068.987l1.971 1.977H8.5l-.233.004C4.785 5.639 2 8.51 2 12.036c0 1.69.64 3.23 1.692 4.39l.072.069a.751.751 0 0 0 1.08-1.033l-.2-.231A5.009 5.009 0 0 1 3.5 12.035c0-2.771 2.239-5.018 5-5.018h6.881l-1.832 1.84-.067.078a.755.755 0 0 0 .068.987.748.748 0 0 0 1.06 0l3.182-3.193.067-.078a.755.755 0 0 0-.067-.987L14.61 2.47Zm5.62 5.101a.751.751 0 0 0-1.05 1.066 5.01 5.01 0 0 1 1.32 3.398c0 2.772-2.239 5.019-5 5.019H8.558l1.905-1.911.074-.086a.755.755 0 0 0-.007-.902l-.067-.077-.084-.073a.748.748 0 0 0-.9.006l-.076.067-3.182 3.194-.073.085a.755.755 0 0 0 .006.902l.067.077 3.182 3.194.084.072c.293.22.71.195.976-.073a.755.755 0 0 0 .068-.987l-.068-.077-1.899-1.906H15.5l.233-.004C19.215 18.432 22 15.56 22 12.035a6.513 6.513 0 0 0-1.697-4.395l-.073-.069Z" fill="#212121"></path>
 					</svg> </span>
 				<input v-model.trim="$v.ccode.$model" name="ccode" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 12345678910"); ?>">
-				<div class="invalid-main-feedback" v-if="is_valid_ccode">
-					{{invalid_feedback_ccode}}
-				</div>
+			</div>
+			<div class="invalid-main-feedback" v-if="is_valid_ccode">
+				{{invalid_feedback_ccode}}
 			</div>
 		</div>
 		<div class="row" id='if-val1'>
@@ -102,21 +64,38 @@ if ($result->num_rows > 0) {
 			</div>
 			<div class="col-sm-6">
 				<div class="form-group">
-					<label><?php echo cl_translate("Select store and event"); ?></label>
-					<select name="game_id" id="game" class="form-select">
-						<?php if ($game && count($game) > 0) { ?>
-							<?php for ($i = 0; $i < count($game); $i++) { ?>
-								<option value="<?= $id_game[$i] ?>"><?= $store[$i] ?>: <?= $game[$i] ?></option>
+					<label><?php echo cl_translate("Select store:*"); ?></label>
+					<select v-model.trim="$v.store.$model" name="store" id="store" class="form-select">
+						<?php if ($cl["stores"]) : ?>
+							<?php foreach ($cl["stores"] as $store) { ?>
+								<option value="<?= $store['id'] ?>"><?= $store["shop_name"] ?></option>
 							<?php } ?>
-						<?php } else { ?>
-							<option value="0"><?php echo cl_translate("No store available, try to add store first"); ?></option>
-						<?php } ?>
+						<?php endif ?>
+						<option value="0"><?php echo cl_translate("Please select a store."); ?></option>
 					</select>
+					<div class="invalid-main-feedback" v-if="is_valid_store">
+						{{invalid_feedback_store}}
+					</div>
 				</div>
+			</div>
+			<div class="col-sm-6" v-if="process_gift">
+				<!-- <label><?php echo cl_translate("Gift my points(only 1 choice or no choice)"); ?></label> -->
+				<div class="form-group">
+					<label><?php echo cl_translate("Gift my points manually"); ?>({{symbol_my_points}})</label>
+					<input v-model.trim="$v.my_points.$model" :disabled="auto" min='0' name="my_points" type="number" class="form-control" step="any" placeholder="<?php echo cl_translate("Enter Gift Points here"); ?>">
+					<div class="invalid-main-feedback" v-if="is_valid_my_points">
+						{{invalid_feedback_my_points}}
+					</div>
+				</div>
+				<!-- <div class="form-group col-sm-6">
+						<label><?php echo cl_translate("Automatically"); ?></label>
+						<input v-model.trim="$v.auto.$model" :disabled="my_points !== ''" name="points" type="checkbox">
+					</div> -->
+
 			</div>
 		</div>
 		<div class="row">
-			<h6><?php echo cl_translate("PRODUCT"); ?></label></h6>
+			<h6><?php echo cl_translate("PRODUCT"); ?></h6>
 			<div class="form-group">
 				<label><?php echo cl_translate("Product code(Please leave blank if none):"); ?></label>
 				<div class="" style="position: relative;">
@@ -125,11 +104,10 @@ if ($result->num_rows > 0) {
 							<path style="fill: #3470b1;" d="m14.61 2.47-.077-.067a.748.748 0 0 0-.983.067l-.068.078a.755.755 0 0 0 .068.987l1.971 1.977H8.5l-.233.004C4.785 5.639 2 8.51 2 12.036c0 1.69.64 3.23 1.692 4.39l.072.069a.751.751 0 0 0 1.08-1.033l-.2-.231A5.009 5.009 0 0 1 3.5 12.035c0-2.771 2.239-5.018 5-5.018h6.881l-1.832 1.84-.067.078a.755.755 0 0 0 .068.987.748.748 0 0 0 1.06 0l3.182-3.193.067-.078a.755.755 0 0 0-.067-.987L14.61 2.47Zm5.62 5.101a.751.751 0 0 0-1.05 1.066 5.01 5.01 0 0 1 1.32 3.398c0 2.772-2.239 5.019-5 5.019H8.558l1.905-1.911.074-.086a.755.755 0 0 0-.007-.902l-.067-.077-.084-.073a.748.748 0 0 0-.9.006l-.076.067-3.182 3.194-.073.085a.755.755 0 0 0 .006.902l.067.077 3.182 3.194.084.072c.293.22.71.195.976-.073a.755.755 0 0 0 .068-.987l-.068-.077-1.899-1.906H15.5l.233-.004C19.215 18.432 22 15.56 22 12.035a6.513 6.513 0 0 0-1.697-4.395l-.073-.069Z" fill="#212121"></path>
 						</svg> </span>
 					<input v-model.trim="$v.pcode.$model" name="pcode" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 12345678910"); ?>">
-					<div class="invalid-main-feedback" v-if="is_valid_pcode">
-						{{invalid_feedback_pcode}}
-					</div>
 				</div>
-
+				<div class="invalid-main-feedback" v-if="is_valid_pcode">
+					{{invalid_feedback_pcode}}
+				</div>
 
 			</div>
 

@@ -1,0 +1,196 @@
+<div class="settings-form" style="padding: 0 10px">
+	<form class="form" id="cl-name-settings-vue-app" v-on:submit="submit_form($event)">
+		<div class="form-group row">
+			<label><?php echo cl_translate("Select store:"); ?></label>
+			<select v-model.trim="$v.store.$model" name="store" id="store" class="form-select">
+				<?php if ($cl["stores"]) : ?>
+					<?php foreach ($cl["stores"] as $store) { ?>
+						<option value="<?= $store['id'] ?>"><?= $store["shop_name"] ?></option>
+					<?php } ?>
+				<?php endif ?>
+				<option value="0"><?php echo cl_translate("Please select a store."); ?></option>
+			</select>
+			<div class="invalid-main-feedback" v-if="is_valid_store">
+				{{invalid_feedback_store}}
+			</div>
+		</div>
+
+		<div v-if="isVisible">
+			<div v-if="is_new">
+				<span class="information-details">
+					<?php echo cl_translate("Create new."); ?>
+				</span>
+			</div>
+			<div v-if="is_change">
+				<span class="information-details">
+					<?php echo cl_translate("Change."); ?>
+				</span>
+				<div class="col-sm-6">
+					<span class="information-details">
+						<?php echo cl_translate("Remaining points:"); ?>
+						{{rest_point}}
+					</span>
+				</div>
+			</div>
+			<div class="form-group row">
+
+				<h6><?php echo cl_translate("iNFORMATION"); ?></label></h6>
+				<input v-model.trim="$v.time.$model" type="hidden" id="current_time" name="time">
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Point Name"); ?></label>
+						<input v-model.trim="$v.name.$model" name="name" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter Point name"); ?>">
+						<div class="invalid-main-feedback" v-if="is_valid_name">
+							{{invalid_feedback_name}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Symbol (It will be written after the point):*"); ?></label>
+						<input v-model.trim="$v.symbol.$model" name="symbol" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter symbol"); ?>">
+						<div class="invalid-main-feedback" v-if="is_valid_symbol">
+							{{invalid_feedback_symbol}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Total Point Rewards Issued(leave it blank if you don't want to limit it):"); ?></label>
+						<input v-model.trim="$v.rewards.$model" name="rewards" type="number" class="form-control" placeholder="<?php echo cl_translate("Enter point rewards"); ?>">
+						<div class="invalid-main-feedback" v-if="is_valid_rewards">
+							{{invalid_feedback_rewards}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Scoring process"); ?></label>
+						<select v-model.trim="selectedProcess" @change="handleProcessChange" name="process" id="process" class="form-select">
+							<option value="0"><?php echo cl_translate("Execute manually."); ?></option>
+							<option value="1"><?php echo cl_translate("Auto Execution"); ?></option>
+							<option value="2"><?php echo cl_translate("Execute both options."); ?></option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<div class="row" v-if="is_val_process">
+				<h6><?php echo cl_translate("AUTOMATIC SCORING PROCESS"); ?></h6>
+				<p v-if="is_change"><?php echo cl_translate("Changes do not apply to previously scored customers."); ?></p>
+				<p v-if="is_new"><?php echo cl_translate("Existing customers will be scored immediately, while future customers will be scored after you add a new order,until no more Point."); ?></p>
+				<h6><?php echo cl_translate("Limit"); ?></h6>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Date and time begin:*"); ?></label>
+						<input v-model.trim="$v.begin.$model" name="begin" type="datetime-local" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_begin">
+							{{invalid_feedback_begin}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Date and time end(Please leave blank if you do not want a time limit):"); ?></label>
+						<input v-model.trim="$v.end.$model" name="end" type="datetime-local" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_end">
+							{{invalid_feedback_end}}
+						</div>
+					</div>
+				</div>
+
+				<div class="col-sm-6">
+
+					<div class="form-group">
+						<label><?php echo cl_translate("Product codes(Please leave blank to apply on all items):"); ?></label>
+						<div class="" style="position: relative;">
+							<span @click="addHtmlInput" class="publication-repost__icon tick">
+								✓
+							</span>
+							<input v-model.trim="$v.pcode.$model" name="pcode" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 12345678910"); ?>">
+						</div>
+						<div class="invalid-main-feedback" v-if="is_valid_pcode">
+							{{invalid_feedback_pcode}}
+						</div>
+
+					</div>
+				</div>
+				<p><?php echo cl_translate("List product code:"); ?></p>
+				<div class="form-group" v-for="(pcode, index) in pcode_array" :key="index">
+					<div class="col-sm-12">
+						<div style="position: relative;">
+							<span class="publication-repost__icon tick" @click="removePcode(index)">X</span>
+							<input type=" text" name="pcode_array[]" v-model="pcode_array[index]" class="form-control">
+						</div>
+					</div>
+				</div>
+				<h6><?php echo cl_translate("Scoring criteria"); ?></h6>
+				<p><?php echo cl_translate("Leave blank if you do not want to use criteria."); ?></p>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Product quantity:"); ?></label>
+						<input v-model.trim="$v.qty.$model" min="0" name="qty" type="number" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_qty">
+							{{invalid_feedback_qty}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("The number of different items:"); ?></label>
+						<input v-model.trim="$v.items.$model" min="0" name="items" type="number" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_items">
+							{{invalid_feedback_items}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Amount paid:"); ?></label>
+						<input v-model.trim="$v.paid.$model" name="paid" type="text" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_paid">
+							{{invalid_feedback_paid}}
+						</div>
+					</div>
+				</div>
+				<h6><?php echo cl_translate("Evaluate"); ?></h6>
+				<p><?php echo cl_translate("Points will be provided if..."); ?></p>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Meet each criterion:"); ?></label>
+						<input v-model.trim="$v.meet_1.$model" name="meet_1" type="number" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_meet_1">
+							{{invalid_feedback_meet_1}}
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-6">
+					<div class="form-group">
+						<label><?php echo cl_translate("Meet all criterion:"); ?></label>
+						<input v-model.trim="$v.meet_all.$model" name="meet_all" type="number" class="form-control">
+						<div class="invalid-main-feedback" v-if="is_valid_meet_all">
+							{{invalid_feedback_meet_all}}
+						</div>
+					</div>
+				</div>
+				<p><?php echo cl_translate("Gift points are awarded when all criteria are met individually and when completed collectively. The points earned include points for each criterion met and bonus points for completing all criteria."); ?></p>
+			</div>
+			<div class="form-group" v-if="unsuccessful_attempt">
+				<div class="invalid-main-feedback">
+					<?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
+				</div>
+			</div>
+			<input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
+			<div class="form-group no-mb d-flex">
+				<button v-if="submitting != true" v-bind:disabled="$v.$invalid == true" type="submit" class="ml-auto btn btn-custom main-inline lg">
+					<?php echo cl_translate("Save"); ?>
+				</button>
+				<button v-else disabled="true" type="button" class="ml-auto btn btn-custom main-inline lg">
+					<?php echo cl_translate("Please wait"); ?>
+				</button>
+			</div>
+		</div>
+
+
+	</form>
+</div>

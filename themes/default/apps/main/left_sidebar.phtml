@@ -1,7 +1,7 @@
 <div class="left-sb-container sidebar" data-app="left-sidebar">
 	<div class="sidebar__inner">
 		<div class="sidebar__nav">
-			<div class="sidebar__nav-group">
+			<div class="sidebar__nav-group" style="padding-left: 10%;">
 				<div data-navitem="home" class="sidebar__nav-item <?php if ($cl['pn'] == 'home') {
 																		echo ('active');
 																	} ?>">
@@ -58,8 +58,8 @@
 				<!-- spin -->
 				<!-- spin_prize -->
 				<div data-navitem="spin_prize" id="" class="spin_prize sidebar__nav-item <?php if ($cl['pn'] == 'spin_prize') {
-																							echo ('active');
-																						} ?>">
+																								echo ('active');
+																							} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('gamepad'); ?>
 					</span>
@@ -83,27 +83,42 @@
 						</a>
 					</span>
 				</div>
+
 				<!-- manage -->
-				<?php //if ($cl['is_admin']) { 
-				?>
-				<div data-navitem="manage" class="manage sidebar__nav-item <?php if ($cl['pn'] == 'manage') {
-																				echo ('active');
-																			} ?>">
-					<span class="icon">
-						<?php echo cl_ficon('users_list'); ?>
-					</span>
-					<span class="text">
-						<a href="<?php echo cl_link('manage'); ?>" data-spa="true">
-							<?php echo cl_translate('Manage'); ?>
-						</a>
-					</span>
-				</div>
-				<?php //} 
-				?>
-				<!-- manage -->
+				<?php if ($cl['is_admin']) : ?>
+					<div data-navitem="manage" class="manage sidebar__nav-item <?php if ($cl['pn'] == 'manage') {
+																					echo ('active');
+																				} ?>">
+						<span class="icon">
+							<?php echo cl_ficon('users_list'); ?>
+						</span>
+						<span class="text">
+							<a href="<?php echo cl_link('manage'); ?>" data-spa="true">
+								<?php echo cl_translate('Manage'); ?>
+							</a>
+						</span>
+					</div>
+				<?php endif ?>
+				<!--end manage -->
+				<!-- point system -->
+				<!-- <?php if ($cl['is_admin']) : ?>
+					<div data-navitem="point_system" class="sidebar__nav-item <?php if ($cl['pn'] == 'point_system') {
+																					echo ('active');
+																				} ?>">
+						<span class="icon">
+							<?php echo cl_ficon('award_star'); ?>
+						</span>
+						<span class="text">
+							<a href="<?php echo cl_link('point_system'); ?>" data-spa="true">
+								<?php echo cl_translate('My point system'); ?>
+							</a>
+						</span>
+					</div>
+				<?php endif ?> -->
+				<!--end point system -->
 				<div data-navitem="notifications" class="notify sidebar__nav-item <?php if ($cl['pn'] == 'notifications') {
-																				echo ('active');
-																			} ?>">
+																						echo ('active');
+																					} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('notifications'); ?>
 					</span>

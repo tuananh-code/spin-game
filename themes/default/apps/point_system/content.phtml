@@ -13,32 +13,33 @@
 	}
 </script> -->
 <style>
-	.dismiss,
-	.dismiss_p {
+	.tick {
 		padding: 0;
 		margin: 0;
-		width: 30px;
-		height: 30px;
+		width: 40px;
+		height: 40px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
 		border-radius: 100%;
 		position: absolute;
+		font-size: 20px;
 		right: 3%;
-		top: 12px;
+		top: 7px;
+
+		color: #06b6f9;
 	}
 
 	h6 {
 		font-weight: bold;
 	}
 
-
 	.user-name-holder__name {
 		color: #0461bf;
 	}
 
-	.transaction-details {
+	.information-details {
 		color: #3d72ab;
 	}
 
@@ -66,7 +67,13 @@
 		color: #496389;
 	}
 
+	a.disabled {
+		pointer-events: none;
+		cursor: default;
+	}
+
 	select.form-select {
+		max-width: 100%;
 		height: 52px;
 		border: none;
 		border-radius: 0px;
@@ -78,23 +85,31 @@
 		color: var(--cl-primary-text-color);
 	}
 
+	option {
+		display: block;
+		padding: 5px;
+		white-space: normal;
+		word-wrap: break-word;
+		overflow-wrap: break-word;
+		max-width: 200px;
+	}
+
 	.notifications-data__topline {
 		border-right: 1px solid var(--cl-primary-border-color);
 		padding: 0 10px;
 	}
 
-	.dismiss:hover,
-	.dismiss_p:hover {
-		background: var(--cl-secondary-bg-color);
+	.tick:hover {
+		background: #a2efa2;
 	}
 </style>
-<div class="timeline-container" data-app="manage">
+<div class="timeline-container" data-app="point_system">
 	<div class="timeline-header" data-el="tl-header">
 		<div class="timeline-header__botline">
 			<div class="lp">
 				<div class="nav-link-holder">
-					<a href="<?php echo cl_link("manage"); ?>" data-spa="true">
-						<?php echo cl_translate("Manage"); ?>
+					<a href="<?php echo cl_link("point_system"); ?>" data-spa="true">
+						<?php echo cl_translate("My point system"); ?>
 					</a>
 				</div>
 			</div>
@@ -151,72 +166,77 @@
 		</div>
 	</div>
 	<div class="timeline-navbar">
-		<?php if ($cl['page_tab'] == 'edit_invoice'): ?>
-			<div class="timeline-navbar__item">
-				<a href="<?php echo cl_link("list"); ?>" data-spa="true">
-					<button class="timeline-navbar__item-btn active">
-						<span class="btn-flex-inner">
-							<?php echo cl_translate("Edit invoice"); ?>
-						</span>
-					</button>
-				</a>
-			</div>
-		<?php else: ?>
-			<div class="timeline-navbar__item">
-				<a href="<?php echo cl_link("manage"); ?>" data-spa="true">
-					<button class="timeline-navbar__item-btn <?php
-																if ($cl['page_tab'] == 'inv') {
-																	echo ('active');
-																} ?>">
-						<span class="btn-flex-inner">
-							<?php echo cl_translate("Enter invoice"); ?>
-						</span>
-					</button>
-				</a>
-			</div>
-
-		<?php endif ?>
-		<div class="timeline-navbar__item <?php if ($cl['page_tab'] == 'edit_invoice') {
-												echo ('hide');
-											} ?>">
-			<a href="<?php echo cl_link("list"); ?>" data-spa="true">
-				<button id='list' class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'list') {
+		<div class="timeline-navbar__item">
+			<a href="<?php echo cl_link("point_system"); ?>" data-spa="true">
+				<button id='list' class="timeline-navbar__item-btn <?php
+																	if ($cl['page_tab'] == 'list') {
 																		echo ('active');
 																	} ?>">
 					<span class="btn-flex-inner">
-						<?php echo cl_translate("List"); ?>
+						<?php echo cl_translate("Distribution list"); ?>
+					</span>
+				</button>
+			</a>
+		</div>
+		<div class="timeline-navbar__item">
+			<a href="<?php echo cl_link("point_new"); ?>" data-spa="true">
+				<button class="timeline-navbar__item-btn <?php
+															if ($cl['page_tab'] == 'new') {
+																echo ('active');
+															} ?>">
+					<span class="btn-flex-inner">
+						<?php echo cl_translate("Point system"); ?>
+					</span>
+				</button>
+			</a>
+		</div>
+
+		<div class="timeline-navbar__item">
+			<a href="" data-spa="true" class="disabled">
+				<button class="timeline-navbar__item-btn <?php if ($cl['page_tab'] == 'edit') {
+																echo ('active');
+															} ?>">
+					<span class="btn-flex-inner">
+						<?php echo cl_translate("Edit point system"); ?>
 					</span>
 				</button>
 			</a>
 		</div>
 	</div>
 
-	<div class="d-block" id="vue-manage-app" style="padding: 30px;">
-		<div class="manage">
-
+	<div class="d-block" id="vue-point_system-app" style="padding: 30px;">
+		<div class="point_system">
 			<?php if ($cl['page_tab'] == 'list'): ?>
-				<?php if (not_empty($cl["transactions"])): ?>
-					<div data-an="transactions-list" class="manage-list">
-						<?php foreach ($cl["transactions"] as $cl['li']): ?>
-							<?php echo cl_template('manage/includes/list_item'); ?>
+				<?php if (not_empty($cl["information"])): ?>
+					<div data-an="information-list" class="point_system-list">
+						<?php foreach ($cl["information"] as $cl['li']): ?>
+							<?php echo cl_template('point_system/includes/list_item'); ?>
 						<?php endforeach; ?>
 					</div>
 				<?php else: ?>
-					<?php echo cl_template('manage/includes/no_notifs'); ?>
+					<?php echo cl_template('point_system/includes/no_notifs'); ?>
 				<?php endif; ?>
-			<?php elseif ($cl['page_tab'] == 'edit_invoice'): ?>
-				<?php echo cl_template('manage/includes/edit'); ?>
+			<?php elseif ($cl['page_tab'] == 'new'): ?>
+				<?php echo cl_template('point_system/includes/create'); ?>
 			<?php else: ?>
-				<?php echo cl_template('manage/includes/create'); ?>
+				<?php if (not_empty($cl["list_distris"])): ?>
+					<div data-an="distris-list" class="point_system-list">
+						<?php foreach ($cl["list_distris"] as $cl['li']): ?>
+							<?php echo cl_template('point_system/includes/list_distris'); ?>
+						<?php endforeach; ?>
+					</div>
+				<?php else: ?>
+					<?php echo cl_template('point_system/includes/no_notifs'); ?>
+				<?php endif; ?>
 			<?php endif; ?>
 
 		</div>
-		<?php if (count($cl["transactions"]) >= 45 && $cl['page_tab'] == 'list'): ?>
+		<?php if (count($cl["information"]) >= 45 && $cl['page_tab'] == 'list'): ?>
 			<div class="timeline-data-loader">
 				<button v-if="loading" class="timeline-data-loader__btn" disabled="true">
 					<?php echo cl_translate("Please wait"); ?>
 				</button>
-				<button v-else-if="loadmore" class="timeline-data-loader__btn" v-on:click="load_manage">
+				<button v-else-if="loadmore" class="timeline-data-loader__btn" v-on:click="load_point_system">
 					<?php echo cl_translate("Show more"); ?>
 				</button>
 				<button v-else class="timeline-data-loader__btn" disabled="true">
@@ -225,5 +245,5 @@
 			</div>
 		<?php endif; ?>
 	</div>
-	<?php echo cl_template('manage/scripts/app_master_script'); ?>
+	<?php echo cl_template('point_system/scripts/app_master_script'); ?>
 </div>

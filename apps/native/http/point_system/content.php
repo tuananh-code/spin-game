@@ -27,27 +27,38 @@ if (empty($cl["is_logged"])) {
 	require_once cl_full_path("apps/native/http/err404/content.php");
 }
 else {
-	require_once(cl_full_path("core/apps/manage/app_ctrl.php"));
-	$cl["page_tab"]   = fetch_or_get($_GET["page"], "notifs");
-	$cl["page_title"] = cl_translate("Manage");
+	require_once(cl_full_path("core/apps/point_system/app_ctrl.php"));
+	$cl["page_tab"]   = fetch_or_get($_GET["page"], "inv");
+	$cl["page_title"] = cl_translate("My point system");
 	$cl["page_desc"]  = $cl["config"]["description"];
 	$cl["page_kw"]    = $cl["config"]["keywords"];
-	$cl["pn"]         = "manage";
+	$cl["pn"]         = "point_system";
 	$cl["sbr"]        = true;
 	$cl["sbl"]        = true;
-	$cl["transactions"]     = cl_get_transactions(array(
+	$cl["information"]     = cl_get_information(array(
 		"limit"       => 50
 	));
+	$cl["symbol"]        = '';
+	$cl["list_distris"] = ($cl["page_tab"] == 'edit') ? cl_get_distris(array('id' => $_GET["id"])) : '';
+	if ($cl["list_distris"]) {
+		foreach ($cl["list_distris"] as $key => $value) {
+			if ($value === []) {
+				$cl["list_distris"][$key] = [];
+			} else if ($value === 0) {
+				$cl["list_distris"][$key] = 0;
+			} else if (!$value) {
+				$cl["list_distris"][$key] = '';
+			}
+		}
 
-	$cl["edit_details"] = ($cl["page_tab"] == 'edit_invoice') ? cl_get_transaction_details($_GET["id"]) : '';
-	if ($cl["edit_details"]) {
-		foreach ($cl["edit_details"] as $key => $value) {
-			if (!$value) {
-				$cl["edit_details"][$key] = '';
+		foreach ($cl["information"] as $item) {
+			if ($item["id"] === $_GET["id"]) {
+				$cl["symbol"] = $item["symbol"];
+				break;
 			}
 		}
 	}
 	$cl["stores"] = cl_get_list_stores();
-	$cl["total_transactions"] = cl_get_total_transactions($cl["page_tab"]);
-	$cl["http_res"]     = cl_template("manage/content");
+	$cl["total_information"] = cl_get_total_information($cl["page_tab"]);
+	$cl["http_res"]     = cl_template("point_system/content");
 }

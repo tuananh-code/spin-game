@@ -26,6 +26,23 @@ function fetch_or_get(&$var, $alt = null) {
     }
 }
 
+function formattedDateTime(&$var, $alt = null)
+{
+    if (empty($var) != true) {
+        list($datePart, $timePart) = explode('T', $var);
+
+        list($hour, $minute) = explode(':', $timePart);
+        if (strlen($minute) === 1) {
+            $minute = '0' . $minute;
+        }
+
+        $formattedDateTime = $datePart . ' ' . $hour . ':' . $minute . ':00';
+        return $formattedDateTime;
+    } else {
+        return $alt;
+    }
+}
+
 function cl_strf() { 
 	return call_user_func_array("sprintf", func_get_args());
 }

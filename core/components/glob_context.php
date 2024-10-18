@@ -72,6 +72,7 @@ $applications       = array(
   "monetization" => true,
   "subscription" => true,
   "manage" => true,
+  "point_system" => true,
   "edit_invoice" => true,
   "list" => true,
   "spa_load" => true

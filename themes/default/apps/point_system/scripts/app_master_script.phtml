@@ -1,0 +1,475 @@
+<script>
+	"use strict";
+
+	$(document).ready(function($) {
+		var userDate = new Date();
+		var userTimezoneOffset = userDate.getTimezoneOffset() * 60000; // Chuyển đổi phút sang mili giây
+
+		var userTime = new Date(userDate.getTime() - userTimezoneOffset);
+		var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
+		Vue.use(window.vuelidate.default);
+		var VueValids = window.validators;
+
+		SMColibri.PS.point_system = new Vue({
+			el: "#vue-point_system-app",
+			data: {
+				selected: {},
+				loading: false,
+				loadmore: true,
+				type: '<?php echo ($cl["page_tab"]); ?>',
+				total_information: '<?php echo ($cl['total_information']); ?>',
+				selectedProcess: 0,
+				is_val_process: false,
+				submitting: false,
+				unsuccessful_attempt: false,
+				invalid_feedback_name: "",
+				invalid_feedback_symbol: "",
+				invalid_feedback_rewards: "",
+				invalid_feedback_begin: "",
+				invalid_feedback_end: "",
+				invalid_feedback_pcode: "",
+				invalid_feedback_qty: "",
+				invalid_feedback_items: "",
+				invalid_feedback_paid: "",
+				invalid_feedback_meet_1: "",
+				invalid_feedback_meet_all: "",
+				pcode: '',
+				id: '',
+				pcode_array: [],
+				store: 0,
+				name: '',
+				symbol: '',
+				rewards: "",
+				time: formattedTime,
+				begin: '',
+				end: '',
+				qty: '',
+				items: '',
+				paid: '',
+				meet_1: "",
+				meet_all: '',
+				used_point: '',
+				rest_point: '',
+				ccode_exist: false,
+				points_format: false,
+				points_owned: false,
+				isVisible: false,
+				is_new: false,
+				is_change: false,
+
+				ccode_format: false
+			},
+			mounted() {
+				$('.tick').on('click', this.addHtmlInput);
+			},
+			computed: {
+				is_valid_rewards: function() {
+					if (this.$v.rewards.$error) {
+						this.invalid_feedback_rewards = "<?php echo cl_translate("Points are numbers, other symbols are not accepted."); ?>";
+						return true;
+					} else if (this.points_owned == true) {
+						this.invalid_feedback_rewards = "<?php echo cl_translate("You are not cheery enough."); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_rewards = "";
+						return false;
+					}
+				},
+				is_valid_name: function() {
+					if (this.$v.name.$error) {
+						this.invalid_feedback_name = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_name = "";
+						return false;
+					}
+
+				},
+				is_valid_qty: function() {
+					// if (this.$v.qty.$error) {
+					// 	this.invalid_feedback_qty = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+					// 	return true;
+					// } else {
+					// 	this.invalid_feedback_qty = "";
+					// 	return false;
+					// }
+
+				},
+				is_valid_items: function() {
+					// if (this.$v.items.$error) {
+					// 	this.invalid_feedback_items = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+					// 	return true;
+					// } else {
+					// 	this.invalid_feedback_items = "";
+					// 	return false;
+					// }
+
+				},
+				is_valid_paid: function() {
+					var value = this.paid;
+					if (value) {
+						var cleanValue = parseInt(value.replace(/\,/g, ''));
+						if (typeof cleanValue === 'number' && !isNaN(cleanValue)) {
+							var formattedValue = cleanValue.toLocaleString('zh-TW')
+						}
+					} else {
+						var formattedValue = 0
+					}
+
+					this.paid = formattedValue;
+					// if (this.$v.paid.$error) {
+					// 	this.invalid_feedback_paid = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+					// 	return true;
+					// } else {
+					// 	this.invalid_feedback_paid = "";
+					// 	return false;
+					// }
+
+				},
+				is_valid_meet_1: function() {
+					// if (this.$v.meet_1.$error) {
+					// 	this.invalid_feedback_meet_1 = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+					// 	return true;
+					// } else {
+					// 	this.invalid_feedback_meet_1 = "";
+					// 	return false;
+					// }
+				},
+				is_valid_meet_all: function() {
+					// if (this.$v.meet_all.$error) {
+					// 	this.invalid_feedback_meet_all = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+					// 	return true;
+					// } else {
+					// 	this.invalid_feedback_meet_all = "";
+					// 	return false;
+					// }
+				},
+				is_valid_begin: function() {
+					if (this.$v.begin.$error) {
+						this.invalid_feedback_begin = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_begin = "";
+						return false;
+					}
+
+				},
+				is_valid_end: function() {
+					if (this.$v.end.$error) {
+						this.invalid_feedback_end = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_end = "";
+						return false;
+					}
+
+				},
+				is_valid_pcode: function() {
+					if (this.$v.pcode.$error) {
+						this.invalid_feedback_pcode = "<?php echo cl_translate("Please enter your name, which is from 2 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_pcode = "";
+						return false;
+					}
+
+				},
+				is_valid_symbol: function() {
+					if (this.$v.symbol.$error) {
+						this.invalid_feedback_symbol = "<?php echo cl_translate("Please enter your name, which is from 1 to 5 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_symbol = "";
+						return false;
+					}
+
+				},
+				is_valid_store: function() {
+					this.isVisible = false;
+					if (this.$v.store.$error) {
+						this.invalid_feedback_store = "<?php echo cl_translate("Please select a store."); ?>";
+						return true;
+					} else if (this.store_error == true) {
+						this.invalid_feedback_store = "<?php echo cl_translate("An error occurred please come back later."); ?>";;
+						return false;
+					} else if (this.store == 0) {
+						this.invalid_feedback_store = "";
+					} else {
+						var _app_ = this;
+						$.ajax({
+							url: '<?php echo cl_link("native_api/point_system/get_system"); ?>',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								store_id: this.store,
+							},
+							beforeSend: function() {
+								// _app_.loading = true;
+							}
+						}).done(function(data) {
+
+							if (data.status == 200) {
+
+								let system = data.system;
+								if (system) {
+									_app_.begin = system.begin;
+									_app_.end = system.end;
+									_app_.id = system.id;
+									_app_.items = system.items;
+									_app_.meet_1 = system.meet_1;
+									_app_.meet_all = system.meet_all;
+									_app_.name = system.name;
+									_app_.paid = system.paid.toString();
+									_app_.pcodes = system.pcodes ? json_decode(system.pcodes) : [];
+									_app_.selectedProcess = system.process;
+									_app_.qty = system.qty;
+									_app_.rewards = system.rewards;
+									_app_.symbol = system.symbol;
+									_app_.rest_point = system.rest_point ? system.rest_point : 'UNLIMIT';
+									_app_.is_new = false;
+									_app_.is_change = true;
+									_app_.is_val_process = system.process ? true : false;
+								} else {
+									_app_.is_new = true;
+									_app_.is_change = false;
+								}
+
+							} else {
+
+							}
+						}).always(function() {
+							// _app_.loading = false;
+						});
+						this.invalid_feedback_store = "";
+						this.isVisible = true;
+						return false;
+					}
+				},
+
+			},
+			validations: {
+				time: {},
+				begin: {},
+				end: {},
+				pcode: {},
+				qty: {},
+				items: {},
+				paid: {},
+				meet_1: {},
+				meet_all: {},
+				store: {
+					required: VueValids.required,
+					min_val: VueValids.minValue(1)
+				},
+				rewards: {
+					is_num: VueValids.decimal,
+					min_val: VueValids.minValue(0)
+				},
+				name: {
+					// required: VueValids.required,
+					min_length: VueValids.minLength(2),
+					max_length: VueValids.maxLength(25)
+				},
+				id: {},
+				symbol: {
+					// required: VueValids.required,
+					min_length: VueValids.minLength(1),
+					max_length: VueValids.maxLength(5)
+				},
+			},
+
+			methods: {
+				handleProcessChange() {
+					if (this.selectedProcess === '1') {
+						this.is_val_process = true;
+					} else if (this.selectedProcess === '0') {
+						this.is_val_process = false;
+					} else {
+						this.is_val_process = true;
+					}
+				},
+				addHtmlInput() {
+					if (this.pcode) {
+						this.pcode_array.unshift(this.pcode);
+						this.pcode = '';
+					}
+				},
+				removePcode(index) {
+					this.pcode_array.splice(index, 1);
+				},
+				load_point_system: function() {
+					var _app_ = this;
+					var information_ls = $(_app_.$el).find('[data-an="information-list"]');
+					var offset = 0;
+
+					if (cl_empty(_app_.loading) && _app_.loadmore) {
+
+						if (information_ls.find('div[data-list-item]').length) {
+							offset = information_ls.find('div[data-list-item]').last().data('list-item');
+						}
+
+						if ($.isNumeric(offset) && offset) {
+							$.ajax({
+								url: '<?php echo cl_link("native_api/point_system/load_more"); ?>',
+								type: 'GET',
+								dataType: 'json',
+								data: {
+									offset: offset,
+									type: _app_.type
+								},
+								beforeSend: function() {
+									_app_.loading = true;
+								}
+							}).done(function(data) {
+								if (data.status == 200) {
+									information_ls.append($(data.html));
+								} else {
+									_app_.loadmore = false;
+								}
+							}).always(function() {
+								_app_.loading = false;
+							});
+						}
+					}
+				},
+				delete_information: function(id = false) {
+					var _app_ = this;
+
+
+					if (id) {
+						var information_ls = $(_app_.$el).find('[data-an="information-list"]');
+						$.ajax({
+							url: '<?php echo cl_link("native_api/point_system/delete"); ?>',
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								id: id
+							},
+						}).done(function(data) {
+							if (data.status == 200) {
+								information_ls.find('div[data-list-item="{0}"]'.format(id)).slideUp(150, function() {
+									$(this).remove();
+
+									if (notifs_ls.find('div[data-list-item]').length < 1) {
+										SMColibri.spa_reload(500);
+									}
+								});
+							} else {
+								SMColibri.errorMSG();
+							}
+						}).always(function() {
+							$("div.confirm-actions-modal").modal("hide");
+						});
+					}
+				},
+				delete_all_information: function() {
+					var _app_ = this;
+
+					if (_app_.total_notifs) {
+						var promise = SMColibri.confirm_action({
+							btn_1: "<?php echo cl_translate("Cancel"); ?>",
+							btn_2: "<?php echo cl_translate("Delete"); ?>",
+							title: "<?php echo cl_translate("Please confirm your actions!"); ?>",
+							message: "<?php echo cl_translate("Are you sure you want to delete all notifications? Please note that this action cannot be undone!"); ?>",
+						});
+
+						promise.done(function() {
+							$.ajax({
+								url: '<?php echo cl_link("native_api/point_system/delete_all"); ?>',
+								type: 'POST',
+								dataType: 'json',
+								data: {
+									type: _app_.type
+								},
+							}).done(function(data) {
+								if (data.status == 200) {
+									SMColibri.spa_reload();
+								} else {
+									SMColibri.errorMSG();
+								}
+							}).always(function() {
+								$("div.confirm-actions-modal").modal("hide");
+							});
+						});
+
+						promise.fail(function() {
+							$("div.confirm-actions-modal").modal("hide");
+						});
+					}
+				},
+				accept_follow: function(req_id, information_id) {
+					if ($.isNumeric(req_id)) {
+						var _app_ = this;
+
+						var information_ls = $(_app_.$el).find('[data-an="information-list"]');
+
+						$.ajax({
+							url: "<?php echo cl_link("native_api/connections/accept_request"); ?>",
+							type: 'POST',
+							dataType: 'json',
+							data: {
+								req_id: req_id,
+								notif_id: notif_id
+							}
+						}).done(function(data) {
+							if (data.status == 200) {
+								notifs_ls.find('div[data-list-item="{0}"]'.format(notif_id)).slideUp(150, function() {
+									$(this).remove();
+
+									if (notifs_ls.find('div[data-list-item]').length < 1) {
+										SMColibri.spa_reload(500);
+									}
+								});
+
+								cl_bs_notify("<?php echo cl_translate("Follow request successfully accepted"); ?>", 5000, "success");
+							} else {
+								SMColibri.errorMSG();
+							}
+						});
+					}
+				},
+				submit_form: function(_self = null) {
+					_self.preventDefault();
+
+					var _app_ = this;
+					let url = _app_.id ? "<?php echo cl_link("native_api/point_system/save_point"); ?>" : "<?php echo cl_link("native_api/point_system/create_point"); ?>"
+
+					$(_self.target).ajaxSubmit({
+						url: url,
+						type: 'POST',
+						dataType: 'json',
+						beforeSend: function() {
+							_app_.submitting = true;
+						},
+						success: function(data) {
+							if (data.status == 200) {
+								cl_bs_notify("<?php echo cl_translate("Your changes has been successfully saved!"); ?>", 5000, "success");
+								$("#list").click();
+							} else if (data.err_code && data.err_code == 'invalid_points') {
+								_app_.points_format = true;
+
+								delay(function() {
+									_app_.points_format = false;
+								}, 5000);
+							} else if (data.err_code && data.err_code == 'invalid_store') {
+								_app_.store_error = true;
+
+								delay(function() {
+									_app_.store_error = false;
+								}, 5000);
+							} else if (data.err_code && data.err_code == 'yourself') {
+								cl_bs_notify("<?php echo cl_translate("You can't sell to yourself!"); ?>", 5000, "error");
+							} else {
+								_app_.unsuccessful_attempt = true;
+							}
+						},
+						complete: function() {
+							_app_.submitting = false;
+						}
+					});
+				}
+			}
+		});
+	});
+</script>
+</script>

@@ -1304,7 +1304,7 @@ function cl_db_get_total($table = false, $data = array(), $fields = "COUNT(*)") 
     return 0;
 }
 
-function cl_db_get_items($table = false, $data = array(), $limit = null, $fields = null) {
+function cl_db_get_items($table = false, $data = array(), $limit = null, $fields = null, $groupBy=null) {
     global $db;
 
     if (empty($data)) {
@@ -1312,9 +1312,16 @@ function cl_db_get_items($table = false, $data = array(), $limit = null, $fields
     }
 
     foreach ($data as $k => $v) {
-        $db = $db->where($k, $v);
+        
+        if ($k == 'created_at') {
+            $db = $db->where($k, $v, 'between');
+        } else {
+            $db = $db->where($k, $v);
+        }
     }
-
+    if($groupBy) {
+        $db->groupBy($groupBy);
+    }
     $item = $db->get($table, $limit, $fields);
 
     if (cl_queryset($item)) {

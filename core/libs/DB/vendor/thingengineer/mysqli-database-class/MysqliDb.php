@@ -739,10 +739,10 @@ class MysqliDb {
 
         $stmt->execute();
         $this->_stmtError = $stmt->error;
+
         $this->_stmtErrno = $stmt->errno;
         $res = $this->_dynamicBindResults($stmt);
         $this->reset();
-
         return $res;
     }
 
@@ -968,6 +968,8 @@ class MysqliDb {
             $cond = '';
         }
 
+
+        // $this->conditionToSql($operator, $val);
         $this->_where[] = array($cond, $whereProp, $operator, $whereValue);
         return $this;
     }
@@ -1882,7 +1884,13 @@ class MysqliDb {
                     break;
                 case 'not between':
                 case 'between':
-                    $this->_query .= " $operator ? AND ? ";
+
+                    if (count($val) === 1) {
+                        $this->_query .= " $operator ? AND now() ";
+
+                    } else {
+                        $this->_query .= " $operator ? AND ? ";
+                    }
                     $this->_bindParams($val);
                     break;
                 case 'not exists':
@@ -2484,7 +2492,12 @@ class MysqliDb {
                 break;
             case 'not between':
             case 'between':
-                $this->_query .= " $operator ? AND ? ";
+                
+                if (count($val) === 1) {
+                    $this->_query .= " $operator ? AND now() ";
+                } else {
+                    $this->_query .= " $operator ? AND ? ";
+                }
                 $this->_bindParams ($val);
                 break;
             case 'not exists':

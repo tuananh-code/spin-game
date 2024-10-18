@@ -202,6 +202,18 @@ function cl_get_user_by_code($code = null, $phone = null)
     return $data;
 }
 
+function cl_check_store($user_id, $store_id)
+{
+    global $db;
+    $data = $db->where('user_id', cl_text_secure($user_id))->where('id', cl_text_secure($store_id))->getOne(T_STORE);
+    if (!$data) {
+        $data = false;
+        
+    }
+
+    return $data;
+}
+
 function cl_verify_emcode($emcode = "") {
     global $db;
     return ($db->where('em_code', cl_text_secure($emcode))->getValue(T_USERS, 'count(*)') > 0) ? true : false;
