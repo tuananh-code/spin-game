@@ -341,11 +341,15 @@ if ($result->num_rows > 0) {
                                         }
                                         ?>
                                     </td>
-                                    <td class="align-middle text-success"><?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></td>
-                                    <td class="align-middle text-danger"><?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></td>
+                                    <td class="align-middle text-success">
+                                        <span class="created"> <?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></spanc>
+                                    </td>
+                                    <td class="align-middle text-danger">
+                                        <span class="expires"> <?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></spanc>
+                                    </td>
                                     <td>
                                         <div class="d-flex">
-                                            <button class="mx-1 edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-store="<?= get_store_name_game($id_game[$i]) ?>" data-event="<?= $event[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>" data-limit="<?= $limit[$i] ?>" data-join="<?= $join[$i] ?>" data-bs-toggle="modal" data-bs-target="#edit"><i class="fas fs-5 fa-edit text-white"></i></button>
+                                            <button class="mx-1 edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-store="<?= get_store_name_game($id_game[$i]) ?>" data-event="<?= $event[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>" data-limit="<?= $limit[$i] ?>" data-join="<?= $join[$i] ?>" data-created="<?= $date = date('Y-m-d', strtotime($created_at[$i])) ?>" data-expires="<?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?>" data-bs-toggle="modal" data-bs-target="#edit"><i class="fas fs-5 fa-edit text-white"></i></button>
                                             <button class="delete text-white border-0 rounded-3 btn-danger" data-id="<?= $id_game[$i] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
                                         </div>
                                     </td>
@@ -392,6 +396,14 @@ if ($result->num_rows > 0) {
                                     <label for="save-percent" class='col-2 text-end m-2'><?= cl_translate('Percent') ?>: </label>
                                     <input type="text" name="percent" id="save-percent" required class="form-control me-4">
                                 </div>
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-created" class='col-2 text-end m-2'><?= cl_translate('Created') ?>: </label>
+                                <input type="date" name="created" id="save-created" required class="form-control me-4" readonly> 
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-expires" class='col-2 text-end m-2'><?= cl_translate('Expires') ?>: </label>
+                                <input type="date" name="expires" id="save-expires" required class="form-control me-4">
                             </div>
                         </div>
                         <div class="modal-footer">

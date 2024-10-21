@@ -1801,7 +1801,19 @@ function get_game_name($game_id)
     }
     return $name;
 }
-
+function get_game_buy($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['buy'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
 function get_game_id($store_id)
 {
     $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
@@ -2083,8 +2095,32 @@ function get_user_by_id($user_id)
     $user  = cl_db_get_item(T_USERS, array(
         'id' => $user_id
     ));
-    $name = $user['fname'];
+    $name = $user['username'];
     return $name;
+}
+function get_kyc()
+{
+    global $db;
+    $user = $db->where('delete_at', null, 'is')->get(T_KYC);
+    return $user;
+}
+
+function get_all_game()
+{
+    $get = cl_db_get_items(T_GAME, array('status' => 1));
+    foreach ($get as $g) {
+        $event[] = $g['game_name'];
+        $id[] = $g['id'];
+        $props[] = $g['props'];
+        $expires_date[] = $g['expires_date'];
+    }
+    $data = [
+        'event' => $event,
+        'id' => $id,
+        'props' => $props,
+        'expires_date' => $expires_date,
+    ];
+    return $data;
 }
 function conn()
 {

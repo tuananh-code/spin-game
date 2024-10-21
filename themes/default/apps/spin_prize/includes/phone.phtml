@@ -3,7 +3,7 @@
     <?= cl_translate('Enter your phone to check ticket') ?>..
 </h2>
 <div>
-    <form action="" method="post" value="add">
+    <!-- <form action="" method="post" value="add">
         <div id="container">
             <div id="loading">Loading...</div>
             <div id="loaded" class="hidden">
@@ -34,15 +34,15 @@
                 </div>
             </div>
         </div>
-    </form>
+    </form> -->
 </div>
 <div class="col-8">
     <div class="d-flex align-items-center">
         <label for="phone" class="p-2"> <?= cl_translate('Phone') ?>:</label>
-        <input type="text" class="form-control p-2" id="phone" placeholder="<?php echo cl_translate("Enter Phone"); ?>">
+        <input type="text" class="form-control p-2" id="phoneCheck" placeholder="<?php echo cl_translate("Enter Phone"); ?>">
     </div>
     <div>
         <button class="p-1 m-2 col-2 text-white btn-success border-0 rounded-pill" id="savePhone"><?= cl_translate('Save') ?></button>
     </div>
 </div>
-<script src="{%config theme_url%}/statics/js/libs/firebase/auth.js?v={%config update_date%}"></script>
+<?php echo cl_template('spin_prize/scripts/auth'); ?>

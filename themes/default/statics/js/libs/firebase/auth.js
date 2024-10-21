@@ -175,10 +175,10 @@ $(document).ready(function () {
         document.getElementById('loaded').style.display = 'block';
         user ? handleSignedInUser(user) : handleSignedOutUser();
         // Show data in HTML, Code in Ajax should appear here
-        $('.login').html(`<div class="d-flex align-items-center img-cir hov">
-    <div><img class="circle me-2" src=" ${user.photoURL} "></div>
-    <div><p value="more" id="more" name="more"> ${user.displayName}</p></div>
-    </div>`);
+    //     $('.login').html(`<div class="d-flex align-items-center img-cir hov">
+    // <div><img class="circle me-2" src=" ${user.photoURL} "></div>
+    // <div><p value="more" id="more" name="more"> ${user.displayName}</p></div>
+    // </div>`);
     });
 
     /**

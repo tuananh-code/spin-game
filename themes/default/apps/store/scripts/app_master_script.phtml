@@ -1,6 +1,20 @@
 <script>
 	"use strict";
 
+	function getCurrentDate() {
+		const now = new Date();
+
+		// Get year, month, and day
+		const year = now.getFullYear();
+		const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+		const day = String(now.getDate()).padStart(2, '0');
+
+		// Combine them into a string in the desired format
+		return `${year}-${month}-${day}`;
+	}
+
+	// Get and display the formatted date
+	const date = getCurrentDate();
 	$(document).ready(function($) {
 		$("#store").on("input", function(e) {
 			var currentValue = $(this).val();
@@ -353,6 +367,8 @@
 			var stocks = $(this).attr('data-stocks');
 			var percents = $(this).attr('data-percents');
 			var limit = $(this).attr('data-limit');
+			var created = $(this).attr('data-created');
+			var expires = $(this).attr('data-expires');
 			let formattedValue = parseFloat(limit).toLocaleString('en-US', {
 				maximumFractionDigits: 2
 			});
@@ -365,6 +381,8 @@
 			$('#save-percent').val(percents);
 			$('#save-limit').val(formattedValue);
 			$('#save-join').val(join);
+			$('#save-created').val(created);
+			$('#save-expires').val(expires);
 			$('#editLabel').html('<?= cl_translate('Edit event ') ?>' + event + ' at ' + store)
 			var eventField = $(this).closest("tr").find(".event");
 			var limitField = $(this).closest("tr").find(".limit");
@@ -372,9 +390,11 @@
 			var prizeField = $(this).closest("tr").find(".prizes");
 			var stockField = $(this).closest("tr").find(".stocks");
 			var percentField = $(this).closest("tr").find(".percents");
+			var createdField = $(this).closest("tr").find(".created");
+			var expiresField = $(this).closest("tr").find(".expires");
 			var dataEdit = $(this).parent().find(".edit");
 
-			$(document).on('click', '#save', function() {
+			$('#save').off('click').on('click', function() {
 				var event = $("#save-event").val();
 				var prize = $("#save-prize").val();
 				var stock = $("#save-stock").val();
@@ -385,12 +405,39 @@
 				var join = $("#save-join").val();
 				//id 
 				var saveId = $("#save-id").val();
-
-
+				var created = $("#save-created").val();
+				var expires = $("#save-expires").val();
 				// check condition
 				var checkPrize = prize.split(', ');
 				var checkStock = stock.split(', ');
 				var checkPercent = percent.split(', ');
+				console.log(expires);
+				// Check expires
+				if (!expires) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h5 class='text-danger'><?= cl_translate("Please select the expiration date"); ?> </h5>",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				} else if (expires <= date) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h5 class='text-danger'><?= cl_translate("The expiration date has passed or is today"); ?> </h5>",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				}
 				if (checkPrize.length !== checkStock.length) {
 					Swal.fire({
 						title: "<?php echo cl_translate("Failed"); ?>",
@@ -462,12 +509,11 @@
 				}
 				// $(this).parent().find(".edit").show();
 				// $(this).hide();
-				// 
-
-
 				eventField.html(event);
 				limitField.html(limitUs);
 				joinField.html(join);
+				createdField.html(created);
+				expiresField.html(expires);
 				prizeField.html('Prize: ' + prize);
 				stockField.html('Stock: ' + stock);
 				percentField.html('Percent: ' + percent);
@@ -475,6 +521,8 @@
 				dataEdit.attr('data-limit', limit);
 				dataEdit.attr('data-join', join);
 				dataEdit.attr('data-event', event);
+				dataEdit.attr('data-created', created);
+				dataEdit.attr('data-expires', expires);
 				dataEdit.attr('data-prizes', prize);
 				dataEdit.attr('data-stocks', stock);
 				dataEdit.attr('data-percents', percent);
@@ -489,6 +537,8 @@
 						percent: percent,
 						limit: limit,
 						join: join,
+						created: created,
+						expires: expires,
 					},
 					success: function(result) {
 						Swal.fire({
@@ -508,15 +558,12 @@
 		})
 		$('#save-limit').on('input', function() {
 			var limit = $(this).val();
-
 			limit = limit.replace(/[^0-9.]/g, '');
-
 			if (limit) {
 				let formattedValue = parseFloat(limit).toLocaleString('en-US', {
 					maximumFractionDigits: 2,
 					minimumFractionDigits: 0
 				});
-
 				// Update the input value
 				$(this).val(formattedValue);
 			}

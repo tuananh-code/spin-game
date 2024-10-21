@@ -105,6 +105,8 @@ if (empty($cl['is_logged'])) {
         $percent = $_POST['percent'];
         $limit = $_POST['limit'];
         $join = $_POST['join'];
+        $created = $_POST['created'];
+        $expires = $_POST['expires'];
 
         $prizes = explode(', ', $prize);
         $stocks = explode(', ', $stock);
@@ -127,6 +129,8 @@ if (empty($cl['is_logged'])) {
             'props' => $props,
             'limit' => $limit,
             'join' => $join,
+            'created_at' => $created,
+            'expires_date' => $expires,
         ));
         if ($update) {
             $data['status'] = 200;

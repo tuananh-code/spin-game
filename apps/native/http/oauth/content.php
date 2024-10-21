@@ -74,7 +74,6 @@ else if (strtolower($provider_name) == "instagram" && $cl["config"]["instagram_s
 else {
     require_once(cl_full_path("core/libs/oAuth/vendor/autoload.php"));
     require_once(cl_full_path("core/libs/oAuth/oauth_config.php"));
-
     if ($provider) {
         try {
             $hybridauth    = new Hybridauth\Hybridauth($oauth_config);
@@ -87,7 +86,7 @@ else {
                 $lname      = fetch_or_get($user_profile->lastName, "");
                 $prov_email = "mail.com";
                 $prov_prefx = "xx_";
-
+// oauth with API key
                 if ($provider_name == 'google') {
                     $prov_email = 'google.com';
                     $prov_prefx = 'go_';

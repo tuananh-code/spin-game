@@ -58,8 +58,8 @@
 				<!-- spin -->
 				<!-- spin_prize -->
 				<div data-navitem="spin_prize" id="" class="spin_prize sidebar__nav-item <?php if ($cl['pn'] == 'spin_prize') {
-																							echo ('active');
-																						} ?>">
+																								echo ('active');
+																							} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('gamepad'); ?>
 					</span>
@@ -101,9 +101,25 @@
 				<?php //} 
 				?>
 				<!-- manage -->
-				<div data-navitem="notifications" class="notify sidebar__nav-item <?php if ($cl['pn'] == 'notifications') {
+				<!-- kyc -->
+				<?php if ($cl['is_admin']) { ?>
+					<div data-navitem="kyc" class="kyc sidebar__nav-item <?php if ($cl['pn'] == 'kyc') {
 																				echo ('active');
 																			} ?>">
+						<span class="icon">
+							<?php echo cl_ficon('person'); ?>
+						</span>
+						<span class="text">
+							<a href="<?php echo cl_link('kyc'); ?>" data-spa="true">
+								<?php echo cl_translate('KYC'); ?>
+							</a>
+						</span>
+					</div>
+				<?php } ?>
+				<!-- kyc -->
+				<div data-navitem="notifications" class="notify sidebar__nav-item <?php if ($cl['pn'] == 'notifications') {
+																						echo ('active');
+																					} ?>">
 					<span class="icon">
 						<?php echo cl_ficon('notifications'); ?>
 					</span>

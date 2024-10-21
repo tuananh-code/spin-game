@@ -1,4 +1,4 @@
-<?php
+<?php 
 # @*************************************************************************@
 # @ Software author: Mansur Terla (Mansur_TL)                               @
 # @ UI/UX Designer & Web developer ;)                                       @
@@ -17,5 +17,19 @@
 # @ Copyright (c)  ColibriSM. All rights reserved                           @
 # @*************************************************************************@
 
-require_once(cl_full_path('core/libs/PHPMailer/PHPMailerAutoload.php'));
-$mail = new PHPMailer(true);
+if (empty($cl['is_logged'])) {
+	cl_redirect("guest");
+}
+
+else {
+	require_once(cl_full_path("core/apps/kyc/app_ctrl.php"));
+
+	$cl["page_title"] = cl_translate("Kyc");
+	$cl["page_desc"] = $cl["config"]["description"];
+	$cl["page_kw"] = $cl["config"]["keywords"];
+	$cl["pn"] = "kyc";
+	$cl["sbr"] = true;
+	$cl["sbl"] = true;
+	$cl["kyc"] = cl_get_kyc();
+	$cl["http_res"] = cl_template("kyc/content");
+}

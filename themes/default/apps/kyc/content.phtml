@@ -1,0 +1,173 @@
+<?php
+
+?>
+<style>
+    tbody>.tr:hover {
+        background: #e9e9e9 !important;
+    }
+
+    .dt-type-date {
+        text-align: center !important;
+    }
+
+    .dt-input {
+        margin: 0 5px !important;
+    }
+
+    .edit,
+    .delete,
+    .save,
+    .edit-store,
+    .delete-store,
+    .save-store {
+        padding: .75em;
+    }
+
+    .swal2-container {
+        z-index: 999999;
+    }
+
+    tbody>tr>td {
+        padding: 8px 4px !important;
+    }
+
+    tr {
+        border-top: 1px solid #ccc;
+        border-bottom: 1px solid #ccc;
+    }
+
+    .tr:nth-child(odd) {
+        background-color: #f4f4f4 !important;
+        /* Color for odd rows */
+    }
+
+    .tr:nth-child(even) {
+        background-color: #ffffff !important;
+        /* Color for even rows */
+    }
+</style>
+<div class="timeline-container" data-app="store">
+    <div class="timeline-header" data-el="tl-header">
+        <div class="timeline-header__botline">
+            <div class="lp">
+                <div class="nav-link-holder">
+                    <a>
+                        <?php echo cl_translate("KYC"); ?>
+                    </a>
+                </div>
+            </div>
+            <div class="cp">
+                <a href="<?php echo cl_link('/'); ?>">
+                    <img src="{%config site_logo%}" alt="Logo">
+                </a>
+            </div>
+            <div class="rp">
+                <div class="nav-link-holder">
+                    <span class="go-back" onclick="SMColibri.go_back();">
+                        <?php echo cl_ficon('arrow_back'); ?>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add translate in json -->
+    <?php if ($cl['is_admin']) : ?>
+        <h1 class="text-center text-success">
+            <?php echo cl_translate("KYC Manager"); ?>
+        </h1>
+        <?= cl_template('kyc/includes/list_item') ?>
+    <?php else : ?>
+        <h1 class="text-center text-success">
+            <?php echo cl_translate("KYC Information"); ?>
+        </h1>
+        <div class="d-block" id="vue-kyc-app" style="padding: 30px;">
+            <div class="kyc">
+                <div class="settings-form" style="padding: 0 10px">
+                    <form class="form" id="cl-name-settings-vue-app" v-on:submit="submit_form($event)" enctype="multipart/form-data">
+                        <div class="row" id='if-val1'>
+
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label><?php echo cl_translate("Name"); ?></label>
+                                    <input v-model.trim="$v.cname.$model" name="cname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter your full name"); ?>">
+                                    <div class="invalid-main-feedback" v-if="is_valid_cname">
+                                        {{invalid_feedback_cname}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label><?php echo cl_translate("Date of birth"); ?>:</label>
+                                    <input v-model.trim="$v.birth.$model" name="birth" type="date" class="form-control">
+                                    <div class="invalid-main-feedback" v-if="is_valid_birth">
+                                        {{invalid_feedback_birth}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label><?php echo cl_translate("Phone number"); ?>:*</label>
+                                    <input v-model.trim="$v.phone.$model" name="phone" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 0357172737"); ?>">
+                                    <div class="invalid-main-feedback" v-if="is_valid_phone">
+                                        {{invalid_feedback_phone}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label><?php echo cl_translate("Address:"); ?></label>
+                                    <input v-model.trim="$v.address.$model" name="address" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter your address"); ?>">
+                                    <div class="invalid-main-feedback" v-if="is_valid_address">
+                                        {{invalid_feedback_address}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 d-flex">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label><?php echo cl_translate("Identity Card:"); ?></label>
+                                        <input v-model.trim="$v.identity.$model" name="identity[]" @change="handleIdentityChange" type="file" class="" multiple accept=".png, .jpg, .jpeg, .webp" ref="identityInput">
+                                        <div class="invalid-main-feedback" v-if="is_valid_identity">
+                                            {{invalid_feedback_identity}}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label><?php echo cl_translate("Image:"); ?></label>
+                                        <input v-model.trim="$v.image.$model" name="image" @change="handleImageChange" type="file" class="" accept=".png, .jpg, .jpeg, .webp" ref="imageInput">
+                                        <div class="invalid-main-feedback" v-if="is_valid_image">
+                                            {{invalid_feedback_image}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group" v-if="unsuccessful_attempt">
+                            <div class="invalid-main-feedback">
+                                <?php echo cl_translate("Something went wrong while trying to save your changes, please try again later"); ?>
+                            </div>
+                        </div>
+                        <input type="hidden" class="d-none" value="<?php echo fetch_or_get($cl['csrf_token'], 'none'); ?>" name="hash">
+                        <div class="form-group no-mb d-flex">
+                            <button v-if="submitting != true" v-bind:disabled="$v.$invalid == true" type="submit" class="ml-auto btn btn-custom main-inline lg">
+                                <?php echo cl_translate("Save"); ?>
+                            </button>
+                            <button v-else disabled="true" type="button" class="ml-auto btn btn-custom main-inline lg">
+                                <?php echo cl_translate("Please wait"); ?>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    <?php endif ?>
+</div>
+<?php echo cl_template('kyc/scripts/app_master_script'); ?>
+<script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.19/dist/sweetalert2.min.js"></script>
+
+<script>
+    new DataTable('#kycTable');
+</script>

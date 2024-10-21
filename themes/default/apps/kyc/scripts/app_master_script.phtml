@@ -1,0 +1,344 @@
+<script>
+	"abe strict";
+
+	$(document).ready(function($) {
+		var userDate = new Date();
+		var userTimezoneOffset = userDate.getTimezoneOffset() * 60000; // Chuyển đổi phút sang mili giây
+
+		var userTime = new Date(userDate.getTime() - userTimezoneOffset);
+		var formattedTime = userTime.toISOString().slice(0, 19).replace('T', ' ');
+		Vue.use(window.vuelidate.default);
+		var VueValids = window.validators;
+		SMColibri.PS.notifs = new Vue({
+			el: "#vue-kyc-app",
+			data: {
+				selected: {},
+				loading: false,
+				loadmore: true,
+				submitting: false,
+				unsuccessful_attempt: false,
+				invalid_feedback_cname: "",
+				invalid_feedback_birth: "",
+				invalid_feedback_address: "",
+				invalid_feedback_identity: "",
+				invalid_feedback_image: "",
+				invalid_feedback_phone: "",
+				cname: "",
+				birth: "",
+				address: "",
+				phone: "",
+				is_valid_identity: true,
+
+				// formData: {
+				identity: [],
+				image: null,
+				// },
+				time: formattedTime,
+				ccode_exist: false,
+				ccode_format: false
+			},
+			mounted() {
+				$('.dismiss').on('click', this.handleDismiss);
+				$('.dismiss_p').on('click', this.handleDismissP);
+			},
+			computed: {
+				is_valid_address: function() {
+					if (this.$v.address.$error) {
+						this.invalid_feedback_address = "<?php echo cl_translate("Please enter your address"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_address = "";
+						return false;
+					}
+				},
+				is_valid_cname: function() {
+					if (!this.cname && !this.birth) {
+						$('#if-val2').find('input').prop('readonly', false);
+						if (this.ccode) {
+							$('#if-val1').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val2').find('input').prop('readonly', true);
+						$('#if-val1').find('input').prop('readonly', false);
+					}
+					if (this.$v.cname.$error) {
+						this.invalid_feedback_cname = "<?php echo cl_translate("Please enter your full name"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_cname = "";
+						return false;
+					}
+
+				},
+				is_valid_birth: function() {
+					if (!this.cname && !this.birth) {
+						$('#if-val2').find('input').prop('readonly', false);
+						if (this.ccode) {
+							$('#if-val1').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val2').find('input').prop('readonly', true);
+						$('#if-val1').find('input').prop('readonly', false);
+					}
+					if (this.$v.birth.$error) {
+						this.invalid_feedback_birth = "<?php echo cl_translate("Please select your Birth of date"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_birth_taken = "";
+						return false;
+					}
+				},
+				is_valid_phone: function() {
+					if (!this.cname && !this.phone) {
+						$('#if-val2').find('input').prop('readonly', false);
+						if (this.ccode) {
+							$('#if-val1').find('input').prop('readonly', true);
+						}
+					} else {
+						$('#if-val2').find('input').prop('readonly', true);
+						$('#if-val1').find('input').prop('readonly', false);
+					}
+					if (this.$v.phone.$error) {
+						this.invalid_feedback_phone = "<?php echo cl_translate("Please enter your phone, which is from 3 to 25 characters"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_phone_taken = "";
+						return false;
+					}
+
+				},
+				is_valid_image: function() {
+					if (this.$v.image.$error) {
+						this.invalid_feedback_image = "<?php echo cl_translate("Please select your image"); ?>";
+						return true;
+					} else {
+						this.invalid_feedback_image_taken = "";
+						return false;
+					}
+				},
+			},
+			validations: {
+				cname: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(2),
+					max_length: VueValids.maxLength(100),
+				},
+				address: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(2),
+					max_length: VueValids.maxLength(100),
+				},
+				birth: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(3),
+					max_length: VueValids.maxLength(100),
+				},
+				phone: {
+					required: VueValids.required,
+					min_length: VueValids.minLength(3),
+					max_length: VueValids.maxLength(25),
+				},
+				identity: {
+					required: VueValids.required,
+					// min_length: VueValids.minLength(3),
+					// max_length: VueValids.maxLength(1000000),
+				},
+				image: {
+					required: VueValids.required,
+					// min_length: VueValids.minLength(3),
+					// max_length: VueValids.maxLength(10000),
+				}
+			},
+			methods: {
+				handleIdentityChange(event) {
+					const files = event.target.files;
+					var identityField = Array.from(files); // Convert FileList to Array
+					// Validation logic
+					if (identityField.length === 0) {
+						this.is_valid_identity = true;
+						this.invalid_feedback_identity = "<?php echo cl_translate("Please insert identity card"); ?>";
+					} else if (identityField.length !== 2) {
+						this.is_valid_identity = true;
+						this.invalid_feedback_identity = "<?php echo cl_translate("Please upload 2 images showing both the front and back of your ID card"); ?>";
+					} else if (identityField.length === 2) {
+						this.is_valid_identity = false;
+					}
+				},
+				handleImageChange(event) {
+					const file = event.target.files[0]; // Get the first selected file
+					// console.log(event.target.files[0]);return;
+					var imageField = file;
+
+					// Validation logic
+					if (!imageField) {
+						this.is_valid_image = false;
+						this.invalid_feedback_image = "<?php echo cl_translate("An image is required"); ?>";
+					} else {
+						this.is_valid_image = true;
+					}
+				},
+				submit_form: function(_self = null) {
+					_self.preventDefault();
+					var _app_ = this;
+					$(_self.target).ajaxSubmit({
+						url: "<?php echo cl_link("native_api/kyc/save_kyc"); ?>",
+						type: 'POST',
+						dataType: 'json',
+						beforeSend: function() {
+							_app_.submitting = true;
+							console.log(_app_);
+							// _app_.qty_taken = false;
+							// _app_.qty_denied = false;
+						},
+						success: function(data) {
+							if (data.status == 200) {
+								// handleDismissP();
+								cl_bs_notify("<?php echo cl_translate("Your KYC information send success!"); ?>", 5000, "success");
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Your KYC information send success"); ?>" + ". " + "<?php echo cl_translate("Waiting for admin approval"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								}).then((response) => {
+									if (response.isConfirmed) {
+										window.location.href = "<?= cl_link('/') ?>";
+									}
+								})
+							} else if (data.status == 600) {
+								Swal.fire({
+									title: "<?php echo cl_translate("Failed"); ?>",
+									text: "<?php echo cl_translate("Please upload only 2 images showing both the front and back of your ID card"); ?>",
+									icon: "error",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								})
+							} else if (data.status == 500) {
+								Swal.fire({
+									title: "<?php echo cl_translate("Warning"); ?>",
+									text: "<?php echo cl_translate("Your KYC information send"); ?>" + ". " + "<?php echo cl_translate("Please wait for admin approve"); ?>",
+									icon: "warning",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								})
+							} else {
+								Swal.fire({
+									title: "<?php echo cl_translate("Failed"); ?>",
+									text: "<?php echo cl_translate("Your file too large"); ?>" + ". " + "<?php echo cl_translate("Try to upload smaller file"); ?>",
+									icon: "error",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								})
+							}
+						},
+						complete: function() {
+							_app_.submitting = false;
+						}
+					});
+				}
+			}
+		});
+		$(document).on('click', '.verified', function() {
+			var user = $(this).attr('data-user');
+			var kyc = $(this).attr('data-kyc');
+			var button = $(this);
+			var td = $(this).closest('tr').find('.verify');
+			Swal.fire({
+				title: "<?php echo cl_translate("Verified"); ?>",
+				text: "<?php echo cl_translate("Verified KYC this user"); ?>",
+				icon: "question",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/kyc/verified_kyc"); ?>',
+						type: 'POST',
+						data: {
+							user: user,
+							kyc: kyc
+						},
+						success: function(data) {
+							if (data.status == 200) {
+								button.remove();
+								var time = data.time.split(' ');
+								td.html(time[0]);
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Verified success"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								})
+							}
+						}
+					});
+				}
+			})
+		})
+		$(document).on('click', '.verified-delete', function() {
+			var kyc = $(this).attr('data-kyc');
+			var tr = $(this).closest('tr');
+
+			Swal.fire({
+				title: "<?php echo cl_translate("Delete"); ?>",
+				text: "<?php echo cl_translate("Delete KYC for this user?"); ?>",
+				icon: "question",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/kyc/delete_kyc"); ?>',
+						type: 'POST',
+						data: {
+							kyc: kyc
+						},
+						success: function(data) {
+							if (data.status == 200) {
+								tr.remove();
+								Swal.fire({
+									title: "<?php echo cl_translate("Success"); ?>",
+									text: "<?php echo cl_translate("Delete success"); ?>",
+									icon: "success",
+									allowOutsideClick: true,
+									showConfirmButton: true,
+									onBeforeOpen: () => {
+										Swal.showLoading();
+									},
+								})
+							}
+						}
+					});
+				}
+			})
+		})
+	});
+</script>

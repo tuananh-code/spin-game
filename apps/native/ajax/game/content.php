@@ -96,59 +96,62 @@ if (empty($cl['is_logged'])) {
                 foreach ($game_id as $g) {
                     $all = get_all_user_game_id($g);
                     if ($all && $status !== 0) {
-                        @$mailbox = get_user_data($me['id'])['email'];
-                        @$mail = get_user_data($all['user_id'])['email'];
-                        @$mail_pass = get_user_data($all['user_id'])['smtp_mail'];
+                        if ($all['user_id']) {
+                            // var_dump($all);
+                            @$mailbox = get_user_data($me['id'])['email'];
+                            @$mail = get_user_data($all['user_id'])['email'];
+                            @$mail_pass = get_user_data($all['user_id'])['smtp_mail'];
 
-                        $body = '<center style="background: antiquewhite; padding: 2em; border-radius: 40px; margin: 0 auto; max-width: 600px;"><h2 style="color:black;">We create new event with store: ' . '<b style="color: blue; border-radius: 20px;">' . get_store_name_game($game_id_noti['id']) . '</b></h2>' . '<h3><a style="padding: 1em; margin: 1em; background: green; color: white; border-radius: 50px; text-decoration:none; width:200px; display:block" href="https://mycheery.com">Check it now</a></h3></center>';
-                        if (@$mailbox && @$mail && @$mail_pass) {
-                            $send = send_mail($mailbox, $mail_pass, $mail, $body);
-                            if ($send) {
-                                $data['mail'] = true;
+                            $body = '<center style="background: antiquewhite; padding: 2em; border-radius: 40px; margin: 0 auto; max-width: 600px;"><h2 style="color:black;">We create new event with store: ' . '<b style="color: blue; border-radius: 20px;">' . get_store_name_game($game_id_noti['id']) . '</b></h2>' . '<h3><a style="padding: 1em; margin: 1em; background: green; color: white; border-radius: 50px; text-decoration:none; width:200px; display:block" href="https://mycheery.com">Check it now</a></h3></center>';
+                            if (@$mailbox && @$mail && @$mail_pass) {
+                                $send = send_mail($mailbox, $mail_pass, $mail, $body);
+                                if ($send) {
+                                    $data['mail'] = true;
+                                } else {
+                                    $data['mail'] = false;
+                                }
                             } else {
                                 $data['mail'] = false;
                             }
-                        } else {
-                            $data['mail'] = false;
-                        }
-                        $user[] = $all['user_id'];
-                        $check_notify = cl_db_get_item(T_NOTIFS, array(
-                            'notifier_id' => $me['id'],
-                            'recipient_id' => $all['user_id'],
-                            'game_id' => $game_id_noti['id'],
-                        ));
-                        if (!$check_notify) {
-                            $notify = cl_db_insert(T_NOTIFS, array(
-                                "notifier_id" => $me['id'],
-                                "recipient_id" => $all['user_id'],
-                                "entry_id" => $me['id'],
-                                "status" => '0',
-                                "subject" => 'event',
-                                "game_id" => $game_id_noti['id'],
-                                "json" => 1,
-                                "time" => strtotime($post_date)
+                            $user[] = $all['user_id'];
+                            $check_notify = cl_db_get_item(T_NOTIFS, array(
+                                'notifier_id' => $me['id'],
+                                'recipient_id' => $all['user_id'],
+                                'game_id' => $game_id_noti['id'],
                             ));
-                        }
-                        $mess = cl_translate('We create new event with ') . '<b>' . get_store_name_game($game_id_noti['id']) . '</b>' . cl_translate('. Join now');
-                        $check_mess = cl_db_get_item(T_MSGS, array(
-                            'sent_by' => $me['id'],
-                            'sent_to' => $all['user_id'],
-                            'message' => $mess,
-                        ));
-                        if (!$check_mess) {
-                            $msg = cl_db_insert(T_MSGS, array(
+                            if (!$check_notify) {
+                                $notify = cl_db_insert(T_NOTIFS, array(
+                                    "notifier_id" => $me['id'],
+                                    "recipient_id" => $all['user_id'],
+                                    "entry_id" => $me['id'],
+                                    "status" => '0',
+                                    "subject" => 'event',
+                                    "game_id" => $game_id_noti['id'],
+                                    "json" => 1,
+                                    "time" => strtotime($post_date)
+                                ));
+                            }
+                            $mess = cl_translate('We create new event with ') . '<b>' . get_store_name_game($game_id_noti['id']) . '</b>' . cl_translate('. Join now');
+                            $check_mess = cl_db_get_item(T_MSGS, array(
                                 'sent_by' => $me['id'],
                                 'sent_to' => $all['user_id'],
-                                'owner' => $me['id'],
                                 'message' => $mess,
-                                'media_file' => '',
-                                'audio_record' => '',
-                                'media_type' => 'none',
-                                'seen' => 0,
-                                'deleted_fs1' => 'N',
-                                'deleted_fs2' => 'N',
-                                'time' => strtotime($post_date)
                             ));
+                            if (!$check_mess) {
+                                $msg = cl_db_insert(T_MSGS, array(
+                                    'sent_by' => $me['id'],
+                                    'sent_to' => $all['user_id'],
+                                    'owner' => $me['id'],
+                                    'message' => $mess,
+                                    'media_file' => '',
+                                    'audio_record' => '',
+                                    'media_type' => 'none',
+                                    'seen' => 0,
+                                    'deleted_fs1' => 'N',
+                                    'deleted_fs2' => 'N',
+                                    'time' => strtotime($post_date)
+                                ));
+                            }
                         }
                     } else {
                         $user = null;
@@ -169,6 +172,38 @@ if (empty($cl['is_logged'])) {
                 ));
             }
         }
+        foreach ($prizes as $pr) {
+            $all[] = "<b class='p-2 m-2 text-success'>- $pr.</b>";
+        }
+        $store_ids = $_POST['store_id'];
+        $all_prize = implode('<br>', $all);
+        //trans
+        $create = cl_translate('We create new event');
+        $with = cl_translate('with');
+        $prize_list = cl_translate('Prize list');
+        $contact = cl_translate('Contact us to come and join now');
+        $rule = cl_translate('Event rules');
+        $at_least = cl_translate('Buy at least');
+        $get_ticket = cl_translate('to get ticket.');
+        $notice = cl_translate('Note: Event end at');
+        $parti = cl_translate('Participate Event');
+        $cnow = cl_translate('Contact now');
+        $buy = get_game_buy($game_id_noti['id']);
+        $exp_event = $_POST['expiresEvent'];
+        $username = cl_link(get_user_by_id($me['id']));
+        $href = cl_link('spin_prize');
+        //
+        $text = "<div><span>$create <b class='text-primary'>" . $event . "</b> $with <b class='text-primary'>" . get_store_name($store_ids) . "</b>.</span><br> <span>+ $prize_list:</span> <br> <div>$all_prize</div></div><div><div><b class='text-primary'>** $rule:</b></div><div><span>+ $at_least: <b>$buy</b> $get_ticket</span></div><div><small class='text-danger'>** $notice: $exp_event.</small></div></div><div class='d-flex align-items-center'><b class='pe-2 text-success'>Join Here: </b><b><a class='text-primary' href='$href'>$parti</a></b></div><div><b>$contact. <a class='text-primary' href='$username'> $cnow</a></b></div>";
+        $post = cl_db_insert(T_PUBS, array(
+            'user_id' => $me['id'],
+            'text' => $text,
+            'time' => time()
+        ));
+        $add = cl_db_insert(T_POSTS, array(
+            'user_id' => $me['id'],
+            'publication_id' => $post,
+            'time' => time()
+        ));
         return $data;
     } else if ($action == 'add_condition') {
         $event = $_POST['event'];
@@ -300,10 +335,17 @@ if (empty($cl['is_logged'])) {
         return $data;
     } elseif ($action == 'check_ticket') {
         $phone = $_POST['phone'];
+        $phone_check = cl_db_get_item(T_USERS, array('phone' => $phone));
+        if ($phone_check) {
+            $data['status'] = 500;
+            // var_dump($data);die;
+            return $data;
+        }
         $ph = cl_db_update(T_USERS, array('id' => $me['id'],), array('phone' => $phone));
-        // if ($ph) {
         cl_db_update(T_TRANSACTION, array('phone' => $phone), array('customer_id' => $me['id']));
-        // }
+        if ($ph) {
+            $data['status'] = 200;
+        }
         //trans
         $trans_data = cl_db_get_item(T_TRANSACTION, array(
             'phone' => $phone,

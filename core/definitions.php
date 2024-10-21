@@ -49,3 +49,4 @@ define("T_STORE", "cl_store");
 define("T_PRIZE", "cl_prize");
 define("T_TICKET", "cl_ticket");
 define("T_TRANSACTION", "cl_transaction");
+define("T_KYC", "cl_kyc");

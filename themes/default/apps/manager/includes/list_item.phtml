@@ -7,11 +7,11 @@ $prize = get_prize($me['id']);
 		<table id="prizeTable">
 			<thead>
 				<tr class="text-uppercase font-size-1">
-					<th class="font-weight-medium">
+					<!-- <th class="font-weight-medium">
 						<div class="d-flex justify-content-center align-items-center">
 							<input type="checkbox" name="" class="form-check-input" id="selectAll">
 						</div>
-					</th>
+					</th> -->
 					<th scope="col" class="font-weight-medium">
 						<div class="d-flex justify-content-center align-items-center">
 							<?= cl_translate('Customer') ?>
@@ -68,9 +68,9 @@ $prize = get_prize($me['id']);
 				?>
 				<?php for ($p = 0; $p < count($prize['username']); $p++) { ?>
 					<tr class="tr text-center">
-						<td>
+						<!-- <td>
 							<input type="checkbox" class="form-check-input select" data-prize="<?= $prize['id'][$p] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $prize['store_id'][$p] ?>" data-game="<?= $prize['game_id'][$p] ?>">
-						</td>
+						</td> -->
 						<td>
 							<?= (@$prize['username'])[$p] ? $prize['username'][$p] : $me['name'] ?>
 						</td>

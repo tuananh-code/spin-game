@@ -74,7 +74,8 @@ $applications       = array(
   "manage" => true,
   "edit_invoice" => true,
   "list" => true,
-  "spa_load" => true
+  "spa_load" => true,
+  "kyc" => true
 );
 
 $cl['profile_report_types'] = array(

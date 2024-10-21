@@ -10,6 +10,7 @@ if (count($ticket) > 0) {
 	$number = $ticket['ticket'];
 	$tickets = implode('|', $number);
 }
+$check_phone = cl_db_get_item(T_USERS, array('id' => $id))['phone'];
 // var_dump($game_id);die;
 ?>
 <script type="module" src="{%config theme_url%}/statics/js/index.js?v={%config update_date%}"></script>
@@ -125,8 +126,10 @@ if (count($ticket) > 0) {
 						<span class="fs-4">Spin</span>
 					</button>
 				</div>
-			<?php } else { ?>
-				<?= cl_template('spin_prize/includes/phone'); ?>
+				<?php } else {
+				if (!$check_phone) { ?>
+					<?= cl_template('spin_prize/includes/phone'); ?>
+				<?php } ?>
 			<?php } ?>
 		</div>
 	</center>
