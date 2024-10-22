@@ -3,7 +3,7 @@
 	href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js"></script>
 <!-- <script src="https://www.gstatic.com/firebasejs/4.3.1/firebase.js"></script> -->
-<script src="https://apis.google.com/js/api.js"></script>
+<!-- <script src="https://apis.google.com/js/api.js"></script> -->
 <!-- <script>
 	// Initialize Firebase
 	var config = {
@@ -18,9 +18,13 @@
 	firebase.initializeApp(config);
 </script> -->
 <!-- <script type="module" src="https://www.gstatic.com/firebasejs/9.0.2/firebase-auth.js"></script> -->
-
+<!-- <script src="https://accounts.google.com/gsi/client" async></script> -->
+<!-- <meta name="google-signin-client_id" content=""> -->
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/google-auth-library@latest/build/src/index.min.js"></script> -->
 <div class="timeline-container">
 	<div class="timeline-header" data-el="tl-header">
+
 		<div class="timeline-header__botline">
 			<div class="lp">
 				<div class="nav-link-holder">
@@ -46,7 +50,11 @@
 	<div class="profile-settings">
 		<div class="profile-settings__content">
 			<div class="settings-form">
+
 				<form class="form" id="cl-phone-settings-vue-app" v-on:submit="submit_form($event)">
+					<div>
+						<button @click="googleSignIn()">Đăng nhập bằng Google</button>
+					</div>
 					<div id="recaptcha-container"></div>
 					<div class="form-group no-mb">
 						<label>
@@ -127,42 +135,41 @@
 					}
 				},
 				mounted() {
+					let self = this;
 					const phoneInputField = document.querySelector("#phone");
 					const phoneInput = window.intlTelInput(phoneInputField, {
 						utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js",
 					});
 					this.phone = phoneInput;
-
+					gapi.load('auth2', () => {
+						gapi.auth2.init({
+							client_id: '396864120602-62lna41i7qu12neqebqndg59v267r4ka.apps.googleusercontent.com',
+							scope: 'profile email'
+						});
+					});
 				},
 				methods: {
-					initClient() {
-						gapi.client.init({
-							'apiKey': 'YOUR_API_KEY',
-							'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-							'clientId': 'YOUR_CLIENT_ID',
-							'scope': 'https://www.googleapis.com/auth/contacts.readonly'
-						}).then(function() {
-							// Gọi API và thực hiện xác minh
-							gapi.client.people.people.get({
-								'resourceName': 'people/me',
-								'personFields': 'phoneNumbers,emailAddresses'
-							}).then(function(response) {
-								const userPhoneNumbers = response.result.phoneNumbers;
-								const userEmails = response.result.emailAddresses;
-
-								// Kiểm tra sự liên kết giữa số điện thoại và email
-								const userPhoneNumber = "+84357167898";
-								const userEmail = "toanthien978@gmail.com";
-
-								const isMatch = userPhoneNumbers.some(phone => phone.value === userPhoneNumber) && userEmails.some(email => email.value === userEmail);
-
-								if (isMatch) {
-									console.log('Số điện thoại và email được liên kết.');
-								} else {
-									console.log('Số điện thoại và email không được liên kết.');
+					googleSignIn() {
+						const auth2 = gapi.auth2.getAuthInstance();
+						if (auth2) {
+							auth2.disconnect(); // Ngắt kết nối với tài khoản hiện tại trước khi đăng nhập mới
+							auth2.signIn({
+								prompt: 'select_account' // Yêu cầu người dùng chọn tài khoản mới
+							}).then(
+								googleUser => {
+									console.log('Google user:', googleUser);
+									// Xử lý dữ liệu người dùng đã đăng nhập thành công
+								},
+								error => {
+									console.error('Google sign-in error:', error);
 								}
-							});
-						});
+							);
+						} else {
+							console.error('Không thể tìm thấy instance của gapi.auth2.');
+						}
+					},
+					onGoogleSignInFailure(error) {
+						console.error('Google sign-in error:', error);
 					},
 					submit_form: function(_self = null) {
 						_self.preventDefault();
@@ -172,10 +179,11 @@
 
 						gapi.load('client:auth2', () => {
 							gapi.client.init({
-								'apiKey': 'AIzaSyBhLQMV4xS6TOqAvdivU4zub0ODEoanIYE',
-								'discoveryDocs': ['https://people.googleapis.com/$discovery/rest'],
-								'clientId': '396864120602-62lna41i7qu12neqebqndg59v267r4ka.apps.googleusercontent.com',
-								'scope': 'https://www.googleapis.com/auth/contacts.readonly'
+								apiKey: 'AIzaSyBhLQMV4xS6TOqAvdivU4zub0ODEoanIYE',
+								discoveryDocs: ['https://people.googleapis.com/$discovery/rest'],
+								clientId: '396864120602-62lna41i7qu12neqebqndg59v267r4ka.apps.googleusercontent.com',
+								scope: 'https://www.googleapis.com/auth/contacts.readonly',
+								plugin_name: 'mycheery'
 							}).then(() => {
 								gapi.client.people.people.get({
 									'resourceName': 'people/me',
