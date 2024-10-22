@@ -1,6 +1,20 @@
 <script>
 	"use strict";
 
+	function getCurrentDate() {
+		const now = new Date();
+
+		// Get year, month, and day
+		const year = now.getFullYear();
+		const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+		const day = String(now.getDate()).padStart(2, '0');
+
+		// Combine them into a string in the desired format
+		return `${year}-${month}-${day}`;
+	}
+
+	// Get and display the formatted date
+	const date = getCurrentDate();
 	$(document).ready(function($) {
 		$("#store").on("input", function(e) {
 			var currentValue = $(this).val();
@@ -40,6 +54,20 @@
 				$('.require-phone').append(b);
 			} else {
 				$('.required-phone').remove();
+			}
+		});
+		$("#mail").on("input", function(e) {
+			var currentValue = $(this).val();
+			var required = '<?php echo cl_translate("Invalid email format"); ?>';
+			var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+			if (!emailPattern.test(currentValue)) {
+				var b = `<b class='text-danger p-2 required-mail'>${required}</b>`;
+				if ($('.required-mail').length == 0) {
+					$('.require-mail').append(b);
+				}
+			} else {
+				$('.required-mail').remove();
 			}
 		});
 
@@ -329,93 +357,78 @@
 				}
 			})
 		})
+
 		$(document).on('click', '.edit', function() {
+			var id = $(this).attr('data-id');
+			var event = $(this).attr('data-event');
+			var store = $(this).attr('data-store');
 			var values = $(this).attr('data-values');
 			var prizes = $(this).attr('data-prizes');
 			var stocks = $(this).attr('data-stocks');
 			var percents = $(this).attr('data-percents');
 			var limit = $(this).attr('data-limit');
+			var created = $(this).attr('data-created');
+			var expires = $(this).attr('data-expires');
+			let formattedValue = parseFloat(limit).toLocaleString('en-US', {
+				maximumFractionDigits: 2
+			});
 			var join = $(this).attr('data-join');
-			$(this).parent().find(".save").show();
-			$(this).hide();
-			var inputPrize = `
-            <div class='d-flex justify-content-center'>
-              <input type='text' class='save-prize form-control' data-id='' value='${prizes}' data-role="tagsinput">
-            </div>`;
-			var inputStock = `
-            <div class='d-flex justify-content-center'>
-              <input type='text' class='save-stock form-control' data-id='' value='${stocks}' data-role="tagsinput">
-            </div>`;
-			var inputPercent = `
-            <div class='d-flex justify-content-center'>
-              <input type='text' class='save-percent form-control' data-id='' value='${percents}' data-role="tagsinput">
-            </div>`;
-			var inputLimit = `
-            <div class='d-flex justify-content-center'>
-              <input type='text' class='save-limit form-control' data-id='' value='${limit}' data-role="tagsinput">
-            </div>`;
-			var inputJoin = `
-            <div class='d-flex justify-content-center'>
-              <input type='text' class='save-join form-control' data-id='' value='${join}' data-role="tagsinput">
-            </div>`;
 
+			$('#save-id').val(id);
+			$('#save-event').val(event);
+			$('#save-prize').val(prizes);
+			$('#save-stock').val(stocks);
+			$('#save-percent').val(percents);
+			$('#save-limit').val(formattedValue);
+			$('#save-join').val(join);
+			$('#save-created').val(created);
+			$('#save-expires').val(expires);
+			$('#editLabel').html('<?= cl_translate('Edit event ') ?>' + event + ' at ' + store)
+			var eventField = $(this).closest("tr").find(".event");
+			var limitField = $(this).closest("tr").find(".limit");
+			var joinField = $(this).closest("tr").find(".join");
 			var prizeField = $(this).closest("tr").find(".prizes");
 			var stockField = $(this).closest("tr").find(".stocks");
 			var percentField = $(this).closest("tr").find(".percents");
-			var limitField = $(this).closest("tr").find(".limit");
-			var joinField = $(this).closest("tr").find(".join");
+			var createdField = $(this).closest("tr").find(".created");
+			var expiresField = $(this).closest("tr").find(".expires");
+			var dataEdit = $(this).parent().find(".edit");
 
-			prizeField.html(inputPrize);
-			stockField.html(inputStock);
-			percentField.html(inputPercent);
-			limitField.html(inputLimit);
-			joinField.html(inputJoin);
-		})
-		$(document).on('click', '.save', function() {
-
-			var prize = $(this).closest("tr").find(".save-prize").val();
-			var stock = $(this).closest("tr").find(".save-stock").val();
-			var percent = $(this).closest("tr").find(".save-percent").val();
-			var limit = $(this).closest("tr").find(".save-limit").val();
-			var join = $(this).closest("tr").find(".save-join").val();
-			// check condition
-			var checkPrize = prize.split(', ');
-			var checkStock = stock.split(', ');
-			var checkPercent = percent.split(', ');
-			if (checkPrize.length !== checkStock.length) {
-				Swal.fire({
-					title: "<?php echo cl_translate("Failed"); ?>",
-					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
-					icon: "warning",
-					allowOutsideClick: true,
-					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
-				});
-				return;
-			} else if (checkPrize.length !== checkPercent.length) {
-				Swal.fire({
-					title: "<?php echo cl_translate("Failed"); ?>",
-					text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
-					icon: "warning",
-					allowOutsideClick: true,
-					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
-				});
-				return;
-			}
-			// check percent
-			var arr = percent.split(', ');
-			var total = 0;
-			for (var p = 0; p < arr.length; p++) {
-				total += parseFloat(arr[p]);
-				if (parseFloat(arr[p]) < 0.01) {
+			$('#save').off('click').on('click', function() {
+				var event = $("#save-event").val();
+				var prize = $("#save-prize").val();
+				var stock = $("#save-stock").val();
+				var percent = $("#save-percent").val();
+				var limit = $("#save-limit").val();
+				var limitUs = $("#save-limit").val();
+				limit = limit.replace(/,/g, '');
+				var join = $("#save-join").val();
+				//id 
+				var saveId = $("#save-id").val();
+				var created = $("#save-created").val();
+				var expires = $("#save-expires").val();
+				// check condition
+				var checkPrize = prize.split(', ');
+				var checkStock = stock.split(', ');
+				var checkPercent = percent.split(', ');
+				console.log(expires);
+				// Check expires
+				if (!expires) {
 					Swal.fire({
-						title: "<?php echo cl_translate("Warning"); ?>",
-						html: "<h4 class='text-danger'><?php echo cl_translate("Percent allow >= 0.01"); ?>: ",
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h5 class='text-danger'><?= cl_translate("Please select the expiration date"); ?> </h5>",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				} else if (expires <= date) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h5 class='text-danger'><?= cl_translate("The expiration date has passed or is today"); ?> </h5>",
 						icon: "error",
 						allowOutsideClick: true,
 						showConfirmButton: true,
@@ -425,78 +438,164 @@
 					});
 					return;
 				}
-			}
-			if (total > 100) {
-				Swal.fire({
-					title: "<?php echo cl_translate("Failed"); ?>",
-					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent > 100%. Please check and try again!"); ?>",
-					icon: "error",
-					allowOutsideClick: true,
-					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
-				});
-				return;
-			} else if (total < 100) {
-				Swal.fire({
-					title: "<?php echo cl_translate("Failed"); ?>",
-					html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent < 100%. Please check and try again!"); ?>",
-					icon: "error",
-					allowOutsideClick: true,
-					showConfirmButton: true,
-					onBeforeOpen: () => {
-						Swal.showLoading();
-					},
-				});
-				return;
-			}
-			$(this).parent().find(".edit").show();
-			$(this).hide();
-			var dataEdit = $(this).parent().find(".edit");
-			// 
-			var saveId = $(this).attr("data-id");
-			var prizeField = $(this).closest("tr").find(".prizes");
-			var stockField = $(this).closest("tr").find(".stocks");
-			var percentField = $(this).closest("tr").find(".percents");
-			var limitField = $(this).closest("tr").find(".limit");
-			var joinField = $(this).closest("tr").find(".join");
-
-			prizeField.html('Prize: ' + prize);
-			stockField.html('Stock: ' + stock);
-			percentField.html('Percent: ' + percent);
-			limitField.html(limit);
-			joinField.html(join);
-
-			dataEdit.attr('data-prizes', prize);
-			dataEdit.attr('data-stocks', stock);
-			dataEdit.attr('data-percents', percent);
-			dataEdit.attr('data-limit', limit);
-			dataEdit.attr('data-join', join);
-			$.ajax({
-				url: "<?php echo cl_link("native_api/store/save_event"); ?>",
-				type: 'POST',
-				data: {
-					id: saveId,
-					prize: prize,
-					stock: stock,
-					percent: percent,
-					limit: limit,
-					join: join,
-				},
-				success: function(result) {
+				if (checkPrize.length !== checkStock.length) {
 					Swal.fire({
-						title: "<?php echo cl_translate("Success"); ?>",
-						text: "<?php echo cl_translate("Save change success!"); ?>",
-						icon: "success",
+						title: "<?php echo cl_translate("Failed"); ?>",
+						text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+						icon: "warning",
 						allowOutsideClick: true,
 						showConfirmButton: true,
 						onBeforeOpen: () => {
 							Swal.showLoading();
 						},
 					});
+					return;
+				} else if (checkPrize.length !== checkPercent.length) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						text: "<?php echo cl_translate("Prize, Percent and Stock not match. Please check and try again"); ?>",
+						icon: "warning",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
 				}
+				// check percent
+				var arr = percent.split(', ');
+				var total = 0;
+				for (var p = 0; p < arr.length; p++) {
+					total += parseFloat(arr[p]);
+					if (parseFloat(arr[p]) < 0.01) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Warning"); ?>",
+							html: "<h4 class='text-danger'><?php echo cl_translate("Percent allow >= 0.01"); ?>: ",
+							icon: "error",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+						return;
+					}
+				}
+				if (total > 100) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent > 100%. Please check and try again!"); ?>",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				} else if (total < 100) {
+					Swal.fire({
+						title: "<?php echo cl_translate("Failed"); ?>",
+						html: "<h4 class='text-danger'><?php echo cl_translate("Your Percent"); ?>: " + total + "%</h4>" + " <?php echo cl_translate("Your set up percent < 100%. Please check and try again!"); ?>",
+						icon: "error",
+						allowOutsideClick: true,
+						showConfirmButton: true,
+						onBeforeOpen: () => {
+							Swal.showLoading();
+						},
+					});
+					return;
+				}
+				// $(this).parent().find(".edit").show();
+				// $(this).hide();
+				eventField.html(event);
+				limitField.html(limitUs);
+				joinField.html(join);
+				createdField.html(created);
+				expiresField.html(expires);
+				prizeField.html('Prize: ' + prize);
+				stockField.html('Stock: ' + stock);
+				percentField.html('Percent: ' + percent);
+
+				dataEdit.attr('data-limit', limit);
+				dataEdit.attr('data-join', join);
+				dataEdit.attr('data-event', event);
+				dataEdit.attr('data-created', created);
+				dataEdit.attr('data-expires', expires);
+				dataEdit.attr('data-prizes', prize);
+				dataEdit.attr('data-stocks', stock);
+				dataEdit.attr('data-percents', percent);
+				$.ajax({
+					url: "<?php echo cl_link("native_api/store/save_event"); ?>",
+					type: 'POST',
+					data: {
+						id: saveId,
+						event: event,
+						prize: prize,
+						stock: stock,
+						percent: percent,
+						limit: limit,
+						join: join,
+						created: created,
+						expires: expires,
+					},
+					success: function(result) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Save change success!"); ?>",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+						$('#edit').modal('hide');
+					}
+				})
 			})
+		})
+		$('#save-limit').on('input', function() {
+			var limit = $(this).val();
+			limit = limit.replace(/[^0-9.]/g, '');
+			if (limit) {
+				let formattedValue = parseFloat(limit).toLocaleString('en-US', {
+					maximumFractionDigits: 2,
+					minimumFractionDigits: 0
+				});
+				// Update the input value
+				$(this).val(formattedValue);
+			}
+		});
+		$('#save-percent').on('input', function() {
+			var percentArray = $(this).val().split(', ');
+			var total = percentArray.reduce(function(sum, percent) {
+				// Convert to a float and add to the sum
+				return sum + (parseFloat(percent.trim()) || 0); // Use trim to remove extra spaces
+			}, 0);
+			var required = '<?php echo cl_translate("Total percent: "); ?>';
+			var b = `<b class='text-primary p-2 required-percent'>${required + total + '%'}</b>`;
+
+			if ($('.required-percent').length > 0) {
+				$('.required-percent').text(required + total + '%');
+				if (total !== 100) {
+					$('.required-percent').addClass('text-danger');
+					$('.required-percent').removeClass('text-primary');
+				} else {
+					$('.required-percent').addClass('text-primary');
+					$('.required-percent').removeClass('text-danger');
+				}
+			} else {
+				$('.require-percent').append(b);
+				if (total !== 100) {
+					$('.required-percent').addClass('text-danger');
+					$('.required-percent').removeClass('text-primary');
+				} else {
+					$('.required-percent').addClass('text-primary');
+					$('.required-percent').removeClass('text-danger');
+				}
+			}
 		})
 
 	});

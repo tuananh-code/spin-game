@@ -197,7 +197,6 @@ if ($action == "login") {
                     'is_html'      => true,
                     'message_body' => cl_template('emails/confirm_registration')
                 );
-
                 if (cl_send_mail($send_email_data)) {
 
                     if (not_empty($invite_link)) {

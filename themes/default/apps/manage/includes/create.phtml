@@ -19,13 +19,6 @@
 		</div>
 		<div class="row" id='if-val1'>
 			<!-- config use id -->
-			<!-- <div class="col-sm-6">
-				<div class="form-group">
-					<label><?php echo cl_translate("Username"); ?></label>
-					<input name="username" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter user name customer"); ?>">
-				</div>
-			</div> -->
-
 			<div class="col-sm-6">
 				<div class="form-group">
 					<label><?php echo cl_translate("Name"); ?></label>
@@ -35,9 +28,10 @@
 					</div>
 				</div>
 			</div>
+
 			<div class="col-sm-6">
 				<div class="form-group">
-					<label><?php echo cl_translate("Phone number:*"); ?></label>
+					<label><?php echo cl_translate("Phone number"); ?>:*</label>
 					<input v-model.trim="$v.phone.$model" name="phone" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: 0357172737"); ?>">
 					<div class="invalid-main-feedback" v-if="is_valid_phone">
 						{{invalid_feedback_phone}}
@@ -47,7 +41,7 @@
 			<div class="col-sm-6">
 				<div class="form-group">
 					<label><?php echo cl_translate("Email:"); ?></label>
-					<input v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Ex: example@gmail.com"); ?>">
+					<input v-model.trim="$v.email.$model" name="email" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter address"); ?>">
 					<div class="invalid-main-feedback" v-if="is_valid_email">
 						{{invalid_feedback_email}}
 					</div>
@@ -113,7 +107,7 @@
 
 			<div class="col-sm-6">
 				<div class="form-group">
-					<label><?php echo cl_translate("Product name:*"); ?></label>
+					<label><?php echo cl_translate("Product name"); ?>:*</label>
 					<input v-model.trim="$v.pname.$model" name="pname" type="text" class="form-control" placeholder="<?php echo cl_translate("Enter product name"); ?>">
 					<div class="invalid-main-feedback" v-if="is_valid_pname">
 						{{invalid_feedback_pname}}

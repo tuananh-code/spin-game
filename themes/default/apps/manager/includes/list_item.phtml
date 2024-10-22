@@ -2,16 +2,16 @@
 $prize = get_prize($me['id']);
 ?>
 <h2 class="p-2 m-2 text-primary"> <?= cl_translate('Prize manager') ?></h2>
-<?php if (@$prize[0]['username']) { ?>
-	<div class="table-responsive-md u-datatable px-2">
+<?php if (@$prize['username'][0]) { ?>
+	<div class="table-responsive-md u-datatable px-2" style="padding-bottom: 64px">
 		<table id="prizeTable">
 			<thead>
 				<tr class="text-uppercase font-size-1">
-					<th class="font-weight-medium">
+					<!-- <th class="font-weight-medium">
 						<div class="d-flex justify-content-center align-items-center">
 							<input type="checkbox" name="" class="form-check-input" id="selectAll">
 						</div>
-					</th>
+					</th> -->
 					<th scope="col" class="font-weight-medium">
 						<div class="d-flex justify-content-center align-items-center">
 							<?= cl_translate('Customer') ?>
@@ -64,33 +64,35 @@ $prize = get_prize($me['id']);
 				</tr>
 			</thead>
 			<tbody>
-				<?php foreach ($prize as $p) { ?>
+				<?php //foreach ($prize as $p) { 
+				?>
+				<?php for ($p = 0; $p < count($prize['username']); $p++) { ?>
 					<tr class="tr text-center">
+						<!-- <td>
+							<input type="checkbox" class="form-check-input select" data-prize="<?= $prize['id'][$p] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $prize['store_id'][$p] ?>" data-game="<?= $prize['game_id'][$p] ?>">
+						</td> -->
 						<td>
-							<input type="checkbox" class="form-check-input select" data-prize="<?= $p['id'] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>">
-						</td>
-						<td>
-							<?= (@$p['username']) ? $p['username'] : $me['name'] ?>
+							<?= (@$prize['username'])[$p] ? $prize['username'][$p] : $me['name'] ?>
 						</td>
 						<td class=" text-primary">
-							<?= get_store_name($p['store_id']) ?>
+							<?= get_store_name($prize['store_id'][$p]) ?>
 						</td>
 						<td>
-							<?= get_game_name($p['game_id']) ?>
+							<?= get_game_name($prize['game_id'][$p]) ?>
 						</td>
 						<td class="text-success">
-							<?= $p['prize'] ?>
+							<?= $prize['prize'][$p] ?>
 						</td>
 						<td>
-							<?= $date = date('Y-m-d', strtotime($p['created_at'])) ?>
+							<?= $date = date('Y-m-d', strtotime($prize['created_at'][$p])) ?>
 						</td>
 						<td class="text-success claimed">
-							<?= ($p['claimed_at']) ? date('Y-m-d', strtotime($p['claimed_at']))  : '' ?>
+							<?= ($prize['claimed_at'][$p]) ? date('Y-m-d', strtotime($prize['claimed_at'][$p]))  : '' ?>
 						</td>
 						<td>
 							<div>
-								<button class="claim px-3 py-2 border-0 rounded-3 btn-success" data-prize="<?= $p['id'] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>"><?php echo cl_icon("trophy-fill"); ?></button>
-								<button class="claim-delete px-3 py-2 border-0 rounded-3 btn-danger" data-prize="<?= $p['id'] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $p['store_id'] ?>" data-game="<?= $p['game_id'] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
+								<button class="claim px-3 py-2 border-0 rounded-3 btn-success" data-prize="<?= $prize['id'][$p] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $prize['store_id'][$p] ?>" data-game="<?= $prize['game_id'][$p] ?>"><?php echo cl_icon("trophy-fill"); ?></button>
+								<button class="claim-delete px-3 py-2 border-0 rounded-3 btn-danger" data-prize="<?= $prize['id'][$p] ?>" data-id="<?= $me['id'] ?>" data-store="<?= $prize['store_id'][$p] ?>" data-game="<?= $prize['game_id'][$p] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
 							</div>
 						</td>
 					</tr>

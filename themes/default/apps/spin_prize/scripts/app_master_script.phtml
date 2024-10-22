@@ -135,6 +135,83 @@
 				});
 			}
 		})
+		$('#savePhone').on('click', function() {
+			$(this).attr('disabled', true);
+			var phone = $('#phoneCheck').val();
+			$.ajax({
+				url: '<?php echo cl_link("native_api/game/check_ticket"); ?>',
+				type: 'POST',
+				data: {
+					phone: phone,
+				},
+				success: function(result) {
+					if (result.phone == 200 && result.ticket == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Your phone save success"); ?>" + '. ' + "<?php echo cl_translate("Please check notification and message"); ?>",
+							icon: "success",
+							allowOutsideClick: false,
+							showConfirmButton: true,
+							showCancelButton: true,
+							confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+							cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						}).then((response) => {
+							if (response.isConfirmed) {
+								window.location.reload();
+							}
 
+						})
+					} else if (result.phone == 200) {
+						Swal.fire({
+							title: "<?php echo cl_translate("Success"); ?>",
+							text: "<?php echo cl_translate("Your phone save success"); ?>",
+							icon: "success",
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						}).then((response) => {
+							if (response.isConfirmed) {
+								window.location.reload();
+							}
+
+						});
+					} else if (result.status == 500) {
+						$('#savePhone').attr('disabled', false);
+						Swal.fire({
+							title: "<?php echo cl_translate('Failed'); ?>",
+							html: "<span><?php echo cl_translate('This phone has already been used'); ?></span><br><span><?php echo cl_translate('Please try another phone'); ?>!</span>",
+							icon: "error", // Change to "error" for a failure message
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						});
+					} else if (result.status == 200) {
+						$('#savePhone').attr('disabled', false);
+						Swal.fire({
+							title: "<?php echo cl_translate('Success'); ?>",
+							text: "<?php echo cl_translate("Your phone save success"); ?>",
+							icon: "success", // Change to "error" for a failure message
+							allowOutsideClick: true,
+							showConfirmButton: true,
+							onBeforeOpen: () => {
+								Swal.showLoading();
+							},
+						}).then((response) => {
+							if (response.isConfirmed) {
+								window.location.reload();
+							}
+
+						});
+					}
+				}
+			})
+		})
 	});
 </script>

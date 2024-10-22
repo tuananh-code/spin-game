@@ -52,3 +52,4 @@ define("T_TRANSACTION", "cl_transaction");
 define("T_POINTS_INFO", "cl_points_information");
 define("T_POINTS_DISTRI", "cl_points_distribution");
 define("T_POINTS_HISTORY", "cl_points_history");
+define("T_KYC", "cl_kyc");

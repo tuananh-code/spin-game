@@ -23,6 +23,7 @@ if ($result->num_rows > 0) {
                 if ($result_game->num_rows > 0) {
                     foreach ($result_game as $row_game) {
                         $id_game[] = $row_game['id'];
+                        $event[] = $row_game['game_name'];
                         $status[] = $row_game['status'];
                         $expires_date[] = $row_game['expires_date'];
                         $created_at[] = $row_game['created_at'];
@@ -58,6 +59,10 @@ if ($result->num_rows > 0) {
     .delete-store,
     .save-store {
         padding: .75em;
+    }
+
+    .swal2-container {
+        z-index: 999999;
     }
 
     tbody>tr>td {
@@ -111,47 +116,51 @@ if ($result->num_rows > 0) {
             <?php echo cl_translate("Add Store"); ?>
         </h1>
         <div class="d-flex align-items-center justify-content-center">
-            <label for="store" class="col-2 text-end"><?php echo cl_translate("Store Name:"); ?></label>
+            <label for="store" class="col-2 text-end"><?php echo cl_translate("Store Name"); ?>:</label>
             <div class="require-store col-9">
                 <input type="text" id="store" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Store name"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
-            <label for="address" class="col-2 text-end"><?php echo cl_translate("Address:"); ?></label>
+            <label for="address" class="col-2 text-end"><?php echo cl_translate("Address"); ?>:</label>
             <div class="require-address col-9">
                 <input type="text" id="address" class="p-2 m-2 form-control" required placeholder="<?php echo cl_translate("Enter Address"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
-            <label for="city" class="col-2 text-end"><?php echo cl_translate("City:"); ?></label>
+            <label for="city" class="col-2 text-end"><?php echo cl_translate("City"); ?>:</label>
             <div class="require-city col-9">
                 <input name="city" id="city" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter City"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
-            <label for="phone" class="col-2 text-end"><?php echo cl_translate("Phone:"); ?></label>
+            <label for="phone" class="col-2 text-end"><?php echo cl_translate("Phone"); ?>:</label>
             <div class="require-phone col-9">
                 <input name="phone" id="phone" class="form-control m-2 p-2" required placeholder="<?php echo cl_translate("Enter Phone"); ?>">
             </div>
         </div>
         <div class="d-flex align-items-center justify-content-center">
-            <label for="mail" class="col-2 text-end"><?php echo cl_translate("Mail:"); ?></label>
+            <label for="mail" class="col-2 text-end"><?php echo cl_translate("Mail"); ?>:</label>
             <div class="require-mail col-9">
                 <input name="mail" id="mail" class="form-control m-2 p-2" placeholder="<?php echo cl_translate("Enter Mail, Optional"); ?>">
             </div>
         </div>
-
+        <div class="d-flex align-items-center justify-content-center">
+            <label for="mail-pass" class="col-2 text-end"><?php echo cl_translate("App Mail Password"); ?>:</label>
+            <div class="require-mail-pass col-9">
+                <input name="mail-pass" id="mail-pass" class="form-control m-2 p-2" placeholder="<?php echo cl_translate("Enter App Mail Password for send notification through gmail Optional"); ?>">
+            </div>
+        </div>
         <div class="text-center">
             <button class="p-2 px-3 m-2 text-white btn-success border-0 rounded-pill add-store"><?php echo cl_translate("Add store"); ?></button>
         </div>
-
     </form>
     <?php //endif; 
     ?>
 
     <?php if ($check) { ?>
-        <center class="px-2 refresh">
-            <span class="fs-2 text-primary">Store Manager</span>
+        <center class="px-2 refresh" style="padding-bottom: 64px">
+            <span class="fs-2 text-primary"><?= cl_translate('Store Manager') ?></span>
             <div class="table-responsive-md u-datatable">
                 <table id="storeTable">
                     <thead>
@@ -223,69 +232,69 @@ if ($result->num_rows > 0) {
                 </table>
             </div>
             <!--  -->
-            <span class="fs-2 text-primary">Event Manager</span>
+            <span class="fs-2 text-primary"><?= cl_translate('Event Manager') ?></span>
             <div class="table-responsive-md u-datatable">
                 <table id="eventTable" class="refresh">
                     <thead>
                         <tr class="text-uppercase font-size-1">
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Store') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Event') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Status') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Buy') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Max') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Props') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Created') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Expires') ?>
                                     <div class="ml-2">
                                     </div>
                                 </div>
                             </th>
                             <th scope="col" class="font-weight-medium">
-                                <div class="d-flex justify-content-center align-items-center">
+                                <div class="text-center d-flex justify-content-center align-items-center">
                                     <?= cl_translate('Action') ?>
                                     <div class="ml-2">
                                     </div>
@@ -299,9 +308,9 @@ if ($result->num_rows > 0) {
                                 <tr class="tr text-center">
                                     <td class="align-middle text-dark font-weight-normal"><b><?= $store[$i] ?></b></td>
                                     <td>
-                                        <span><?= $game[$i] ?></span>
+                                        <span class="event"><?= $game[$i] ?></span>
                                     </td>
-                                    <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? 'Publish' : 'Draft' ?></td>
+                                    <td class="align-middle <?= ($status[$i] == 1) ? 'text-primary' : 'text-secondary' ?>"><?= ($status[$i] == 1) ? cl_translate('Publish') : cl_translate('Draft') ?></td>
                                     <td class="align-middle text-dark font-weight-normal"><span class="limit"><?= number_format($limit[$i]) ?></span></td>
                                     <td class="align-middle text-dark text-center font-weight-normal"><span class="join"><?= $join[$i] ?></span></td>
                                     <td>
@@ -325,19 +334,22 @@ if ($result->num_rows > 0) {
                                             $stocks = implode(', ', $stock);
                                             $percents = implode(', ', $percent);
                                             $shows = implode(', ', $show);
-                                            echo '<span class="prizes">Prize: ' . $prizes . '</span><br>'; // Outputs: prize1, prize2, prize3
-                                            echo '<span class="stocks">Stock: ' . $stocks . '</span><br>';
-                                            echo '<span class="percents">Percent: ' . $shows . '</span>'; // Outputs: percent1, percent2, percent3
+                                            echo '<span class="prizes">' . cl_translate('Prize') . ': ' . $prizes . '</span><br>'; // Outputs: prize1, prize2, prize3
+                                            echo '<span class="stocks">' . cl_translate('stock') . ': ' . $stocks . '</span><br>';
+                                            echo '<span class="percents">' . cl_translate('percent') . ': ' . $shows . '</span>'; // Outputs: percent1, percent2, percent3
                                             // echo 'Prize: ' . $prizes . '<br> Percent: ' . $percents . '<br> Stock: ' . $stocks;
                                         }
                                         ?>
                                     </td>
-                                    <td class="align-middle text-success"><?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></td>
-                                    <td class="align-middle text-danger"><?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></td>
+                                    <td class="align-middle text-success">
+                                        <span class="created"> <?= $date = date('Y-m-d', strtotime($created_at[$i])) ?></spanc>
+                                    </td>
+                                    <td class="align-middle text-danger">
+                                        <span class="expires"> <?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?></spanc>
+                                    </td>
                                     <td>
-                                        <div>
-                                            <button class="edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>" data-limit="<?= $limit[$i] ?>" data-join="<?= $join[$i] ?>"><i class="fas fs-5 fa-edit text-white"></i></button>
-                                            <button class="save text-white border-0 rounded-3 btn-success" data-id="<?= $id_game[$i] ?>" style="display:none;"><i class="fas fs-5 fa-save text-white"></i></button>
+                                        <div class="d-flex">
+                                            <button class="mx-1 edit text-white border-0 rounded-3 btn-primary" data-id="<?= $id_game[$i] ?>" data-store="<?= get_store_name_game($id_game[$i]) ?>" data-event="<?= $event[$i] ?>" data-values="<?= $values ?>" data-prizes="<?= $prizes ?>" data-stocks="<?= $stocks ?>" data-percents="<?= $percents ?>" data-limit="<?= $limit[$i] ?>" data-join="<?= $join[$i] ?>" data-created="<?= $date = date('Y-m-d', strtotime($created_at[$i])) ?>" data-expires="<?= ($expires_date[$i]) ? $date = date('Y-m-d', strtotime($expires_date[$i])) : '' ?>" data-bs-toggle="modal" data-bs-target="#edit"><i class="fas fs-5 fa-edit text-white"></i></button>
                                             <button class="delete text-white border-0 rounded-3 btn-danger" data-id="<?= $id_game[$i] ?>"><i class="fas fs-5 fa-trash-alt text-white"></i></button>
                                         </div>
                                     </td>
@@ -347,12 +359,67 @@ if ($result->num_rows > 0) {
                     </tbody>
                 </table>
             </div>
+            <!-- Modal -->
+            <div class="modal fade" id="edit" tabindex="-1" aria-labelledby="editLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header text-center">
+                            <h3 class="modal-title text-primary" style="text-transform: capitalize;" id="editLabel"></h3>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div>
+                                <input type="hidden" name="id" id="save-id" class="form-control" required>
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-event" class='col-2 text-end m-2'><?= cl_translate('Event') ?>: </label>
+                                <input type="text" name="event" id="save-event" required class="form-control me-4">
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-limit" class='col-2 text-end m-2'><?= cl_translate('Buy') ?>: </label>
+                                <input type="text" name="limit" id="save-limit" required class="form-control me-4">
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-join" class='col-2 text-end m-2'><?= cl_translate('Max') ?>: </label>
+                                <input type="text" name="join" id="save-join" required class="form-control me-4">
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-prize" class='col-2 text-end m-2'><?= cl_translate('Prize') ?>: </label>
+                                <input type="text" name="prize" id="save-prize" required class="form-control me-4">
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-stock" class='col-2 text-end m-2'><?= cl_translate('Stock') ?>: </label>
+                                <input type="text" name="stock" id="save-stock" required class="form-control me-4">
+                            </div>
+                            <div class="p-2 m-2 require-percent col-12">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <label for="save-percent" class='col-2 text-end m-2'><?= cl_translate('Percent') ?>: </label>
+                                    <input type="text" name="percent" id="save-percent" required class="form-control me-4">
+                                </div>
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-created" class='col-2 text-end m-2'><?= cl_translate('Created') ?>: </label>
+                                <input type="date" name="created" id="save-created" required class="form-control me-4" readonly> 
+                            </div>
+                            <div class="p-2 m-2 d-flex align-items-center justify-content-center">
+                                <label for="save-expires" class='col-2 text-end m-2'><?= cl_translate('Expires') ?>: </label>
+                                <input type="date" name="expires" id="save-expires" required class="form-control me-4">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-success" id="save"><?= cl_translate('Save') ?></button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= cl_translate('Cancel') ?></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </center>
     <?php } ?>
+
 </div>
+<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"></script>
 <?php echo cl_template('store/scripts/app_master_script'); ?>
 <script src="{%config theme_url%}/statics/DataTables/datatables.min.js"></script>
-<script src="{%config theme_url%}/statics/tags-input/dist/bootstrap-tagsinput.min.js"> </script>
 
 <script>
     new DataTable('#storeTable');

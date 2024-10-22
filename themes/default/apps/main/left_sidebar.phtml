@@ -37,7 +37,7 @@
 					</span>
 					<span class="text">
 						<a href="<?php echo cl_link('game'); ?>" data-spa="true">
-							<?php echo cl_translate('Game'); ?>
+							<?php echo cl_translate('Event'); ?>
 						</a>
 					</span>
 				</div>
@@ -100,6 +100,22 @@
 					</div>
 				<?php endif ?>
 				<!--end manage -->
+				<!-- kyc -->
+				<?php if ($cl['is_admin']) { ?>
+					<div data-navitem="kyc" class="kyc sidebar__nav-item <?php if ($cl['pn'] == 'kyc') {
+																				echo ('active');
+																			} ?>">
+						<span class="icon">
+							<?php echo cl_ficon('person'); ?>
+						</span>
+						<span class="text">
+							<a href="<?php echo cl_link('kyc'); ?>" data-spa="true">
+								<?php echo cl_translate('KYC'); ?>
+							</a>
+						</span>
+					</div>
+				<?php } ?>
+				<!-- kyc -->
 				<!-- point system -->
 				<?php if ($cl['is_admin']) : ?>
 					<div data-navitem="point_system" class="sidebar__nav-item <?php if ($cl['pn'] == 'point_system') {

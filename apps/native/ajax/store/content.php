@@ -99,11 +99,14 @@ if (empty($cl['is_logged'])) {
         return $data;
     } elseif ($action === 'save_event') {
         $id = $_POST['id'];
+        $event = $_POST['event'];
         $prize = $_POST['prize'];
         $stock = $_POST['stock'];
         $percent = $_POST['percent'];
         $limit = $_POST['limit'];
         $join = $_POST['join'];
+        $created = $_POST['created'];
+        $expires = $_POST['expires'];
 
         $prizes = explode(', ', $prize);
         $stocks = explode(', ', $stock);
@@ -122,9 +125,12 @@ if (empty($cl['is_logged'])) {
         }
         $props = json_encode($attr);
         $update = cl_db_update(T_GAME, array("id" => $id), array(
+            'game_name' => $event,
             'props' => $props,
             'limit' => $limit,
             'join' => $join,
+            'created_at' => $created,
+            'expires_date' => $expires,
         ));
         if ($update) {
             $data['status'] = 200;

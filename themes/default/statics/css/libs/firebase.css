@@ -1,0 +1,11 @@
+.firebaseui-idp-facebook {
+  display: none;
+}
+
+.firebaseui-idp-google {
+  display: none;
+}
+
+.firebaseui-idp-phone, .firebaseui-idp-google {
+  border-radius: 24px;
+}

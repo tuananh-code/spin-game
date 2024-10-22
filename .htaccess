@@ -35,6 +35,7 @@ RewriteRule ^store(\/|)$ index.php?app=store [QSA]
 RewriteRule ^manager(\/|)$ index.php?app=manager [QSA]
 RewriteRule ^spin(\/|)$ index.php?app=spin [QSA]
 RewriteRule ^spin_prize(\/|)$ index.php?app=spin_prize [QSA]
+RewriteRule ^kyc(\/|)$ index.php?app=kyc [QSA]
 
 RewriteRule ^/$ index.php?app=home [QSA]
 RewriteRule ^language/(\w{2,25})(\/|)$ index.php?app=home&language=$1 [QSA]

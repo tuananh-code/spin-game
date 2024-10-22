@@ -1707,6 +1707,7 @@ function get_ticket($game_id)
         foreach ($query_ticket as $ticket) {
             $id[] = $ticket['id'];
             $user_id[] = $ticket['user_id'];
+            $phone[] = $ticket['phone'];
             $game_ids[] = $ticket['game_id'];
             $tickets[] = $ticket['ticket'];
             $created_at[] = $ticket['created_at'];
@@ -1714,6 +1715,7 @@ function get_ticket($game_id)
             $data = [
                 'id' => $id,
                 'user_id' => $user_id,
+                'phone' => $phone,
                 'game_id' => $game_ids,
                 'ticket' => $tickets,
                 'created_at' => $created_at,
@@ -1723,9 +1725,10 @@ function get_ticket($game_id)
     } else {
         $data = [];
     }
+    // var_dump($data);
     return $data;
 }
-function get_prize($id, $store_id = null)
+function get_prize($id)
 {
     if (@count(get_store_id($id)) > 0) {
         $store_id = get_store_id($id);
@@ -1734,15 +1737,31 @@ function get_prize($id, $store_id = null)
             $result = conn()->query($sql);
             if ($result->num_rows > 0) {
                 foreach ($result as $row) {
-                    $data[] = [
-                        'id' => $row['id'],
-                        'username' => cl_db_get_item(T_USERS, array('id' => $row['user_id']))['username'],
-                        'store_id' => $row['store_id'],
-                        'game_id' => $row['game_id'],
-                        'prize' => $row['prize'],
-                        'created_at' => $row['created_at'],
-                        'claimed_at' => $row['claimed_at'],
+                    $ids[] = $row['id'];
+                    $username[] = cl_db_get_item(T_USERS, array('id' => $row['user_id']))['username'];
+                    $store_ids[] = $row['store_id'];
+                    $game_id[] = $row['game_id'];
+                    $prize[] = $row['prize'];
+                    $created_at[] = $row['created_at'];
+                    $claimed_at[] = $row['claimed_at'];
+                    $data = [
+                        'id' =>        $ids,
+                        'username' =>   $username,
+                        'store_id' =>  $store_ids,
+                        'game_id' =>    $game_id,
+                        'prize' =>      $prize,
+                        'created_at' => $created_at,
+                        'claimed_at' => $claimed_at,
                     ];
+                    // $data[] = [
+                    //     'id' => $row['id'],
+                    //     'username' => cl_db_get_item(T_USERS, array('id' => $row['user_id']))['username'],
+                    //     'store_id' => $row['store_id'],
+                    //     'game_id' => $row['game_id'],
+                    //     'prize' => $row['prize'],
+                    //     'created_at' => $row['created_at'],
+                    //     'claimed_at' => $row['claimed_at'],
+                    // ];
                 }
             } else {
                 $data = null;
@@ -1766,6 +1785,8 @@ function get_prize($id, $store_id = null)
             $data = null;
         }
     }
+    // var_dump($datas);
+
     return $data;
 }
 function get_prize_name($prize_id)
@@ -1820,7 +1841,19 @@ function get_game_name($game_id)
     }
     return $name;
 }
-
+function get_game_buy($game_id)
+{
+    $sql = "SELECT * FROM cl_game WHERE id = $game_id";
+    $result = conn()->query($sql);
+    if ($result->num_rows > 0) {
+        foreach ($result as $row) {
+            $name = $row['buy'];
+        }
+    } else {
+        $name = [];
+    }
+    return $name;
+}
 function get_game_id($store_id)
 {
     $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
@@ -1849,7 +1882,7 @@ function get_game_id_publish($store_id)
 }
 function get_game_data($store_id)
 {
-    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id";
+    $sql = "SELECT * FROM cl_game WHERE store_id = $store_id AND status != 0";
     $result = conn()->query($sql);
     if ($result->num_rows > 0) {
         foreach ($result as $row) {
@@ -2060,11 +2093,15 @@ function is_owner($game_id)
 function get_user_data($user_id)
 {
     $user_query = cl_db_get_item(T_USERS, array('id' => $user_id));
-    $data = [
-        'username' => $user_query['username'],
-        'email' => $user_query['email'],
-        'smtp_mail' => $user_query['smtp_mail']
-    ];
+    if ($user_query) {
+        $data = [
+            'username' => $user_query['username'],
+            'email' => $user_query['email'],
+            'smtp_mail' => $user_query['smtp_mail']
+        ];
+    } else {
+        $data = [];
+    }
     return $data;
 }
 function get_user_id_game($game_id)
@@ -2098,8 +2135,32 @@ function get_user_by_id($user_id)
     $user  = cl_db_get_item(T_USERS, array(
         'id' => $user_id
     ));
-    $name = $user['fname'];
+    $name = $user['username'];
     return $name;
+}
+function get_kyc()
+{
+    global $db;
+    $user = $db->where('delete_at', null, 'is')->get(T_KYC);
+    return $user;
+}
+
+function get_all_game()
+{
+    $get = cl_db_get_items(T_GAME, array('status' => 1));
+    foreach ($get as $g) {
+        $event[] = $g['game_name'];
+        $id[] = $g['id'];
+        $props[] = $g['props'];
+        $expires_date[] = $g['expires_date'];
+    }
+    $data = [
+        'event' => $event,
+        'id' => $id,
+        'props' => $props,
+        'expires_date' => $expires_date,
+    ];
+    return $data;
 }
 function conn()
 {

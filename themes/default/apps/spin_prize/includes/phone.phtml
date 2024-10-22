@@ -1,0 +1,48 @@
+<link rel="stylesheet" href="{%config theme_url%}/statics/css/libs/firebase.css">
+<h2 class="p-2 m-2 text-primary">
+    <?= cl_translate('Enter your phone to check ticket') ?>..
+</h2>
+<div>
+    <!-- <form action="" method="post" value="add">
+        <div id="container">
+            <div id="loading">Loading...</div>
+            <div id="loaded" class="hidden">
+                <div id="main">
+                    <div id="user-signed-in" class="hidden">
+                        <div id="user-info">
+                            <div class="d-flex p-2 align-items-center justify-content-center">
+                                <div id="photo-container">
+                                    <img id="image" name="image">
+                                </div>
+                                <div id="name" name="name"></div>
+                            </div>
+                            <div id="mail" class="d-flex p-2 align-items-center justify-content-center" name="mail"></div>
+                            <div id="phone" name="phone"></div>
+                            <div style="display: none;" id="dates"></div>
+                            <div class="clearfix"></div>
+                        </div>
+                        <p>
+                            <button id="sign-out" class='btn btn-outline-secondary'>Sign Out</button>
+                            <button id="delete-account" class='btn btn-danger'>Delete account</button>
+                        </p>
+                    </div>
+                    <div id="user-signed-out" class="hidden">
+                        <div id="firebaseui-spa">
+                            <div id="firebaseui-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form> -->
+</div>
+<div class="col-8">
+    <div class="d-flex align-items-center">
+        <label for="phone" class="p-2"> <?= cl_translate('Phone') ?>:</label>
+        <input type="text" class="form-control p-2" id="phoneCheck" placeholder="<?php echo cl_translate("Enter Phone"); ?>">
+    </div>
+    <div>
+        <button class="p-1 m-2 col-2 text-white btn-success border-0 rounded-pill" id="savePhone"><?= cl_translate('Save') ?></button>
+    </div>
+</div>
+<?php echo cl_template('spin_prize/scripts/auth'); ?>

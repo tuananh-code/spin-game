@@ -11,7 +11,7 @@ $result = conn()->query($sql);
 			<div class="lp">
 				<div class="nav-link-holder">
 					<a href="<?php echo cl_link("spin"); ?>" data-spa="true">
-						<?php echo cl_translate("Spin"); ?>
+						<?php echo cl_translate("Spin Test"); ?>
 					</a>
 				</div>
 			</div>
@@ -31,7 +31,7 @@ $result = conn()->query($sql);
 	</div>
 	<center>
 		<div class="timeline-game">
-			<h2 class="p-2 m-2"><?php echo cl_translate("Spin game"); ?></h2>
+			<h2 class="p-2 m-2"><?php echo cl_translate("Spin Test"); ?></h2>
 			<div class="d-none justify-content-center align-items-center">
 				<label for="selectStore" class="col-2"><?php echo cl_translate("Select store:"); ?></label>
 				<div class="col-9">
@@ -51,12 +51,12 @@ $result = conn()->query($sql);
 			</div>
 			<div class="d-flex align-items-center justify-content-center">
 				<?php if ($result->num_rows > 0) { ?>
-					<label for="themes" style="width:27%" class="text-end"><?php echo cl_translate("Select store and game:"); ?></label>
+					<label for="themes" style="width:27%" class="text-end"><?php echo cl_translate("Select store and game"); ?>:</label>
 					<div class="col-8">
 						<select class="form-select store-api m-2 p-2" id="themes" data-key="t3Hfum30L6Bju6CfGmLW75pqHRaPzk0bs7sen0ZoNDtoeNiCGRyZ7QsuUg03zKRM53GR1MH9AzfYJQpbGmB2Etse9yM4HXSiCRdHEtCqmqBLXeRs01vfPngLipK9ZdJXE"></select>
 					</div>
 				<?php } else { ?>
-					<h4 value="0" id="noWheel"><?php echo cl_translate("No event available, try to add store and event first"); ?></h4>
+					<h4 value="0" id="noWheel"><?php echo cl_translate("No event available try to add store and event first"); ?></h4>
 				<?php } ?>
 			</div>
 			<div class="gui-wrapper bg-success text-white rounded-pill p-2 m-2">
@@ -111,7 +111,7 @@ $result = conn()->query($sql);
 								$value = choose_prize($attr);
 								$prize = $value['value'];
 						?>
-								<h3 class="p-2 m-2"><?= cl_translate('You choosing') . ' ' . $row['shop_name'] ?></h3>
+								<h3 class="p-2 m-2"><?= cl_translate('You choosing Store') . ' ' . $row['shop_name'] ?></h3>
 								<input type="hidden" name="" id="propsWheel" data-name="<?= $row['shop_name'] ?>" data-user="<?= $me['id'] ?>" data-store="<?= $s ?>" data-game="<?= $row_game['id'] ?>" data-prop='<?= $row_game['props'] ?>' data-themes='<?= $row_game['themes'] ?>'>
 								<input type="hidden" id="tokenApi" value="<?= get_random_number() . $prize . get_random_number() ?>">
 							<?php } ?>
@@ -124,7 +124,7 @@ $result = conn()->query($sql);
 			if ($result->num_rows > 0) { ?>
 				<div class="text-center">
 					<button id="spin" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
-						<span class="fs-4">Spin</span>
+						<span class="fs-4"><?= cl_translate('Spin Here') ?></span>
 					</button>
 				</div>
 			<?php } ?>

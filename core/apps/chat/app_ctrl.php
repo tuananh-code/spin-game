@@ -40,6 +40,7 @@ function cl_get_chats($args = array()){
 		'user_id'  => $user_id,
 		'limit'    => $limit
 	));
+	// var_dump($sql);die;
 
 	$data  = array();
 	$chats = $db->rawQuery($sql);

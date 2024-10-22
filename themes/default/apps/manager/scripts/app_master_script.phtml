@@ -9,7 +9,6 @@
 			var store = $(this).attr('data-store');
 			var game = $(this).attr('data-game');
 			var td = $(this).closest('tr').find('.claimed');
-			console.log(td);
 			Swal.fire({
 				title: "<?php echo cl_translate("Reward"); ?>",
 				text: "<?php echo cl_translate("Confirm prize award for this customer?"); ?>",
@@ -31,6 +30,7 @@
 							id: id,
 							store: store,
 							game: game,
+							prize: prize
 						},
 						success: function(result) {
 							Swal.fire({
@@ -49,6 +49,48 @@
 				}
 			})
 		})
+
+		$('.claim-delete').on('click', function() {
+			var prize = $(this).attr('data-prize');
+			var tr = $(this).closest('tr');
+			Swal.fire({
+				title: "<?php echo cl_translate("Warning"); ?>",
+				text: "<?php echo cl_translate("Confirm delete prize?"); ?>",
+				icon: "question",
+				allowOutsideClick: false,
+				showConfirmButton: true,
+				showCancelButton: true,
+				confirmButtonText: "<?php echo cl_translate("Ok"); ?>",
+				cancelButtonText: "<?php echo cl_translate("Cancel"); ?>",
+				onBeforeOpen: () => {
+					Swal.showLoading();
+				},
+			}).then((response) => {
+				if (response.isConfirmed) {
+					$.ajax({
+						url: '<?php echo cl_link("native_api/manager/claim_delete"); ?>',
+						type: 'POST',
+						data: {
+							prize: prize,
+						},
+						success: function(result) {
+							Swal.fire({
+								title: "<?php echo cl_translate("Success"); ?>",
+								text: "<?php echo cl_translate("Delete success!"); ?>",
+								icon: "success",
+								allowOutsideClick: true,
+								showConfirmButton: true,
+								onBeforeOpen: () => {
+									Swal.showLoading();
+								},
+							});
+							tr.fadeOut();
+						}
+					})
+				}
+			})
+		})
+
 		$('.ticket').on('click', function() {
 			var id = $(this).attr('data-id');
 			var store = $(this).attr('data-store');

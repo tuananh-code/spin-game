@@ -10,6 +10,7 @@ if (count($ticket) > 0) {
 	$number = $ticket['ticket'];
 	$tickets = implode('|', $number);
 }
+$check_phone = cl_db_get_item(T_USERS, array('id' => $id))['phone'];
 // var_dump($game_id);die;
 ?>
 <script type="module" src="{%config theme_url%}/statics/js/index.js?v={%config update_date%}"></script>
@@ -118,17 +119,18 @@ if (count($ticket) > 0) {
 					<?php } ?>
 				</div>
 			</div>
-			<div class="wheel-wrapper"></div>
-			<?php
-			if (@count($ticket['id']) > 0) {
-			?>
+			<?php if (@count($ticket['id']) > 0) { ?>
+				<div class="wheel-wrapper"></div>
 				<div class="text-center">
 					<button id="spin_prize" class="col-4 spin p-2 m-2 btn-primary rounded-pill">
 						<span class="fs-4">Spin</span>
 					</button>
 				</div>
+				<?php } else {
+				if (!$check_phone) { ?>
+					<?= cl_template('spin_prize/includes/phone'); ?>
+				<?php } ?>
 			<?php } ?>
-
 		</div>
 	</center>
 </div>

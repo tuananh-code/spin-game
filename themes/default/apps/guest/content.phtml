@@ -6,6 +6,7 @@
 		<div class="row justify-content-center">
 			<div class="col-xxl-9 col-xl-10 col-12">
 				<div class="row">
+					<?php echo cl_template('guest/event'); ?>
 					<div class="col-xxl-6 col-xl-6 col-lg-6 col-md-12 ml-auto">
 						<div class="welcome-page__rp">
 							<div class="welcome-page__rp-inner">
@@ -23,9 +24,9 @@
 											<div class="auth-form-holder">
 												<?php if ($cl["auth_type"] == "login"): ?>
 													<?php echo cl_template('auth/login'); ?>
-												<?php elseif($cl["auth_type"] == "forgot_pass"): ?>
+												<?php elseif ($cl["auth_type"] == "forgot_pass"): ?>
 													<?php echo cl_template('auth/reset_password'); ?>
-												<?php elseif($cl["auth_type"] == "reset_pass" && not_empty($cl['em_code'])): ?>
+												<?php elseif ($cl["auth_type"] == "reset_pass" && not_empty($cl['em_code'])): ?>
 													<?php echo cl_template('auth/new_password'); ?>
 												<?php else: ?>
 													<?php if ($cl['config']['user_signup'] == "on" || not_empty($cl["invite_code_status"])): ?>
@@ -34,9 +35,9 @@
 														<?php echo cl_template('auth/register_off'); ?>
 													<?php endif; ?>
 												<?php endif; ?>
-											</div>	
+											</div>
 										</div>
-									</div>	
+									</div>
 								</div>
 							</div>
 						</div>
@@ -76,8 +77,7 @@
 
 						if (_app_.curr_ind >= _app_.images.length - 1) {
 							_app_.curr_ind = 0;
-						}
-						else{
+						} else {
 							_app_.curr_ind += 1;
 						}
 
@@ -86,9 +86,8 @@
 			}
 		});
 
-		
+
 	});
 </script>
 
 <?php echo cl_template('auth/scripts/app_master_script'); ?>
-
