@@ -30,7 +30,7 @@ $cl["curr_url"] = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "htt
 
 if (is_array($site_url)) {
 	if ($site_url['host'] != fetch_or_get($_SERVER['HTTP_HOST'], 'none')) {
-		cl_redirect("/");
+		// cl_redirect("/");
 	}
 }
 
